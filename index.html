@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>HEIC Converter</title>
+		<link rel="stylesheet" href="./src/style.css" />
+	</head>
+	<body>
+		<main>
+			<header>
+				<h1>HEIC Converter</h1>
+				<p>Convert HEIC/HEIF photos to JPG or PNG. Files are processed in your browser and never uploaded anywhere.</p>
+			</header>
+
+			<section class="controls">
+				<div class="segmented" role="radiogroup" aria-label="Output format">
+					<label><input type="radio" name="format" value="image/jpeg" checked /><span>JPG</span></label>
+					<label><input type="radio" name="format" value="image/png" /><span>PNG</span></label>
+				</div>
+				<label class="quality" id="quality-field">
+					<span>Quality <output id="quality-value">92%</output></span>
+					<input type="range" id="quality" min="10" max="100" value="92" />
+				</label>
+			</section>
+
+			<label class="dropzone" id="dropzone">
+				<input type="file" id="file-input" accept=".heic,.heif,image/heic,image/heif" multiple />
+				<strong>Drop HEIC files here</strong>
+				<span class="hint">or click to choose</span>
+			</label>
+
+			<section class="results" id="results" hidden>
+				<div class="results-header">
+					<h2>Files</h2>
+					<button type="button" id="download-all" disabled>Download all</button>
+				</div>
+				<ul id="file-list"></ul>
+			</section>
+		</main>
+		<script type="module" src="./src/main.ts"></script>
+	</body>
+</html>

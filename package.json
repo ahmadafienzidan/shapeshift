@@ -1,24 +1,21 @@
 {
 	"name": "heic-converter",
-	"version": "0.1.0",
-	"description": "Convert HEIC/HEIF images to PNG or JPG",
+	"version": "0.2.0",
+	"description": "Convert HEIC/HEIF images to PNG or JPG in the browser",
 	"type": "module",
 	"private": true,
-	"bin": {
-		"heic-convert": "src/cli.ts"
-	},
 	"scripts": {
-		"start": "bun src/cli.ts",
+		"dev": "bun --port 3000 index.html",
+		"build": "bun build ./index.html --outdir dist --minify",
 		"typecheck": "tsc --noEmit",
 		"lint": "biome check ."
 	},
 	"dependencies": {
-		"heic-convert": "^2.1.0"
+		"heic-to": "^1.6.6"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.15",
 		"@types/bun": "latest",
-		"@types/heic-convert": "^2.1.0",
 		"typescript": "^5"
 	}
 }

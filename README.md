@@ -1,37 +1,20 @@
 # heic-converter
 
-Convert HEIC/HEIF images to PNG or JPG from the command line.
+Convert HEIC/HEIF photos to JPG or PNG in the browser. Conversion runs client-side with [heic-to](https://github.com/hoppergee/heic-to), so files never leave your device.
 
-## Install
+## Development
 
 ```bash
 bun install
+bun run dev
 ```
 
-## Usage
+Open http://localhost:3000, pick JPG or PNG, then drop HEIC files onto the page.
+
+## Build
 
 ```bash
-bun src/cli.ts <file|dir>... [options]
+bun run build
 ```
 
-| Option | Description | Default |
-| --- | --- | --- |
-| `-f, --format <png\|jpg>` | Output format | `jpg` |
-| `-q, --quality <0-1>` | JPEG quality | `0.92` |
-| `-o, --out <dir>` | Output directory | next to input |
-| `-r, --recursive` | Walk directories recursively | off |
-| `-h, --help` | Show help | |
-
-### Examples
-
-```bash
-bun src/cli.ts photo.heic
-bun src/cli.ts photo.heic -f png
-bun src/cli.ts ./photos -r -o ./converted -q 0.8
-```
-
-To use it as a global `heic-convert` command:
-
-```bash
-bun link
-```
+The static site is written to `dist/` and can be hosted on any static host (GitHub Pages, Netlify, Vercel, Cloudflare Pages).
