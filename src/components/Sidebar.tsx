@@ -1,10 +1,4 @@
-import {
-	Button,
-	Chip,
-	Separator,
-	ToggleButton,
-	ToggleButtonGroup,
-} from "@heroui/react";
+import { Button, ToggleButton, ToggleButtonGroup } from "@heroui/react";
 import { House, Moon, Sun } from "lucide-react";
 import type { ReactNode } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -28,10 +22,10 @@ function NavItem({
 			to={to}
 			end
 			className={({ isActive }) =>
-				`flex shrink-0 items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+				`relative flex shrink-0 items-center gap-3 rounded px-3 py-2 font-medium text-sm transition-colors ${
 					isActive
-						? "bg-accent-soft text-accent-soft-foreground"
-						: "text-muted hover:bg-default hover:text-foreground"
+						? "bg-default text-foreground before:absolute before:inset-y-1.5 before:left-0 before:w-0.5 before:rounded-full before:bg-electric"
+						: "text-muted hover:bg-default/60 hover:text-foreground"
 				}`
 			}
 		>
@@ -41,22 +35,25 @@ function NavItem({
 	);
 }
 
+function SectionLabel({ children }: { children: ReactNode }) {
+	return (
+		<p className="eyebrow mt-6 mb-2 hidden px-3 text-[0.6875rem] text-muted lg:block">
+			{children}
+		</p>
+	);
+}
+
 export function Sidebar() {
 	const intl = useIntl();
 	const { locale, setLocale } = useLocale();
 	const { theme, toggle } = useTheme();
 
 	return (
-		<aside className="flex flex-col gap-6 border-separator border-b bg-surface/60 p-4 backdrop-blur-xl lg:sticky lg:top-0 lg:h-dvh lg:w-72 lg:shrink-0 lg:border-r lg:border-b-0 lg:p-6">
-			<div className="flex items-center justify-between gap-3">
-				<NavLink to="/" className="flex items-center gap-3">
+		<aside className="z-10 flex flex-col gap-4 border-separator border-b bg-(--sidebar) p-4 lg:sticky lg:top-0 lg:h-dvh lg:w-64 lg:shrink-0 lg:border-r lg:border-b-0 lg:px-4 lg:py-6">
+			<div className="flex items-center justify-between gap-3 px-1">
+				<NavLink to="/" className="flex items-center gap-2.5">
 					<Logo />
-					<div>
-						<p className="font-bold text-lg leading-tight">Shapeshift</p>
-						<p className="text-muted text-xs">
-							<FormattedMessage id="app.tagline" />
-						</p>
-					</div>
+					<span className="headline text-2xl">Shapeshift</span>
 				</NavLink>
 				<Button
 					isIconOnly
@@ -65,31 +62,34 @@ export function Sidebar() {
 					aria-label={intl.formatMessage({ id: "nav.theme" })}
 					onPress={toggle}
 				>
-					{theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+					{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
 				</Button>
 			</div>
 
-			<nav className="flex gap-1 overflow-x-auto lg:flex-col">
-				<NavItem to="/" icon={<House size={18} />}>
+			<nav className="flex gap-1 overflow-x-auto lg:flex-col lg:gap-0.5">
+				<SectionLabel>
+					<FormattedMessage id="nav.overview" />
+				</SectionLabel>
+				<NavItem to="/" icon={<House size={16} />}>
 					<FormattedMessage id="nav.home" />
 				</NavItem>
-				<p className="mt-4 mb-1 hidden px-3 font-semibold text-muted text-xs uppercase tracking-wider lg:block">
+				<SectionLabel>
 					<FormattedMessage id="nav.tools" />
-				</p>
+				</SectionLabel>
 				{TOOLS.filter((tool) => tool.available).map((tool) => (
-					<NavItem key={tool.id} to={tool.path} icon={<tool.icon size={18} />}>
+					<NavItem key={tool.id} to={tool.path} icon={<tool.icon size={16} />}>
 						<FormattedMessage id={`tool.${tool.id}.name`} />
 					</NavItem>
 				))}
-				<p className="mt-4 mb-1 hidden px-3 font-semibold text-muted text-xs uppercase tracking-wider lg:block">
+				<SectionLabel>
 					<FormattedMessage id="nav.soon" />
-				</p>
+				</SectionLabel>
 				{TOOLS.filter((tool) => !tool.available).map((tool) => (
 					<div
 						key={tool.id}
-						className="hidden items-center gap-3 px-3 py-2 text-muted text-sm opacity-60 lg:flex"
+						className="hidden items-center gap-3 px-3 py-2 text-muted/60 text-sm lg:flex"
 					>
-						<tool.icon size={18} />
+						<tool.icon size={16} />
 						<span className="truncate">
 							<FormattedMessage id={`tool.${tool.id}.name`} />
 						</span>
@@ -97,8 +97,10 @@ export function Sidebar() {
 				))}
 			</nav>
 
-			<div className="mt-auto flex flex-col gap-3">
-				<Separator className="hidden lg:block" />
+			<div className="mt-auto flex items-center justify-between gap-3 border-separator px-1 lg:border-t lg:pt-4">
+				<span className="eyebrow text-[0.6875rem] text-muted">
+					<FormattedMessage id="nav.language" />
+				</span>
 				<LanguageSwitch locale={locale} onChange={setLocale} />
 			</div>
 		</aside>
@@ -114,21 +116,20 @@ function LanguageSwitch({
 }) {
 	const intl = useIntl();
 	return (
-		<div className="flex items-center justify-between gap-3">
-			<Chip size="sm" variant="soft">
-				<FormattedMessage id="nav.language" />
-			</Chip>
-			<ToggleButtonGroup
-				size="sm"
-				selectionMode="single"
-				disallowEmptySelection
-				selectedKeys={new Set([locale])}
-				onSelectionChange={(keys) => onChange([...keys][0] as Locale)}
-				aria-label={intl.formatMessage({ id: "nav.language" })}
-			>
-				<ToggleButton id="en">EN</ToggleButton>
-				<ToggleButton id="id">ID</ToggleButton>
-			</ToggleButtonGroup>
-		</div>
+		<ToggleButtonGroup
+			size="sm"
+			selectionMode="single"
+			disallowEmptySelection
+			selectedKeys={new Set([locale])}
+			onSelectionChange={(keys) => onChange([...keys][0] as Locale)}
+			aria-label={intl.formatMessage({ id: "nav.language" })}
+		>
+			<ToggleButton id="en" className="font-mono text-xs">
+				EN
+			</ToggleButton>
+			<ToggleButton id="id" className="font-mono text-xs">
+				ID
+			</ToggleButton>
+		</ToggleButtonGroup>
 	);
 }

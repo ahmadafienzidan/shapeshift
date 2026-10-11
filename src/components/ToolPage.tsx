@@ -1,9 +1,9 @@
-import { Card } from "@heroui/react";
 import type { ReactNode } from "react";
 import { FormattedMessage } from "react-intl";
 import type { BatchItem } from "../lib/useBatch";
 import type { Tool } from "../tools";
 import { Dropzone } from "./Dropzone";
+import { Eyebrow } from "./Eyebrow";
 import { FileQueue } from "./FileQueue";
 
 export function ToolPage({
@@ -20,21 +20,24 @@ export function ToolPage({
 	onClear: () => void;
 }) {
 	return (
-		<div className="flex flex-col gap-6">
-			<header className="flex items-center gap-4">
-				<div
-					className={`grid size-12 shrink-0 place-items-center rounded-2xl bg-linear-to-br ${tool.gradient} text-white shadow-lg`}
-				>
-					<tool.icon size={24} />
-				</div>
-				<div>
-					<h1 className="font-bold text-2xl tracking-tight sm:text-3xl">
+		<div className="flex flex-col gap-8">
+			<header className="flex flex-col gap-3 border-separator border-b pb-8">
+				<Eyebrow dot>
+					<FormattedMessage id="tool.eyebrow" />
+				</Eyebrow>
+				<div className="flex items-center gap-4">
+					<div
+						className={`grid size-12 shrink-0 place-items-center rounded ${tool.tile}`}
+					>
+						<tool.icon size={22} />
+					</div>
+					<h1 className="headline text-4xl sm:text-6xl">
 						<FormattedMessage id={`tool.${tool.id}.name`} />
 					</h1>
-					<p className="text-muted">
-						<FormattedMessage id={`tool.${tool.id}.description`} />
-					</p>
 				</div>
+				<p className="max-w-2xl text-muted">
+					<FormattedMessage id={`tool.${tool.id}.description`} />
+				</p>
 			</header>
 
 			<div className="grid gap-6 xl:grid-cols-[1fr_20rem]">
@@ -46,17 +49,17 @@ export function ToolPage({
 						zipName={`shapeshift-${tool.id}.zip`}
 					/>
 				</div>
-				<Card className="order-1 h-fit xl:sticky xl:top-6 xl:order-2">
-					<Card.Header>
-						<Card.Title>
+				<aside className="order-1 flex h-fit flex-col rounded-xl border border-border bg-surface xl:sticky xl:top-6 xl:order-2">
+					<div className="flex flex-col gap-1 border-separator border-b p-5">
+						<p className="eyebrow text-muted">
 							<FormattedMessage id="options.title" />
-						</Card.Title>
-						<Card.Description>
+						</p>
+						<p className="text-muted text-xs">
 							<FormattedMessage id="options.appliesToNew" />
-						</Card.Description>
-					</Card.Header>
-					<Card.Content className="flex flex-col gap-6">{options}</Card.Content>
-				</Card>
+						</p>
+					</div>
+					<div className="flex flex-col gap-6 p-5">{options}</div>
+				</aside>
 			</div>
 		</div>
 	);

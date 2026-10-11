@@ -1,13 +1,10 @@
 {
-	"app.tagline": "Local file converter",
 	"nav.home": "Home",
 	"nav.tools": "Tools",
 	"nav.soon": "Coming soon",
 	"nav.language": "Language",
 	"nav.theme": "Toggle theme",
-
 	"home.badge": "100% in your browser",
-	"home.title": "Shapeshift your files.",
 	"home.subtitle": "Convert, compress, and resize images right on your device. Nothing is uploaded, nothing is tracked, and it works offline.",
 	"home.cta": "Start converting",
 	"home.feature.private.title": "Private by design",
@@ -16,16 +13,12 @@
 	"home.feature.bulk.body": "Drop hundreds of files or a whole folder, then download everything as one ZIP.",
 	"home.feature.fast.title": "No installs, no limits",
 	"home.feature.fast.body": "No accounts, file caps, or watermarks. Just open and go.",
-	"home.tools": "Tools",
-	"home.open": "Open",
-
 	"tool.convert.name": "Image Converter",
 	"tool.convert.description": "HEIC, WEBP, AVIF, PNG, JPG, GIF, and BMP to JPG, PNG, or WEBP.",
 	"tool.compress.name": "Compress & Resize",
 	"tool.compress.description": "Shrink file size, cap dimensions, and strip EXIF metadata such as GPS location.",
 	"tool.pdf.name": "PDF Tools",
 	"tool.data.name": "Data Formats",
-
 	"options.title": "Options",
 	"options.format": "Output format",
 	"options.format.original": "Original",
@@ -35,13 +28,11 @@
 	"options.maxDimension.none": "Original size",
 	"options.maxDimension.value": "{size} px",
 	"options.appliesToNew": "Options apply to files you add next.",
-
 	"drop.title": "Drop images or folders here",
 	"drop.subtitle": "HEIC, WEBP, AVIF, PNG, JPG, GIF, BMP",
 	"drop.files": "Choose files",
 	"drop.folder": "Choose folder",
 	"drop.skipped": "{count, plural, one {# file was} other {# files were}} skipped because {count, plural, one {it is} other {they are}} not an image.",
-
 	"queue.title": "Files",
 	"queue.summary": "{done} of {total} done",
 	"queue.saved": "Saved {size} ({percent})",
@@ -51,5 +42,17 @@
 	"queue.status.queued": "Queued",
 	"queue.status.processing": "Processing",
 	"queue.status.done": "Done",
-	"queue.status.error": "Failed"
+	"queue.status.error": "Failed",
+	"nav.overview": "Overview",
+	"home.title1": "Shapeshift any file.",
+	"home.title2": "Right in your browser.",
+	"home.ctaSecondary": "Compress images",
+	"home.available": "Available now",
+	"home.openTool": "Open tool",
+	"home.formats": "Reads every format your camera throws at it",
+	"home.whyEyebrow": "Why Shapeshift",
+	"home.whyTitle": "Your files never leave your device.",
+	"tool.eyebrow": "Tool",
+	"tool.pdf.description": "Images to PDF, PDF to images, and merging documents.",
+	"tool.data.description": "Convert between JSON, CSV, and YAML."
 }

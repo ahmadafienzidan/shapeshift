@@ -20,32 +20,32 @@ export function Dropzone({ onFiles }: { onFiles: (files: File[]) => void }) {
 			<DropZone
 				onDrop={async (event) => accept(await collectDropItems(event.items))}
 				className={({ isDropTarget }) =>
-					`group relative flex flex-col items-center justify-center gap-4 overflow-hidden rounded-3xl border-2 border-dashed px-6 py-14 text-center transition-all ${
+					`group relative flex flex-col items-center justify-center gap-5 overflow-hidden rounded-xl border border-dashed px-6 py-16 text-center transition-colors ${
 						isDropTarget
-							? "scale-[1.01] border-accent bg-accent-soft"
-							: "border-separator bg-surface hover:border-accent/60"
+							? "border-electric bg-accent-soft"
+							: "border-border-tertiary bg-surface hover:border-electric/70"
 					}`
 				}
 			>
-				<div className="pointer-events-none absolute inset-0 bg-radial from-accent/10 to-transparent to-70% opacity-0 transition-opacity group-hover:opacity-100 group-data-[drop-target]:opacity-100" />
-				<div className="grid size-16 place-items-center rounded-2xl bg-linear-to-br from-violet-500 to-sky-500 text-white shadow-lg shadow-violet-500/30">
-					<Upload size={28} />
+				<div className="pointer-events-none absolute inset-0 grid-backdrop [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
+				<div className="relative grid size-14 place-items-center rounded bg-electric text-ink">
+					<Upload size={24} />
 				</div>
-				<div>
-					<p className="font-semibold text-lg">
+				<div className="relative flex flex-col gap-1">
+					<p className="headline text-3xl">
 						<FormattedMessage id="drop.title" />
 					</p>
-					<p className="text-muted text-sm">
+					<p className="eyebrow text-muted">
 						<FormattedMessage id="drop.subtitle" />
 					</p>
 				</div>
-				<div className="flex flex-wrap justify-center gap-2">
+				<div className="relative flex flex-wrap justify-center gap-3">
 					<FileTrigger
 						allowsMultiple
 						acceptedFileTypes={ACCEPTED_IMAGES}
 						onSelect={(list) => accept(Array.from(list ?? []))}
 					>
-						<Button variant="primary">
+						<Button variant="primary" className="font-semibold">
 							<ImagePlus size={18} />
 							<FormattedMessage id="drop.files" />
 						</Button>
@@ -54,7 +54,7 @@ export function Dropzone({ onFiles }: { onFiles: (files: File[]) => void }) {
 						acceptDirectory
 						onSelect={(list) => accept(Array.from(list ?? []))}
 					>
-						<Button variant="secondary">
+						<Button variant="outline" className="font-semibold">
 							<FolderOpen size={18} />
 							<FormattedMessage id="drop.folder" />
 						</Button>

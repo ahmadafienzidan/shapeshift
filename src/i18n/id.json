@@ -1,13 +1,10 @@
 {
-	"app.tagline": "Konverter file lokal",
 	"nav.home": "Beranda",
 	"nav.tools": "Tools",
 	"nav.soon": "Segera hadir",
 	"nav.language": "Bahasa",
 	"nav.theme": "Ganti tema",
-
 	"home.badge": "100% di browser kamu",
-	"home.title": "Ubah wujud file kamu.",
 	"home.subtitle": "Konversi, kompres, dan resize gambar langsung di perangkatmu. Tidak ada yang diunggah, tidak ada pelacakan, dan tetap jalan offline.",
 	"home.cta": "Mulai konversi",
 	"home.feature.private.title": "Privat sejak awal",
@@ -16,16 +13,12 @@
 	"home.feature.bulk.body": "Masukkan ratusan file atau satu folder, lalu unduh semuanya dalam satu ZIP.",
 	"home.feature.fast.title": "Tanpa instal, tanpa batas",
 	"home.feature.fast.body": "Tanpa akun, batas ukuran, atau watermark. Buka dan langsung pakai.",
-	"home.tools": "Tools",
-	"home.open": "Buka",
-
 	"tool.convert.name": "Konverter Gambar",
 	"tool.convert.description": "HEIC, WEBP, AVIF, PNG, JPG, GIF, dan BMP ke JPG, PNG, atau WEBP.",
 	"tool.compress.name": "Kompres & Resize",
 	"tool.compress.description": "Perkecil ukuran file, batasi dimensi, dan hapus metadata EXIF seperti lokasi GPS.",
 	"tool.pdf.name": "Tools PDF",
 	"tool.data.name": "Format Data",
-
 	"options.title": "Pengaturan",
 	"options.format": "Format output",
 	"options.format.original": "Asli",
@@ -35,13 +28,11 @@
 	"options.maxDimension.none": "Ukuran asli",
 	"options.maxDimension.value": "{size} px",
 	"options.appliesToNew": "Pengaturan berlaku untuk file yang kamu tambahkan berikutnya.",
-
 	"drop.title": "Taruh gambar atau folder di sini",
 	"drop.subtitle": "HEIC, WEBP, AVIF, PNG, JPG, GIF, BMP",
 	"drop.files": "Pilih file",
 	"drop.folder": "Pilih folder",
 	"drop.skipped": "{count} file dilewati karena bukan gambar.",
-
 	"queue.title": "File",
 	"queue.summary": "{done} dari {total} selesai",
 	"queue.saved": "Hemat {size} ({percent})",
@@ -51,5 +42,17 @@
 	"queue.status.queued": "Antre",
 	"queue.status.processing": "Memproses",
 	"queue.status.done": "Selesai",
-	"queue.status.error": "Gagal"
+	"queue.status.error": "Gagal",
+	"nav.overview": "Ringkasan",
+	"home.title1": "Ubah wujud file apa pun.",
+	"home.title2": "Langsung di browser.",
+	"home.ctaSecondary": "Kompres gambar",
+	"home.available": "Sudah tersedia",
+	"home.openTool": "Buka tool",
+	"home.formats": "Bisa membaca format apa pun dari kameramu",
+	"home.whyEyebrow": "Kenapa Shapeshift",
+	"home.whyTitle": "File kamu tidak pernah keluar dari perangkatmu.",
+	"tool.eyebrow": "Tool",
+	"tool.pdf.description": "Gambar ke PDF, PDF ke gambar, dan menggabungkan dokumen.",
+	"tool.data.description": "Konversi antara JSON, CSV, dan YAML."
 }

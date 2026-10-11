@@ -10,7 +10,7 @@ export type Tool = {
 	id: string;
 	path: string;
 	icon: LucideIcon;
-	gradient: string;
+	tile: string;
 	available: boolean;
 };
 
@@ -18,7 +18,7 @@ export const CONVERT_TOOL: Tool = {
 	id: "convert",
 	path: "/convert",
 	icon: RefreshCcw,
-	gradient: "from-violet-500 to-fuchsia-500",
+	tile: "bg-electric text-ink",
 	available: true,
 };
 
@@ -26,7 +26,7 @@ export const COMPRESS_TOOL: Tool = {
 	id: "compress",
 	path: "/compress",
 	icon: Minimize2,
-	gradient: "from-sky-500 to-emerald-500",
+	tile: "bg-iris text-white",
 	available: true,
 };
 
@@ -37,14 +37,14 @@ export const TOOLS: Tool[] = [
 		id: "pdf",
 		path: "/pdf",
 		icon: FileText,
-		gradient: "from-rose-500 to-orange-500",
+		tile: "bg-default text-muted",
 		available: false,
 	},
 	{
 		id: "data",
 		path: "/data",
 		icon: Braces,
-		gradient: "from-amber-500 to-lime-500",
+		tile: "bg-default text-muted",
 		available: false,
 	},
 ];

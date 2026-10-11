@@ -1,2 +1,98 @@
+@import "@fontsource-variable/inter";
+@import "@fontsource/barlow-condensed/600.css";
+@import "@fontsource/barlow-condensed/700.css";
+@import "@fontsource/jetbrains-mono/500.css";
+@import "@fontsource/jetbrains-mono/600.css";
 @import "tailwindcss";
 @import "@heroui/styles";
+
+@theme {
+	--font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+	--font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+	--font-mono: "JetBrains Mono", ui-monospace, monospace;
+	--color-ink: #001e2b;
+	--color-cream: #fdfeec;
+	--color-electric: #3ddcff;
+	--color-iris: #7c5cff;
+	--radius-3xl: 0.25rem;
+}
+
+:root,
+.light,
+[data-theme="light"] {
+	--radius: 0.25rem;
+	--accent: #3ddcff;
+	--accent-foreground: #001e2b;
+	--accent-soft-foreground: #00708a;
+	--background: #fdfeec;
+	--foreground: #001e2b;
+	--surface: #ffffff;
+	--surface-secondary: #f4f5e2;
+	--overlay: #ffffff;
+	--muted: #5c6c75;
+	--default: #eef0dc;
+	--border: #d9dcc7;
+	--separator: #e3e5d2;
+	--field-background: #ffffff;
+	--field-border: #d9dcc7;
+	--field-border-width: 1px;
+	--surface-shadow: none;
+	--field-shadow: none;
+	--sidebar: #f6f7e4;
+	--grid-line: rgb(0 30 43 / 0.06);
+}
+
+.dark,
+[data-theme="dark"] {
+	--accent-soft-foreground: #3ddcff;
+	--background: #001e2b;
+	--foreground: #fdfeec;
+	--surface: #04232f;
+	--surface-secondary: #0b2e3d;
+	--overlay: #0b2e3d;
+	--muted: #8a9ba3;
+	--default: #0e3241;
+	--default-foreground: #fdfeec;
+	--border: #1c3d4c;
+	--separator: #133543;
+	--field-background: #04232f;
+	--field-foreground: #fdfeec;
+	--field-border: #1c3d4c;
+	--segment: #1c3d4c;
+	--segment-foreground: #fdfeec;
+	--sidebar: #00161f;
+	--grid-line: rgb(253 254 236 / 0.05);
+}
+
+body {
+	font-family: var(--font-sans);
+}
+
+@utility eyebrow {
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+
+@utility headline {
+	font-family: var(--font-display);
+	font-weight: 700;
+	text-transform: uppercase;
+	line-height: 0.95;
+	letter-spacing: -0.005em;
+}
+
+@utility grid-backdrop {
+	background-image:
+		linear-gradient(var(--grid-line) 1px, transparent 1px),
+		linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+	background-size: 32px 32px;
+}
+
+.toggle-button[data-selected="true"] {
+	background-color: var(--accent);
+	color: var(--accent-foreground);
+	font-weight: 600;
+}

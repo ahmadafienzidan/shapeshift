@@ -25,7 +25,7 @@ No accounts, no file limits, no watermarks. Everything runs on your device.
 | 🔒 **Private by design** | Files are decoded and encoded in the browser. Nothing is sent to a server, so you can safely convert personal photos and documents. |
 | 📦 **Built for bulk** | Drop hundreds of files or an entire folder at once, then grab everything in a single ZIP. |
 | ⚡ **No installs, no limits** | No sign-up, no file-size caps, no watermarks, no queue. Open it and go. |
-| 🌗 **Dark & light mode** | Follows your system theme, with a one-click toggle. |
+| 🌗 **Dark & light mode** | Deep navy by night, warm cream by day. Follows your system theme, with a one-click toggle. |
 | 🌐 **English & Bahasa Indonesia** | Switch languages from the sidebar; your choice is remembered. |
 
 ## 🧰 Tools
@@ -114,7 +114,8 @@ src/
 ## 🧱 Tech stack
 
 - [React 19](https://react.dev) + [TypeScript](https://www.typescriptlang.org)
-- [HeroUI v3](https://heroui.com) (formerly NextUI) on [Tailwind CSS v4](https://tailwindcss.com)
+- [HeroUI v3](https://heroui.com) (formerly NextUI) on [Tailwind CSS v4](https://tailwindcss.com), themed with a deep-navy and electric-cyan palette
+- [Inter](https://rsms.me/inter/), [Barlow Condensed](https://fonts.google.com/specimen/Barlow+Condensed), and [JetBrains Mono](https://www.jetbrains.com/lp/mono/), bundled locally via Fontsource
 - [React Aria Components](https://react-spectrum.adobe.com/react-aria/) for the accessible drop zone and file picker
 - [React Router](https://reactrouter.com) and [react-intl](https://formatjs.github.io/docs/react-intl/)
 - [Vite](https://vite.dev), [Bun](https://bun.sh), [Biome](https://biomejs.dev)
