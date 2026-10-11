@@ -1,11 +1,11 @@
 import { Button, ToggleButton, ToggleButtonGroup } from "@heroui/react";
 import { House, Moon, Sun } from "lucide-react";
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { NavLink } from "react-router";
-import { type Locale, useLocale } from "../i18n/LocaleProvider";
+import { type Locale, useLocale } from "../i18n/locale";
 import { useTheme } from "../lib/useTheme";
-import { TOOLS } from "../tools";
+import { TOOL_GROUPS, TOOLS } from "../tools";
 import { Logo } from "./Logo";
 
 function NavItem({
@@ -73,13 +73,21 @@ export function Sidebar() {
 				<NavItem to="/" icon={<House size={16} />}>
 					<FormattedMessage id="nav.home" />
 				</NavItem>
-				<SectionLabel>
-					<FormattedMessage id="nav.tools" />
-				</SectionLabel>
-				{TOOLS.map((tool) => (
-					<NavItem key={tool.id} to={tool.path} icon={<tool.icon size={16} />}>
-						<FormattedMessage id={`tool.${tool.id}.name`} />
-					</NavItem>
+				{TOOL_GROUPS.map((group) => (
+					<Fragment key={group}>
+						<SectionLabel>
+							<FormattedMessage id={`nav.group.${group}`} />
+						</SectionLabel>
+						{TOOLS.filter((tool) => tool.group === group).map((tool) => (
+							<NavItem
+								key={tool.id}
+								to={tool.path}
+								icon={<tool.icon size={16} />}
+							>
+								<FormattedMessage id={`tool.${tool.id}.name`} />
+							</NavItem>
+						))}
+					</Fragment>
 				))}
 			</nav>
 

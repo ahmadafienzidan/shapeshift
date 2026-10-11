@@ -9,11 +9,11 @@ import {
 	RotateCcw,
 	X,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { formatBytes } from "../lib/files";
-import { isHeic, isImage } from "../lib/image";
 import { Dropzone, type FileKind } from "./Dropzone";
+import { Thumbnail } from "./Thumbnail";
 
 type Entry = { id: string; file: File };
 
@@ -24,30 +24,6 @@ function move<T>(list: T[], from: number, to: number): T[] {
 	const [item] = next.splice(from, 1);
 	if (item !== undefined) next.splice(to, 0, item);
 	return next;
-}
-
-function Thumbnail({ file }: { file: File }) {
-	const [url, setUrl] = useState<string>();
-	const previewable = isImage(file) && !isHeic(file);
-
-	useEffect(() => {
-		if (!previewable) return;
-		const objectUrl = URL.createObjectURL(file);
-		setUrl(objectUrl);
-		return () => URL.revokeObjectURL(objectUrl);
-	}, [file, previewable]);
-
-	return (
-		<div className="grid size-10 shrink-0 place-items-center overflow-hidden rounded bg-default">
-			{url ? (
-				<img src={url} alt="" className="size-full object-cover" />
-			) : (
-				<span className="font-mono text-[0.625rem] text-muted uppercase">
-					{file.name.split(".").pop()}
-				</span>
-			)}
-		</div>
-	);
 }
 
 export function CombineTool({

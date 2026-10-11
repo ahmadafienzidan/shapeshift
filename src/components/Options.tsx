@@ -6,6 +6,7 @@ import {
 	ToggleButton,
 	ToggleButtonGroup,
 } from "@heroui/react";
+import type { ReactNode } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 export function FormatPicker<T extends string>({
@@ -41,6 +42,48 @@ export function FormatPicker<T extends string>({
 	);
 }
 
+export function RangeSlider({
+	labelId,
+	value,
+	onChange,
+	min,
+	max,
+	isDisabled,
+	hint,
+}: {
+	labelId: string;
+	value: number;
+	onChange: (value: number) => void;
+	min: number;
+	max: number;
+	isDisabled?: boolean;
+	hint?: ReactNode;
+}) {
+	return (
+		<div className="flex flex-col gap-2">
+			<Slider
+				value={value}
+				onChange={(next) => onChange(next as number)}
+				minValue={min}
+				maxValue={max}
+				isDisabled={isDisabled}
+			>
+				<div className="flex items-center justify-between">
+					<Label>
+						<FormattedMessage id={labelId} />
+					</Label>
+					<Slider.Output>{({ state }) => `${state.values[0]}%`}</Slider.Output>
+				</div>
+				<Slider.Track>
+					<Slider.Fill />
+					<Slider.Thumb />
+				</Slider.Track>
+			</Slider>
+			{hint && <p className="text-muted text-xs">{hint}</p>}
+		</div>
+	);
+}
+
 export function QualitySlider({
 	value,
 	onChange,
@@ -51,31 +94,42 @@ export function QualitySlider({
 	isDisabled?: boolean;
 }) {
 	return (
-		<div className="flex flex-col gap-2">
-			<Slider
-				value={value}
-				onChange={(next) => onChange(next as number)}
-				minValue={10}
-				maxValue={100}
-				isDisabled={isDisabled}
-			>
-				<div className="flex items-center justify-between">
-					<Label>
-						<FormattedMessage id="options.quality" />
-					</Label>
-					<Slider.Output>{({ state }) => `${state.values[0]}%`}</Slider.Output>
-				</div>
-				<Slider.Track>
-					<Slider.Fill />
-					<Slider.Thumb />
-				</Slider.Track>
-			</Slider>
-			{isDisabled && (
-				<p className="text-muted text-xs">
-					<FormattedMessage id="options.qualityHint" />
-				</p>
-			)}
-		</div>
+		<RangeSlider
+			labelId="options.quality"
+			value={value}
+			onChange={onChange}
+			min={10}
+			max={100}
+			isDisabled={isDisabled}
+			hint={isDisabled && <FormattedMessage id="options.qualityHint" />}
+		/>
+	);
+}
+
+export function ColorInput({
+	labelId,
+	value,
+	onChange,
+}: {
+	labelId: string;
+	value: string;
+	onChange: (value: string) => void;
+}) {
+	return (
+		<label className="flex items-center justify-between gap-3">
+			<span className="font-medium text-sm">
+				<FormattedMessage id={labelId} />
+			</span>
+			<span className="flex items-center gap-2 rounded border border-border bg-field px-2 py-1">
+				<span className="font-mono text-muted text-xs uppercase">{value}</span>
+				<input
+					type="color"
+					value={value}
+					onChange={(event) => onChange(event.target.value)}
+					className="size-6 cursor-pointer rounded border-0 bg-transparent p-0"
+				/>
+			</span>
+		</label>
 	);
 }
 

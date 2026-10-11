@@ -1,9 +1,9 @@
-import { Tabs } from "@heroui/react";
-import { FileImage, Files, Images } from "lucide-react";
+import { FileImage, Files, Images, type LucideIcon } from "lucide-react";
 import { useState } from "react";
 import { useIntl } from "react-intl";
 import { BatchTool } from "../components/BatchTool";
 import { CombineTool } from "../components/CombineTool";
+import { ModeTabs } from "../components/ModeTabs";
 import { FormatPicker, QualitySlider } from "../components/Options";
 import { ToolPage } from "../components/ToolPage";
 import { IMAGE_KIND, type OutputType } from "../lib/image";
@@ -18,11 +18,11 @@ import { PDF_TOOL } from "../tools";
 
 type Mode = "images-to-pdf" | "pdf-to-images" | "merge";
 
-const MODES: { id: Mode; icon: typeof Images }[] = [
-	{ id: "images-to-pdf", icon: Images },
-	{ id: "pdf-to-images", icon: FileImage },
-	{ id: "merge", icon: Files },
-];
+const MODES = [
+	{ id: "images-to-pdf", icon: Images, labelId: "pdf.mode.images-to-pdf" },
+	{ id: "pdf-to-images", icon: FileImage, labelId: "pdf.mode.pdf-to-images" },
+	{ id: "merge", icon: Files, labelId: "pdf.mode.merge" },
+] satisfies { id: Mode; icon: LucideIcon; labelId: string }[];
 
 const MARGINS = { none: 0, small: 18, large: 36 };
 
@@ -40,19 +40,12 @@ export function PdfPage() {
 	const [dpi, setDpi] = useState("150");
 
 	const toolbar = (
-		<Tabs selectedKey={mode} onSelectionChange={(key) => setMode(key as Mode)}>
-			<Tabs.ListContainer>
-				<Tabs.List aria-label={t("tool.pdf.name")}>
-					{MODES.map((item) => (
-						<Tabs.Tab key={item.id} id={item.id} className="gap-2">
-							<item.icon size={16} />
-							{t(`pdf.mode.${item.id}`)}
-							<Tabs.Indicator />
-						</Tabs.Tab>
-					))}
-				</Tabs.List>
-			</Tabs.ListContainer>
-		</Tabs>
+		<ModeTabs
+			label={t("tool.pdf.name")}
+			value={mode}
+			onChange={setMode}
+			modes={MODES}
+		/>
 	);
 
 	if (mode === "images-to-pdf") {

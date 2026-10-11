@@ -1,16 +1,16 @@
 import { Button } from "@heroui/react";
 import {
 	ArrowLeftRight,
-	Check,
-	Copy,
 	Download,
 	Eraser,
 	Sparkles,
 	Upload,
 } from "lucide-react";
-import { type ReactNode, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { DropZone, FileTrigger } from "react-aria-components";
 import { FormattedMessage, useIntl } from "react-intl";
+import { CopyButton } from "../components/CopyButton";
+import { EDITOR_CLASS, EditorPanel } from "../components/EditorPanel";
 import { FormatPicker } from "../components/Options";
 import { ToolPage } from "../components/ToolPage";
 import {
@@ -34,29 +34,6 @@ const DELIMITERS = { comma: ",", semicolon: ";", tab: "\t" };
 
 type Delimiter = keyof typeof DELIMITERS;
 
-function Panel({
-	label,
-	actions,
-	children,
-}: {
-	label: ReactNode;
-	actions: ReactNode;
-	children: ReactNode;
-}) {
-	return (
-		<div className="flex min-w-0 flex-col overflow-hidden rounded-xl border border-border bg-surface">
-			<div className="flex min-h-14 flex-wrap items-center justify-between gap-2 border-separator border-b px-4 py-2">
-				<p className="eyebrow text-muted">{label}</p>
-				<div className="flex gap-1">{actions}</div>
-			</div>
-			{children}
-		</div>
-	);
-}
-
-const EDITOR =
-	"min-h-[26rem] w-full flex-1 resize-y bg-transparent p-4 font-mono text-sm leading-relaxed outline-none placeholder:text-muted/60";
-
 export function DataPage() {
 	const intl = useIntl();
 	const t = (id: string) => intl.formatMessage({ id });
@@ -66,7 +43,6 @@ export function DataPage() {
 	const [to, setTo] = useState<DataFormat>("csv");
 	const [indent, setIndent] = useState("2");
 	const [delimiter, setDelimiter] = useState<Delimiter>("comma");
-	const [copied, setCopied] = useState(false);
 
 	const result = useMemo(() => {
 		try {
@@ -95,12 +71,6 @@ export function DataPage() {
 		if (!result.error) setInput(result.output);
 		setFrom(to);
 		setTo(from);
-	};
-
-	const copy = async () => {
-		await navigator.clipboard.writeText(result.output);
-		setCopied(true);
-		setTimeout(() => setCopied(false), 1500);
 	};
 
 	const usesCsv = from === "csv" || to === "csv";
@@ -162,7 +132,7 @@ export function DataPage() {
 						`flex rounded-xl ${isDropTarget ? "outline-2 outline-electric outline-offset-2" : ""}`
 					}
 				>
-					<Panel
+					<EditorPanel
 						label={
 							<FormattedMessage
 								id="data.input"
@@ -221,12 +191,12 @@ export function DataPage() {
 							placeholder={t("data.placeholder")}
 							spellCheck={false}
 							aria-label={t("data.inputLabel")}
-							className={EDITOR}
+							className={EDITOR_CLASS}
 						/>
-					</Panel>
+					</EditorPanel>
 				</DropZone>
 
-				<Panel
+				<EditorPanel
 					label={
 						<FormattedMessage
 							id="data.output"
@@ -235,15 +205,7 @@ export function DataPage() {
 					}
 					actions={
 						<>
-							<Button
-								variant="ghost"
-								size="sm"
-								isDisabled={!result.output}
-								onPress={copy}
-							>
-								{copied ? <Check size={14} /> : <Copy size={14} />}
-								<FormattedMessage id={copied ? "data.copied" : "data.copy"} />
-							</Button>
+							<CopyButton text={result.output} />
 							<Button
 								variant="primary"
 								size="sm"
@@ -273,10 +235,10 @@ export function DataPage() {
 							spellCheck={false}
 							aria-label={t("data.outputLabel")}
 							placeholder={t("data.outputPlaceholder")}
-							className={EDITOR}
+							className={EDITOR_CLASS}
 						/>
 					)}
-				</Panel>
+				</EditorPanel>
 			</div>
 		</ToolPage>
 	);

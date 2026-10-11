@@ -11,6 +11,7 @@ import {
 	decodeImage,
 	encodeImage,
 	IMAGE_KIND,
+	isSvg,
 	type OutputType,
 	renameExtension,
 } from "../lib/image";
@@ -22,7 +23,9 @@ const ENCODABLE: OutputType[] = ["image/jpeg", "image/png", "image/webp"];
 
 function resolveFormat(file: File, format: CompressFormat): OutputType {
 	if (format !== "original") return format;
-	return ENCODABLE.find((type) => type === file.type) ?? "image/jpeg";
+	const same = ENCODABLE.find((type) => type === file.type);
+	if (same) return same;
+	return isSvg(file) ? "image/png" : "image/jpeg";
 }
 
 export function CompressPage() {

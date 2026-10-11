@@ -6,8 +6,8 @@ import { Eyebrow } from "../components/Eyebrow";
 import {
 	COMPRESS_TOOL,
 	CONVERT_TOOL,
-	DATA_TOOL,
-	PDF_TOOL,
+	TOOL_GROUPS,
+	TOOLS,
 	type Tool,
 } from "../tools";
 
@@ -17,13 +17,41 @@ const FORMATS = [
 	"AVIF",
 	"PNG",
 	"JPG",
-	"GIF",
-	"BMP",
+	"SVG",
+	"ICO",
 	"PDF",
 	"JSON",
 	"CSV",
 	"YAML",
+	"QR",
 ];
+
+function ToolCard({ tool }: { tool: Tool }) {
+	return (
+		<Link
+			to={tool.path}
+			className="group flex items-start gap-4 rounded-xl border border-border bg-surface p-5 transition-colors hover:border-electric/60"
+		>
+			<div
+				className={`grid size-10 shrink-0 place-items-center rounded ${tool.tile}`}
+			>
+				<tool.icon size={18} />
+			</div>
+			<div className="flex min-w-0 flex-1 flex-col gap-1">
+				<p className="headline flex items-center gap-1 text-xl">
+					<FormattedMessage id={`tool.${tool.id}.name`} />
+					<ChevronRight
+						size={16}
+						className="text-muted transition-transform group-hover:translate-x-1"
+					/>
+				</p>
+				<p className="text-muted text-sm">
+					<FormattedMessage id={`tool.${tool.id}.description`} />
+				</p>
+			</div>
+		</Link>
+	);
+}
 
 const FEATURES = ["private", "bulk", "fast"];
 
@@ -141,21 +169,38 @@ export function HomePage() {
 				</div>
 			</section>
 
-			<div className="flex flex-col gap-4">
-				<section className="grid gap-4 lg:grid-cols-5">
-					<div className="lg:col-span-3">
-						<TileArt />
+			<section className="grid gap-4 lg:grid-cols-5">
+				<div className="lg:col-span-3">
+					<TileArt />
+				</div>
+				<div className="flex flex-col gap-4 lg:col-span-2">
+					<ToolSpotlight tool={CONVERT_TOOL} />
+					<ToolSpotlight tool={COMPRESS_TOOL} />
+				</div>
+			</section>
+
+			<section className="flex flex-col gap-8">
+				<div className="flex flex-col gap-4">
+					<Eyebrow>
+						<FormattedMessage id="home.allTools" />
+					</Eyebrow>
+					<h2 className="headline text-4xl sm:text-5xl">
+						<FormattedMessage id="home.allToolsTitle" />
+					</h2>
+				</div>
+				{TOOL_GROUPS.map((group) => (
+					<div key={group} className="flex flex-col gap-3">
+						<p className="eyebrow text-[0.6875rem] text-muted">
+							<FormattedMessage id={`nav.group.${group}`} />
+						</p>
+						<div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+							{TOOLS.filter((tool) => tool.group === group).map((tool) => (
+								<ToolCard key={tool.id} tool={tool} />
+							))}
+						</div>
 					</div>
-					<div className="flex flex-col gap-4 lg:col-span-2">
-						<ToolSpotlight tool={CONVERT_TOOL} />
-						<ToolSpotlight tool={COMPRESS_TOOL} />
-					</div>
-				</section>
-				<section className="grid gap-4 md:grid-cols-2">
-					<ToolSpotlight tool={PDF_TOOL} />
-					<ToolSpotlight tool={DATA_TOOL} />
-				</section>
-			</div>
+				))}
+			</section>
 
 			<section className="flex flex-col items-center gap-6">
 				<p className="eyebrow text-muted">

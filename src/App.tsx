@@ -16,6 +16,17 @@ const CompressPage = lazy(() =>
 const PdfPage = lazy(() =>
 	import("./pages/PdfPage").then((module) => ({ default: module.PdfPage })),
 );
+const IconsPage = lazy(() =>
+	import("./pages/IconsPage").then((module) => ({ default: module.IconsPage })),
+);
+const QrPage = lazy(() =>
+	import("./pages/QrPage").then((module) => ({ default: module.QrPage })),
+);
+const Base64Page = lazy(() =>
+	import("./pages/Base64Page").then((module) => ({
+		default: module.Base64Page,
+	})),
+);
 const DataPage = lazy(() =>
 	import("./pages/DataPage").then((module) => ({ default: module.DataPage })),
 );
@@ -32,7 +43,10 @@ export function App() {
 							<Route path="/convert" element={<ConvertPage />} />
 							<Route path="/compress" element={<CompressPage />} />
 							<Route path="/pdf" element={<PdfPage />} />
+							<Route path="/icons" element={<IconsPage />} />
+							<Route path="/qr" element={<QrPage />} />
 							<Route path="/data" element={<DataPage />} />
+							<Route path="/base64" element={<Base64Page />} />
 						</Routes>
 					</Suspense>
 				</main>

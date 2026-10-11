@@ -14,6 +14,7 @@ export const ACCEPTED_IMAGES = [
 	".webp",
 	".bmp",
 	".gif",
+	".svg",
 ];
 
 export function isHeic(file: File): boolean {
@@ -22,11 +23,43 @@ export function isHeic(file: File): boolean {
 	);
 }
 
+export function isSvg(file: File): boolean {
+	return /.svg$/i.test(file.name) || file.type === "image/svg+xml";
+}
+
 export function isImage(file: File): boolean {
 	return file.type.startsWith("image/") || isHeic(file);
 }
 
-export async function decodeImage(file: File): Promise<ImageBitmap> {
+// SVG has no fixed pixel size, so it is rasterized at its own size, scaled up
+// to `minSize` on the longest side when that is larger (e.g. for crisp icons).
+async function rasterizeSvg(file: File, minSize: number): Promise<ImageBitmap> {
+	const url = URL.createObjectURL(file);
+	try {
+		const image = new Image();
+		image.src = url;
+		await image.decode();
+		const width = image.naturalWidth || 1024;
+		const height = image.naturalHeight || 1024;
+		const scale = Math.max(1, minSize / Math.max(width, height));
+		const canvas = new OffscreenCanvas(
+			Math.round(width * scale),
+			Math.round(height * scale),
+		);
+		const context = canvas.getContext("2d");
+		if (!context) throw new Error("Canvas 2D context is unavailable");
+		context.drawImage(image, 0, 0, canvas.width, canvas.height);
+		return createImageBitmap(canvas);
+	} finally {
+		URL.revokeObjectURL(url);
+	}
+}
+
+export async function decodeImage(
+	file: File,
+	minSize = 0,
+): Promise<ImageBitmap> {
+	if (isSvg(file)) return rasterizeSvg(file, minSize);
 	if (isHeic(file)) {
 		const { heicTo } = await import("heic-to");
 		return heicTo({ blob: file, type: "bitmap" });
@@ -68,5 +101,5 @@ export function renameExtension(name: string, type: OutputType): string {
 export const IMAGE_KIND = {
 	accept: ACCEPTED_IMAGES,
 	matches: isImage,
-	formats: "HEIC, WEBP, AVIF, PNG, JPG, GIF, BMP",
+	formats: "HEIC, WEBP, AVIF, PNG, JPG, GIF, BMP, SVG",
 };

@@ -4,8 +4,8 @@
 
 **Shapeshift your files. Privately, in your browser.**
 
-Convert images, compress photos, build and split PDFs, and transform data files
-without uploading a single byte.
+Convert and compress images, generate app icons and QR codes, build and split PDFs,
+and transform data files without uploading a single byte.
 No accounts, no file limits, no watermarks. Everything runs on your device.
 
 ![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
@@ -37,7 +37,7 @@ Turn photos from any device into formats that open everywhere.
 
 | Input | Output |
 | --- | --- |
-| HEIC · HEIF · WEBP · AVIF · PNG · JPG · GIF · BMP | **JPG** · **PNG** · **WEBP** |
+| HEIC · HEIF · WEBP · AVIF · PNG · JPG · GIF · BMP · SVG | **JPG** · **PNG** · **WEBP** |
 
 - Adjustable quality for JPG and WEBP (PNG is lossless)
 - Transparent areas are filled with white when exporting to JPG, so they don't turn black
@@ -55,6 +55,28 @@ Shrink images for email, chat, or the web.
 | **Strip metadata** | Always on: EXIF data such as GPS location and camera info is removed |
 
 Every file shows its before and after size, and the queue shows the total space saved.
+
+### ✨ Icon Generator
+
+Drop in one logo (SVG gives the sharpest result) and get a complete icon pack as a ZIP:
+
+| File | Size | Used by |
+| --- | --- | --- |
+| `favicon.ico` | 16, 32, 48 px in one file | Every browser, including legacy ones |
+| `favicon-16x16.png`, `favicon-32x32.png` | 16, 32 px | Modern browser tabs |
+| `apple-touch-icon.png` | 180 px, always opaque | iOS home screen |
+| `android-chrome-192x192.png`, `android-chrome-512x512.png` | 192, 512 px | Android and installed web apps |
+| `site.webmanifest` | | App name, theme color, and icon list |
+
+- Transparent or solid background, padding, and corner radius
+- Live preview of every size, plus a browser-tab and home-screen mockup
+- The `<link>` and `<meta>` tags to paste into your `<head>`, ready to copy
+
+### 🔳 QR Code
+
+- **Generate** QR codes for links, any text, or Wi-Fi networks (scanning the code joins the network)
+- Pick error correction (L, M, Q, H), colors, and PNG size; download as PNG or SVG
+- **Scan** QR codes from photos and screenshots in bulk; links open with one click, everything else copies
 
 ### 📄 PDF Tools
 
@@ -84,6 +106,14 @@ A two-pane editor that converts as you type.
 - Comma, semicolon (handy for Excel in many locales), or tab delimiters
 - 2- or 4-space indentation, one-click swap, copy, and download
 - Parse errors are shown inline with the row or position that failed
+
+### 🔢 Base64
+
+| Mode | What it does |
+| --- | --- |
+| **Text** | Encode or decode UTF-8 text (emoji and non-Latin scripts work), with an optional URL-safe alphabet |
+| **File → Base64** | Turn any file into raw Base64 or a ready-to-use data URI; copy or save as `.txt` |
+| **Base64 → File** | Paste Base64 or a data URI to get the original file back, with an image preview and the right extension |
 
 ## 🚀 Getting started
 
@@ -125,17 +155,17 @@ PDF pages are rendered by pdf.js in a Web Worker and exported through the same c
 
 ```
 src/
-├── components/     Sidebar, dropzone, batch and combine tools, option controls
-├── i18n/           en.json, id.json, and the locale provider (react-intl)
-├── lib/            Image, PDF, and data pipelines, batch queue, ZIP helpers
-├── pages/          Home, Image Converter, Compress & Resize, PDF Tools, Data Formats
+├── components/     Sidebar, dropzone, batch and combine tools, editors, option controls
+├── i18n/           en.json, id.json, locale context, and provider (react-intl)
+├── lib/            Image, icon, PDF, QR, data, and Base64 logic, batch queue, ZIP helpers
+├── pages/          One page per tool, plus Home
 └── tools.ts        Tool registry used by the sidebar and home page
 ```
 
 ### Adding a language
 
 1. Copy `src/i18n/en.json` to e.g. `src/i18n/fr.json` and translate the values.
-2. Register it in `MESSAGES` inside `src/i18n/LocaleProvider.tsx`.
+2. Add its code to the `Locale` type in `src/i18n/locale.ts` and register it in `MESSAGES` in `src/i18n/messages.ts`.
 3. Add a button for it in the language switch in `src/components/Sidebar.tsx`.
 
 ## 🧱 Tech stack
@@ -146,6 +176,7 @@ src/
 - [React Aria Components](https://react-spectrum.adobe.com/react-aria/) for the accessible drop zone and file picker
 - [pdf.js](https://mozilla.github.io/pdf.js/) to render PDF pages and [@cantoo/pdf-lib](https://github.com/cantoo-scribe/pdf-lib) (a maintained pdf-lib fork) to build and merge PDFs
 - [Papa Parse](https://www.papaparse.com) and [yaml](https://eemeli.org/yaml/) for data conversion
+- [qrcode](https://github.com/soldair/node-qrcode) to generate and [jsQR](https://github.com/cozmo/jsQR) to read QR codes
 - [React Router](https://reactrouter.com) and [react-intl](https://formatjs.github.io/docs/react-intl/)
 - [Vite](https://vite.dev), [Bun](https://bun.sh), [Biome](https://biomejs.dev)
 - [lucide-react](https://lucide.dev) icons

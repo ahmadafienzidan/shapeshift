@@ -1,16 +1,7 @@
-import { createContext, type ReactNode, useContext, useState } from "react";
+import { type ReactNode, useState } from "react";
 import { IntlProvider } from "react-intl";
-import en from "./en.json";
-import id from "./id.json";
-
-export const MESSAGES = { en, id };
-
-export type Locale = keyof typeof MESSAGES;
-
-const LocaleContext = createContext<{
-	locale: Locale;
-	setLocale: (locale: Locale) => void;
-} | null>(null);
+import { type Locale, LocaleContext } from "./locale";
+import { MESSAGES } from "./messages";
 
 function initialLocale(): Locale {
 	const stored = localStorage.getItem("locale");
@@ -38,10 +29,4 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 			</IntlProvider>
 		</LocaleContext>
 	);
-}
-
-export function useLocale() {
-	const context = useContext(LocaleContext);
-	if (!context) throw new Error("useLocale must be used inside LocaleProvider");
-	return context;
 }
