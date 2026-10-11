@@ -5,7 +5,7 @@
 **Shapeshift your files. Privately, in your browser.**
 
 Convert and compress images, strip photo metadata, generate app icons and QR codes,
-build and split PDFs, and transform or verify files without uploading a single byte.
+build and split PDFs, format JSON, compare text, and more, without uploading a single byte.
 No accounts, no file limits, no watermarks. Everything runs on your device.
 
 ![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
@@ -90,6 +90,14 @@ Photos carry more than pixels: camera model, the exact time, and often the GPS l
 - Colour profiles are kept, so colours look the same
 - Clean a whole batch and download it as a ZIP
 
+### 🎨 Color
+
+- Type any CSS color (`#3ddcff`, `rgb(…)`, `hsl(…)`, `oklch(…)`, or a name like `tomato`) or use the picker
+- Get HEX, RGB, HSL, OKLCH, and CMYK at once, each one click to copy
+- WCAG contrast ratio against white and black, with AA and AAA pass or fail
+- An 11-step shade scale (50–950) generated in OKLCH so the steps look even
+- **Palette from image:** pull the 8 dominant colors out of a photo and copy them as CSS variables
+
 ### 📄 PDF Tools
 
 Three modes in one place:
@@ -133,6 +141,30 @@ A two-pane editor that converts as you type.
 | **File → Base64** | Turn any file into raw Base64 or a ready-to-use data URI; copy or save as `.txt` |
 | **Base64 → File** | Paste Base64 or a data URI to get the original file back, with an image preview and the right extension |
 
+### 🧑‍💻 Developer tools
+
+#### JSON Formatter
+
+- Pretty-print with 2 or 4 spaces or tabs, or minify; sort keys A–Z
+- Syntax-colored code view with line numbers, plus a collapsible **tree view** with item counts
+- Errors point to the exact line and column with a caret under the problem, and trailing commas are called out by name
+- Size, key, object, and depth stats; drop in a `.json` file, copy, or download
+
+#### Text Diff
+
+- Side-by-side line diff with line numbers, and word-level highlights inside changed lines
+- Word or character mode for prose
+- Ignore whitespace or letter case
+
+#### Dev Tools
+
+| Tab | What it does |
+| --- | --- |
+| **URL** | Encode or decode a single component or a whole URL, and see the URL split into protocol, host, path, hash, and query parameters |
+| **JWT** | Decode the header and payload (a leading `Bearer` is fine), show `exp`, `iat`, and `nbf` as readable dates, and flag expired tokens. The signature is deliberately not verified, since that would need your secret key |
+| **UUID** | Generate v4 (random) or v7 (time-ordered, better for database keys) in batches |
+| **Timestamp** | Convert Unix seconds or milliseconds and ISO dates to UTC, local, and relative time, with a live clock |
+
 ## 🚀 Getting started
 
 Requires [Bun](https://bun.sh).
@@ -175,7 +207,7 @@ PDF pages are rendered by pdf.js in a Web Worker and exported through the same c
 src/
 ├── components/     Sidebar, dropzone, batch and combine tools, editors, option controls
 ├── i18n/           en.json, id.json, locale context, and provider (react-intl)
-├── lib/            Image, icon, metadata, PDF, QR, data, Base64, and checksum logic
+├── lib/            The logic behind each tool, independent of the UI
 ├── pages/          One page per tool, plus Home
 └── tools.ts        Tool registry used by the sidebar and home page
 ```
@@ -196,6 +228,7 @@ src/
 - [Papa Parse](https://www.papaparse.com) and [yaml](https://eemeli.org/yaml/) for data conversion
 - [qrcode](https://github.com/soldair/node-qrcode) to generate and [jsQR](https://github.com/cozmo/jsQR) to read QR codes
 - [ExifReader](https://github.com/mattiasw/ExifReader) to read photo metadata and [hash-wasm](https://github.com/Daninet/hash-wasm) for streaming checksums
+- [jsdiff](https://github.com/kpdecker/jsdiff) for text comparison
 - [vite-plugin-pwa](https://vite-pwa-org.netlify.app) for offline support, with app icons generated from `public/logo.svg`
 - [React Router](https://reactrouter.com) and [react-intl](https://formatjs.github.io/docs/react-intl/)
 - [Vite](https://vite.dev), [Bun](https://bun.sh), [Biome](https://biomejs.dev)

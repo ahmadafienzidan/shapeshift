@@ -42,6 +42,10 @@
 	--field-shadow: none;
 	--sidebar: #f6f7e4;
 	--grid-line: rgb(0 30 43 / 0.06);
+	--syntax-key: #00708a;
+	--syntax-string: #2f7d32;
+	--syntax-number: #b4530b;
+	--syntax-literal: #6d4bd8;
 }
 
 .dark,
@@ -64,6 +68,10 @@
 	--segment-foreground: #fdfeec;
 	--sidebar: #00161f;
 	--grid-line: rgb(253 254 236 / 0.05);
+	--syntax-key: #3ddcff;
+	--syntax-string: #a6e3a1;
+	--syntax-number: #ffb86b;
+	--syntax-literal: #b9a6ff;
 }
 
 body {

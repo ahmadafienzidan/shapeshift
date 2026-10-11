@@ -37,6 +37,20 @@ const ChecksumPage = lazy(() =>
 		default: module.ChecksumPage,
 	})),
 );
+const ColorPage = lazy(() =>
+	import("./pages/ColorPage").then((module) => ({ default: module.ColorPage })),
+);
+const JsonPage = lazy(() =>
+	import("./pages/JsonPage").then((module) => ({ default: module.JsonPage })),
+);
+const DiffPage = lazy(() =>
+	import("./pages/DiffPage").then((module) => ({ default: module.DiffPage })),
+);
+const DevToolsPage = lazy(() =>
+	import("./pages/DevToolsPage").then((module) => ({
+		default: module.DevToolsPage,
+	})),
+);
 const DataPage = lazy(() =>
 	import("./pages/DataPage").then((module) => ({ default: module.DataPage })),
 );
@@ -59,6 +73,10 @@ export function App() {
 							<Route path="/base64" element={<Base64Page />} />
 							<Route path="/metadata" element={<MetadataPage />} />
 							<Route path="/checksum" element={<ChecksumPage />} />
+							<Route path="/color" element={<ColorPage />} />
+							<Route path="/json" element={<JsonPage />} />
+							<Route path="/diff" element={<DiffPage />} />
+							<Route path="/devtools" element={<DevToolsPage />} />
 						</Routes>
 					</Suspense>
 				</main>

@@ -1,6 +1,6 @@
 {
 	"name": "shapeshift",
-	"version": "0.6.0",
+	"version": "0.7.0",
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.15",
 		"@tailwindcss/vite": "^4.3.3",
@@ -35,6 +35,7 @@
 		"@internationalized/date": "^3.12.4",
 		"@react-aria/ssr": "^3.10.1",
 		"@react-aria/utils": "^3.34.1",
+		"diff": "^9.0.0",
 		"exifreader": "^4.48.1",
 		"fflate": "^0.8.3",
 		"hash-wasm": "^4.12.0",

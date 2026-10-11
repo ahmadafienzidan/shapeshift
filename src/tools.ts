@@ -1,17 +1,21 @@
 import {
 	Binary,
 	Braces,
+	FileJson,
 	FileText,
 	Fingerprint,
+	GitCompare,
 	type LucideIcon,
 	Minimize2,
+	Palette,
 	QrCode,
 	RefreshCcw,
 	ScanEye,
 	Sparkle,
+	Wrench,
 } from "lucide-react";
 
-export type ToolGroup = "images" | "documents" | "data";
+export type ToolGroup = "images" | "documents" | "data" | "developer";
 
 export type Tool = {
 	id: string;
@@ -93,16 +97,57 @@ export const CHECKSUM_TOOL: Tool = {
 	group: "data",
 };
 
+export const COLOR_TOOL: Tool = {
+	id: "color",
+	path: "/color",
+	icon: Palette,
+	tile: "bg-coral text-ink",
+	group: "images",
+};
+
+export const JSON_TOOL: Tool = {
+	id: "json",
+	path: "/json",
+	icon: FileJson,
+	tile: "bg-sun text-ink",
+	group: "developer",
+};
+
+export const DIFF_TOOL: Tool = {
+	id: "diff",
+	path: "/diff",
+	icon: GitCompare,
+	tile: "bg-iris text-white",
+	group: "developer",
+};
+
+export const DEVTOOLS_TOOL: Tool = {
+	id: "devtools",
+	path: "/devtools",
+	icon: Wrench,
+	tile: "bg-electric text-ink",
+	group: "developer",
+};
+
 export const TOOLS: Tool[] = [
 	CONVERT_TOOL,
 	COMPRESS_TOOL,
 	ICONS_TOOL,
 	METADATA_TOOL,
+	COLOR_TOOL,
 	PDF_TOOL,
 	QR_TOOL,
 	DATA_TOOL,
 	BASE64_TOOL,
 	CHECKSUM_TOOL,
+	JSON_TOOL,
+	DIFF_TOOL,
+	DEVTOOLS_TOOL,
 ];
 
-export const TOOL_GROUPS: ToolGroup[] = ["images", "documents", "data"];
+export const TOOL_GROUPS: ToolGroup[] = [
+	"images",
+	"documents",
+	"data",
+	"developer",
+];
