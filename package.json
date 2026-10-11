@@ -1,21 +1,40 @@
 {
-	"name": "heic-converter",
-	"version": "0.2.0",
-	"description": "Convert HEIC/HEIF images to PNG or JPG in the browser",
-	"type": "module",
+	"name": "shapeshift",
+	"version": "0.3.0",
+	"devDependencies": {
+		"@biomejs/biome": "^2.5.15",
+		"@tailwindcss/vite": "^4.3.3",
+		"@types/react": "^19.3.0",
+		"@types/react-dom": "^19.3.0",
+		"@vitejs/plugin-react": "^6.1.2",
+		"tailwindcss": "^4.3.3",
+		"typescript": "^5",
+		"vite": "^8.3.4"
+	},
+	"description": "Private, in-browser file converter: images, compression, and more",
 	"private": true,
 	"scripts": {
-		"dev": "bun --port 3000 index.html",
-		"build": "bun build ./index.html --outdir dist --minify",
+		"dev": "vite",
+		"build": "tsc --noEmit && vite build",
+		"preview": "vite preview",
 		"typecheck": "tsc --noEmit",
 		"lint": "biome check ."
 	},
+	"type": "module",
 	"dependencies": {
-		"heic-to": "^1.6.6"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^2.5.15",
-		"@types/bun": "latest",
-		"typescript": "^5"
+		"@heroui/react": "^3.2.6",
+		"@heroui/styles": "^3.2.6",
+		"@internationalized/date": "^3.12.4",
+		"@react-aria/ssr": "^3.10.1",
+		"@react-aria/utils": "^3.34.1",
+		"fflate": "^0.8.3",
+		"heic-to": "^1.6.6",
+		"lucide-react": "^1.55.0",
+		"react": "^19.3.0",
+		"react-aria": "^3.53.1",
+		"react-aria-components": "^1.22.1",
+		"react-dom": "^19.3.0",
+		"react-intl": "^12.1.4",
+		"react-router": "^8.4.0"
 	}
 }
