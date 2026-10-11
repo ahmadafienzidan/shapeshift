@@ -27,6 +27,16 @@ const Base64Page = lazy(() =>
 		default: module.Base64Page,
 	})),
 );
+const MetadataPage = lazy(() =>
+	import("./pages/MetadataPage").then((module) => ({
+		default: module.MetadataPage,
+	})),
+);
+const ChecksumPage = lazy(() =>
+	import("./pages/ChecksumPage").then((module) => ({
+		default: module.ChecksumPage,
+	})),
+);
 const DataPage = lazy(() =>
 	import("./pages/DataPage").then((module) => ({ default: module.DataPage })),
 );
@@ -47,6 +57,8 @@ export function App() {
 							<Route path="/qr" element={<QrPage />} />
 							<Route path="/data" element={<DataPage />} />
 							<Route path="/base64" element={<Base64Page />} />
+							<Route path="/metadata" element={<MetadataPage />} />
+							<Route path="/checksum" element={<ChecksumPage />} />
 						</Routes>
 					</Suspense>
 				</main>

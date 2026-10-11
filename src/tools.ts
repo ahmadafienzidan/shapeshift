@@ -2,10 +2,12 @@ import {
 	Binary,
 	Braces,
 	FileText,
+	Fingerprint,
 	type LucideIcon,
 	Minimize2,
 	QrCode,
 	RefreshCcw,
+	ScanEye,
 	Sparkle,
 } from "lucide-react";
 
@@ -43,6 +45,14 @@ export const ICONS_TOOL: Tool = {
 	group: "images",
 };
 
+export const METADATA_TOOL: Tool = {
+	id: "metadata",
+	path: "/metadata",
+	icon: ScanEye,
+	tile: "bg-sun text-ink",
+	group: "images",
+};
+
 export const PDF_TOOL: Tool = {
 	id: "pdf",
 	path: "/pdf",
@@ -75,14 +85,24 @@ export const BASE64_TOOL: Tool = {
 	group: "data",
 };
 
+export const CHECKSUM_TOOL: Tool = {
+	id: "checksum",
+	path: "/checksum",
+	icon: Fingerprint,
+	tile: "bg-electric text-ink",
+	group: "data",
+};
+
 export const TOOLS: Tool[] = [
 	CONVERT_TOOL,
 	COMPRESS_TOOL,
 	ICONS_TOOL,
+	METADATA_TOOL,
 	PDF_TOOL,
 	QR_TOOL,
 	DATA_TOOL,
 	BASE64_TOOL,
+	CHECKSUM_TOOL,
 ];
 
 export const TOOL_GROUPS: ToolGroup[] = ["images", "documents", "data"];

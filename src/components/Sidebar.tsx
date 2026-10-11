@@ -66,7 +66,7 @@ export function Sidebar() {
 				</Button>
 			</div>
 
-			<nav className="flex gap-1 overflow-x-auto lg:flex-col lg:gap-0.5">
+			<nav className="flex gap-1 overflow-x-auto [scrollbar-width:none] lg:flex-col lg:gap-0.5">
 				<SectionLabel>
 					<FormattedMessage id="nav.overview" />
 				</SectionLabel>

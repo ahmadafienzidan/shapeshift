@@ -4,8 +4,8 @@
 
 **Shapeshift your files. Privately, in your browser.**
 
-Convert and compress images, generate app icons and QR codes, build and split PDFs,
-and transform data files without uploading a single byte.
+Convert and compress images, strip photo metadata, generate app icons and QR codes,
+build and split PDFs, and transform or verify files without uploading a single byte.
 No accounts, no file limits, no watermarks. Everything runs on your device.
 
 ![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
@@ -25,7 +25,8 @@ No accounts, no file limits, no watermarks. Everything runs on your device.
 | --- | --- |
 | 🔒 **Private by design** | Files are decoded and encoded in the browser. Nothing is sent to a server, so you can safely convert personal photos and documents. |
 | 📦 **Built for bulk** | Drop hundreds of files or an entire folder at once, then grab everything in a single ZIP. |
-| ⚡ **No installs, no limits** | No sign-up, no file-size caps, no watermarks, no queue. Open it and go. |
+| ⚡ **No sign-up, no limits** | No accounts, no file-size caps, no watermarks, no queue. Open it and go. |
+| 📴 **Works offline** | After the first visit everything is cached, so every tool keeps working without a connection. Install it as an app from your browser. |
 | 🌗 **Dark & light mode** | Deep navy by night, warm cream by day. Follows your system theme, with a one-click toggle. |
 | 🌐 **English & Bahasa Indonesia** | Switch languages from the sidebar; your choice is remembered. |
 
@@ -78,6 +79,17 @@ Drop in one logo (SVG gives the sharpest result) and get a complete icon pack as
 - Pick error correction (L, M, Q, H), colors, and PNG size; download as PNG or SVG
 - **Scan** QR codes from photos and screenshots in bulk; links open with one click, everything else copies
 
+### 🕵️ Photo Metadata
+
+Photos carry more than pixels: camera model, the exact time, and often the GPS location where they were taken.
+
+- See camera, lens, exposure, date, and a **location warning** with a map link for every photo
+- Browse every EXIF, GPS, XMP, and IPTC field
+- **Remove metadata losslessly** from JPEG, PNG, and WebP: only the metadata blocks are cut out, and the image data stays identical byte for byte
+- The photo's orientation is preserved, so pictures taken sideways don't flip after cleaning
+- Colour profiles are kept, so colours look the same
+- Clean a whole batch and download it as a ZIP
+
 ### 📄 PDF Tools
 
 Three modes in one place:
@@ -106,6 +118,12 @@ A two-pane editor that converts as you type.
 - Comma, semicolon (handy for Excel in many locales), or tab delimiters
 - 2- or 4-space indentation, one-click swap, copy, and download
 - Parse errors are shown inline with the row or position that failed
+
+### #️⃣ Checksum
+
+- MD5, SHA-1, SHA-256, and SHA-512, several at once
+- Files are streamed in chunks, so multi-gigabyte downloads hash without filling memory
+- Paste the published checksum (even a `sha256sum` line like `abc123…  file.iso`) and every file is marked **Matches** or **Does not match**
 
 ### 🔢 Base64
 
@@ -157,7 +175,7 @@ PDF pages are rendered by pdf.js in a Web Worker and exported through the same c
 src/
 ├── components/     Sidebar, dropzone, batch and combine tools, editors, option controls
 ├── i18n/           en.json, id.json, locale context, and provider (react-intl)
-├── lib/            Image, icon, PDF, QR, data, and Base64 logic, batch queue, ZIP helpers
+├── lib/            Image, icon, metadata, PDF, QR, data, Base64, and checksum logic
 ├── pages/          One page per tool, plus Home
 └── tools.ts        Tool registry used by the sidebar and home page
 ```
@@ -177,6 +195,8 @@ src/
 - [pdf.js](https://mozilla.github.io/pdf.js/) to render PDF pages and [@cantoo/pdf-lib](https://github.com/cantoo-scribe/pdf-lib) (a maintained pdf-lib fork) to build and merge PDFs
 - [Papa Parse](https://www.papaparse.com) and [yaml](https://eemeli.org/yaml/) for data conversion
 - [qrcode](https://github.com/soldair/node-qrcode) to generate and [jsQR](https://github.com/cozmo/jsQR) to read QR codes
+- [ExifReader](https://github.com/mattiasw/ExifReader) to read photo metadata and [hash-wasm](https://github.com/Daninet/hash-wasm) for streaming checksums
+- [vite-plugin-pwa](https://vite-pwa-org.netlify.app) for offline support, with app icons generated from `public/logo.svg`
 - [React Router](https://reactrouter.com) and [react-intl](https://formatjs.github.io/docs/react-intl/)
 - [Vite](https://vite.dev), [Bun](https://bun.sh), [Biome](https://biomejs.dev)
 - [lucide-react](https://lucide.dev) icons
