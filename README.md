@@ -57,6 +57,13 @@ Shrink images for email, chat, or the web.
 
 Every file shows its before and after size, and the queue shows the total space saved.
 
+### ✂️ Crop & Rotate
+
+- Aspect presets: original, 1:1, 4:5, 3:4 (ID photo), 16:9, 9:16, and 3:2
+- Rotate in 90° steps and flip horizontally or vertically
+- Drag and zoom (pinch on phones) to frame the shot; the exact output size in pixels is shown live
+- Exports at full resolution as JPG, PNG, or WEBP
+
 ### ✨ Icon Generator
 
 Drop in one logo (SVG gives the sharpest result) and get a complete icon pack as a ZIP:
@@ -107,9 +114,12 @@ Three modes in one place:
 | **Images → PDF** | Any supported image, including HEIC | One PDF, one page per image | Page size (fit image, A4, Letter), margin, quality |
 | **PDF → Images** | One or more PDFs | One image per page, zipped per PDF | PNG, JPG, or WEBP at 72, 150, or 300 DPI |
 | **Merge PDFs** | Two or more PDFs | One combined PDF | |
+| **Organize pages** | One PDF | A reordered, rotated, or trimmed PDF | Drag to reorder (mouse or keyboard), rotate, delete, or extract the selected pages |
+| **Watermark & numbers** | One or more PDFs | Stamped PDFs | Diagonal text watermark with adjustable opacity; page numbers centered or right in formats like `3 / 10` or `Hal. 3 dari 10` |
 
 - Reorder files with the arrows, or sort them A–Z with natural ordering (`page-2` before `page-10`)
 - A4 and Letter pages rotate to landscape automatically for wide images
+- Watermarks and page numbers respect each page's rotation, so scanned pages stored sideways still get numbers at the bottom, upright
 
 ### 🧾 Data Formats
 
@@ -132,6 +142,14 @@ A two-pane editor that converts as you type.
 - MD5, SHA-1, SHA-256, and SHA-512, several at once
 - Files are streamed in chunks, so multi-gigabyte downloads hash without filling memory
 - Paste the published checksum (even a `sha256sum` line like `abc123…  file.iso`) and every file is marked **Matches** or **Does not match**
+
+### 📝 Text Tools
+
+- Live counts: words, characters (with and without spaces), sentences, paragraphs, lines, plus reading and speaking time
+- Counting uses the browser's language-aware segmenter, so emoji count as one character and languages without spaces (Japanese, Chinese, Thai) count correctly
+- Change case: UPPERCASE, lowercase, Title Case, Sentence case, camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE
+- Line tools: sort A–Z or Z–A with natural ordering, reverse, remove duplicates, remove empty lines, trim spaces
+- Most-used words, and an undo history for every change
 
 ### 🔢 Base64
 
@@ -228,7 +246,7 @@ src/
 - [Papa Parse](https://www.papaparse.com) and [yaml](https://eemeli.org/yaml/) for data conversion
 - [qrcode](https://github.com/soldair/node-qrcode) to generate and [jsQR](https://github.com/cozmo/jsQR) to read QR codes
 - [ExifReader](https://github.com/mattiasw/ExifReader) to read photo metadata and [hash-wasm](https://github.com/Daninet/hash-wasm) for streaming checksums
-- [jsdiff](https://github.com/kpdecker/jsdiff) for text comparison
+- [jsdiff](https://github.com/kpdecker/jsdiff) for text comparison and [react-easy-crop](https://github.com/ValentinH/react-easy-crop) for the crop tool
 - [vite-plugin-pwa](https://vite-pwa-org.netlify.app) for offline support, with app icons generated from `public/logo.svg`
 - [React Router](https://reactrouter.com) and [react-intl](https://formatjs.github.io/docs/react-intl/)
 - [Vite](https://vite.dev), [Bun](https://bun.sh), [Biome](https://biomejs.dev)

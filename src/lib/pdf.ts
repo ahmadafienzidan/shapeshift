@@ -1,4 +1,12 @@
-import { PageSizes, PDFDocument } from "@cantoo/pdf-lib";
+import {
+	degrees,
+	PageSizes,
+	PDFDocument,
+	type PDFFont,
+	type PDFPage,
+	rgb,
+	StandardFonts,
+} from "@cantoo/pdf-lib";
 import { decodeImage, EXTENSIONS, encodeImage, type OutputType } from "./image";
 import type { BatchOutput } from "./useBatch";
 
@@ -135,4 +143,182 @@ export async function pdfToImages(
 
 	await task.destroy();
 	return outputs;
+}
+
+export async function renderThumbnails(
+	file: File,
+	width: number,
+	onPage: (index: number, url: string, count: number) => void,
+): Promise<void> {
+	const pdfjs = await loadPdfJs();
+	const task = pdfjs.getDocument({
+		data: new Uint8Array(await file.arrayBuffer()),
+	});
+	const pdf = await task.promise;
+	for (let index = 1; index <= pdf.numPages; index++) {
+		const page = await pdf.getPage(index);
+		const base = page.getViewport({ scale: 1 });
+		const viewport = page.getViewport({ scale: width / base.width });
+		const canvas = document.createElement("canvas");
+		canvas.width = Math.ceil(viewport.width);
+		canvas.height = Math.ceil(viewport.height);
+		await page.render({ canvas, viewport, intent: "print" }).promise;
+		const blob = await new Promise<Blob>((resolve, reject) =>
+			canvas.toBlob(
+				(result) =>
+					result ? resolve(result) : reject(new Error("Canvas export failed")),
+				"image/jpeg",
+				0.8,
+			),
+		);
+		onPage(index - 1, URL.createObjectURL(blob), pdf.numPages);
+		page.cleanup();
+	}
+	await task.destroy();
+}
+
+export async function organizePdf(
+	file: File,
+	pages: { index: number; rotation: number }[],
+): Promise<Blob> {
+	const source = await PDFDocument.load(await file.arrayBuffer());
+	const output = await PDFDocument.create();
+	const copied = await output.copyPages(
+		source,
+		pages.map((page) => page.index),
+	);
+	copied.forEach((page, position) => {
+		const extra = pages[position]?.rotation ?? 0;
+		page.setRotation(degrees((page.getRotation().angle + extra + 360) % 360));
+		output.addPage(page);
+	});
+	return toPdfBlob(await output.save());
+}
+
+export type NumberPosition = "none" | "bottom-center" | "bottom-right";
+
+export type StampOptions = {
+	watermark: string;
+	opacity: number;
+	numbers: NumberPosition;
+	numberFormat: string;
+};
+
+// Pages can carry a /Rotate entry; positions are worked out in the page as it
+// is displayed and mapped back, so text lands where the reader expects it.
+function drawUpright(
+	page: PDFPage,
+	text: string,
+	font: PDFFont,
+	size: number,
+	place: (
+		visibleWidth: number,
+		visibleHeight: number,
+		textWidth: number,
+	) => {
+		x: number;
+		y: number;
+		angle: number;
+	},
+	color: ReturnType<typeof rgb>,
+	opacity: number,
+) {
+	const rotation = ((page.getRotation().angle % 360) + 360) % 360;
+	const { width, height } = page.getSize();
+	const sideways = rotation === 90 || rotation === 270;
+	const visibleWidth = sideways ? height : width;
+	const visibleHeight = sideways ? width : height;
+	const { x, y, angle } = place(
+		visibleWidth,
+		visibleHeight,
+		font.widthOfTextAtSize(text, size),
+	);
+	const [pageX, pageY] =
+		rotation === 90
+			? [width - y, x]
+			: rotation === 180
+				? [width - x, height - y]
+				: rotation === 270
+					? [y, height - x]
+					: [x, y];
+	page.drawText(text, {
+		x: pageX,
+		y: pageY,
+		size,
+		font,
+		color,
+		opacity,
+		rotate: degrees(angle + rotation),
+	});
+}
+
+export async function stampPdf(
+	file: File,
+	options: StampOptions,
+): Promise<Blob> {
+	const pdf = await PDFDocument.load(await file.arrayBuffer());
+	const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+	const regular = await pdf.embedFont(StandardFonts.Helvetica);
+	const pages = pdf.getPages();
+
+	pages.forEach((page, index) => {
+		const watermark = options.watermark.trim();
+		if (watermark) {
+			const { width, height } = page.getSize();
+			const diagonal = Math.hypot(width, height);
+			const size = Math.min(
+				120,
+				(diagonal * 0.6) / Math.max(1, bold.widthOfTextAtSize(watermark, 1)),
+			);
+			drawUpright(
+				page,
+				watermark,
+				bold,
+				size,
+				(visibleWidth, visibleHeight, textWidth) => {
+					const angle =
+						(Math.atan2(visibleHeight, visibleWidth) * 180) / Math.PI;
+					const radians = (angle * Math.PI) / 180;
+					// Start point that centres the rotated text on the page.
+					return {
+						x:
+							visibleWidth / 2 -
+							(Math.cos(radians) * textWidth) / 2 +
+							(Math.sin(radians) * size) / 3,
+						y:
+							visibleHeight / 2 -
+							(Math.sin(radians) * textWidth) / 2 -
+							(Math.cos(radians) * size) / 3,
+						angle,
+					};
+				},
+				rgb(0.85, 0.1, 0.1),
+				options.opacity,
+			);
+		}
+
+		if (options.numbers !== "none") {
+			const label = options.numberFormat
+				.replaceAll("{n}", String(index + 1))
+				.replaceAll("{total}", String(pages.length));
+			drawUpright(
+				page,
+				label,
+				regular,
+				10,
+				(visibleWidth, _visibleHeight, textWidth) => ({
+					x:
+						options.numbers === "bottom-center"
+							? (visibleWidth - textWidth) / 2
+							: visibleWidth - textWidth - 36,
+					y: 24,
+					angle: 0,
+				}),
+				rgb(0.35, 0.35, 0.35),
+				1,
+			);
+		}
+	});
+
+	return toPdfBlob(await pdf.save());
 }

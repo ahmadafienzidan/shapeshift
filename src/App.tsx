@@ -37,6 +37,12 @@ const ChecksumPage = lazy(() =>
 		default: module.ChecksumPage,
 	})),
 );
+const CropPage = lazy(() =>
+	import("./pages/CropPage").then((module) => ({ default: module.CropPage })),
+);
+const TextPage = lazy(() =>
+	import("./pages/TextPage").then((module) => ({ default: module.TextPage })),
+);
 const ColorPage = lazy(() =>
 	import("./pages/ColorPage").then((module) => ({ default: module.ColorPage })),
 );
@@ -74,6 +80,8 @@ export function App() {
 							<Route path="/metadata" element={<MetadataPage />} />
 							<Route path="/checksum" element={<ChecksumPage />} />
 							<Route path="/color" element={<ColorPage />} />
+							<Route path="/crop" element={<CropPage />} />
+							<Route path="/text" element={<TextPage />} />
 							<Route path="/json" element={<JsonPage />} />
 							<Route path="/diff" element={<DiffPage />} />
 							<Route path="/devtools" element={<DevToolsPage />} />

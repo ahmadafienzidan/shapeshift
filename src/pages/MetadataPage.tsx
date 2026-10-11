@@ -65,7 +65,7 @@ function Summary({ meta }: { meta: MetadataSummary }) {
 						{meta.gps.latitude.toFixed(5)}, {meta.gps.longitude.toFixed(5)}
 					</span>
 					<a
-						href={`https://www.openstreetmap.org/?mlat=${meta.gps.latitude}&mlon=${meta.gps.longitude}#map=16/${meta.gps.latitude}/${meta.gps.longitude}`}
+						href={`https://www.google.com/maps?q=${meta.gps.latitude},${meta.gps.longitude}`}
 						target="_blank"
 						rel="noreferrer noopener"
 						className="flex items-center gap-1 underline underline-offset-2"

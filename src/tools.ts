@@ -1,6 +1,7 @@
 import {
 	Binary,
 	Braces,
+	Crop,
 	FileJson,
 	FileText,
 	Fingerprint,
@@ -12,6 +13,7 @@ import {
 	RefreshCcw,
 	ScanEye,
 	Sparkle,
+	Type,
 	Wrench,
 } from "lucide-react";
 
@@ -97,6 +99,22 @@ export const CHECKSUM_TOOL: Tool = {
 	group: "data",
 };
 
+export const CROP_TOOL: Tool = {
+	id: "crop",
+	path: "/crop",
+	icon: Crop,
+	tile: "bg-iris text-white",
+	group: "images",
+};
+
+export const TEXT_TOOL: Tool = {
+	id: "text",
+	path: "/text",
+	icon: Type,
+	tile: "bg-coral text-ink",
+	group: "data",
+};
+
 export const COLOR_TOOL: Tool = {
 	id: "color",
 	path: "/color",
@@ -132,12 +150,14 @@ export const DEVTOOLS_TOOL: Tool = {
 export const TOOLS: Tool[] = [
 	CONVERT_TOOL,
 	COMPRESS_TOOL,
+	CROP_TOOL,
 	ICONS_TOOL,
 	METADATA_TOOL,
 	COLOR_TOOL,
 	PDF_TOOL,
 	QR_TOOL,
 	DATA_TOOL,
+	TEXT_TOOL,
 	BASE64_TOOL,
 	CHECKSUM_TOOL,
 	JSON_TOOL,

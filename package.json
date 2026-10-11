@@ -1,6 +1,6 @@
 {
 	"name": "shapeshift",
-	"version": "0.7.0",
+	"version": "0.8.0",
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.15",
 		"@tailwindcss/vite": "^4.3.3",
@@ -49,6 +49,7 @@
 		"react-aria": "^3.53.1",
 		"react-aria-components": "^1.22.1",
 		"react-dom": "^19.3.0",
+		"react-easy-crop": "^6.2.4",
 		"react-intl": "^12.1.4",
 		"react-router": "^8.4.0",
 		"yaml": "^2.9.1"
