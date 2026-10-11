@@ -15,6 +15,8 @@ No accounts, no file limits, no watermarks. Everything runs on your device.
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss&logoColor=white)
 ![Bun](https://img.shields.io/badge/Bun-1.3-000000?logo=bun&logoColor=white)
 
+**[Open Shapeshift →](https://ahmadafienzidan.github.io/shapeshift/)**
+
 </div>
 
 ---
@@ -192,7 +194,7 @@ bun install
 bun run dev
 ```
 
-Then open http://localhost:5173.
+Then open http://localhost:5173/shapeshift/ (the app lives under `/shapeshift/` to match GitHub Pages).
 
 ### Scripts
 
@@ -203,6 +205,10 @@ Then open http://localhost:5173.
 | `bun run preview` | Serve the production build locally |
 | `bun run typecheck` | Run the TypeScript compiler |
 | `bun run lint` | Lint and format-check with Biome |
+
+### Deployment
+
+Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): it lints, builds, and publishes `dist/` to GitHub Pages at https://ahmadafienzidan.github.io/shapeshift/. `index.html` is also published as `404.html`, so deep links such as `/shapeshift/pdf` load the app instead of a GitHub error page.
 
 ## ⚙️ How it works
 

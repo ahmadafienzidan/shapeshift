@@ -4,6 +4,8 @@ import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
+	// GitHub Pages serves the site from https://<user>.github.io/shapeshift/.
+	base: "/shapeshift/",
 	plugins: [
 		react(),
 		tailwindcss(),
