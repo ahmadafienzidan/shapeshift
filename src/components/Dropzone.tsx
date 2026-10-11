@@ -1,18 +1,29 @@
 import { Button } from "@heroui/react";
-import { FolderOpen, ImagePlus, Upload } from "lucide-react";
+import { FilePlus, FolderOpen, Upload } from "lucide-react";
 import { useState } from "react";
 import { DropZone, FileTrigger } from "react-aria-components";
 import { FormattedMessage } from "react-intl";
 import { collectDropItems } from "../lib/files";
-import { ACCEPTED_IMAGES, isImage } from "../lib/image";
 
-export function Dropzone({ onFiles }: { onFiles: (files: File[]) => void }) {
+export type FileKind = {
+	accept: string[];
+	matches: (file: File) => boolean;
+	formats: string;
+};
+
+export function Dropzone({
+	kind,
+	onFiles,
+}: {
+	kind: FileKind;
+	onFiles: (files: File[]) => void;
+}) {
 	const [skipped, setSkipped] = useState(0);
 
 	const accept = (files: File[]) => {
-		const images = files.filter(isImage);
-		setSkipped(files.length - images.length);
-		if (images.length > 0) onFiles(images);
+		const matching = files.filter(kind.matches);
+		setSkipped(files.length - matching.length);
+		if (matching.length > 0) onFiles(matching);
 	};
 
 	return (
@@ -35,18 +46,16 @@ export function Dropzone({ onFiles }: { onFiles: (files: File[]) => void }) {
 					<p className="headline text-3xl">
 						<FormattedMessage id="drop.title" />
 					</p>
-					<p className="eyebrow text-muted">
-						<FormattedMessage id="drop.subtitle" />
-					</p>
+					<p className="eyebrow text-muted">{kind.formats}</p>
 				</div>
 				<div className="relative flex flex-wrap justify-center gap-3">
 					<FileTrigger
 						allowsMultiple
-						acceptedFileTypes={ACCEPTED_IMAGES}
+						acceptedFileTypes={kind.accept}
 						onSelect={(list) => accept(Array.from(list ?? []))}
 					>
 						<Button variant="primary" className="font-semibold">
-							<ImagePlus size={18} />
+							<FilePlus size={18} />
 							<FormattedMessage id="drop.files" />
 						</Button>
 					</FileTrigger>

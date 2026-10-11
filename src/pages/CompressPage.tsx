@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useIntl } from "react-intl";
+import { BatchTool } from "../components/BatchTool";
 import {
 	FormatPicker,
 	MaxDimensionSelect,
@@ -9,13 +10,11 @@ import { ToolPage } from "../components/ToolPage";
 import {
 	decodeImage,
 	encodeImage,
+	IMAGE_KIND,
 	type OutputType,
 	renameExtension,
 } from "../lib/image";
-import { useBatch } from "../lib/useBatch";
 import { COMPRESS_TOOL } from "../tools";
-
-const tool = COMPRESS_TOOL;
 
 type CompressFormat = OutputType | "original";
 
@@ -31,28 +30,11 @@ export function CompressPage() {
 	const [format, setFormat] = useState<CompressFormat>("original");
 	const [quality, setQuality] = useState(75);
 	const [maxDimension, setMaxDimension] = useState(1920);
-	const { items, add, clear } = useBatch();
-
-	const handleFiles = (files: File[]) =>
-		add(files, async (file) => {
-			const type = resolveFormat(file, format);
-			return {
-				blob: await encodeImage(
-					await decodeImage(file),
-					type,
-					quality / 100,
-					maxDimension || undefined,
-				),
-				name: renameExtension(file.name, type),
-			};
-		});
 
 	return (
 		<ToolPage
-			tool={tool}
-			items={items}
-			onFiles={handleFiles}
-			onClear={clear}
+			tool={COMPRESS_TOOL}
+			optionsHint="options.appliesToNew"
 			options={
 				<>
 					<FormatPicker
@@ -71,6 +53,25 @@ export function CompressPage() {
 					<MaxDimensionSelect value={maxDimension} onChange={setMaxDimension} />
 				</>
 			}
-		/>
+		>
+			<BatchTool
+				kind={IMAGE_KIND}
+				zipName="shapeshift-compress.zip"
+				process={async (file) => {
+					const type = resolveFormat(file, format);
+					return [
+						{
+							blob: await encodeImage(
+								await decodeImage(file),
+								type,
+								quality / 100,
+								maxDimension || undefined,
+							),
+							name: renameExtension(file.name, type),
+						},
+					];
+				}}
+			/>
+		</ToolPage>
 	);
 }

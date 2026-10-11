@@ -4,7 +4,8 @@
 
 **Shapeshift your files. Privately, in your browser.**
 
-Convert, compress, and resize images without uploading a single byte.
+Convert images, compress photos, build and split PDFs, and transform data files
+without uploading a single byte.
 No accounts, no file limits, no watermarks. Everything runs on your device.
 
 ![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
@@ -55,10 +56,34 @@ Shrink images for email, chat, or the web.
 
 Every file shows its before and after size, and the queue shows the total space saved.
 
-### 🛣️ Coming soon
+### 📄 PDF Tools
 
-- 📄 **PDF Tools**: images to PDF, PDF to images, merge PDFs
-- 🧾 **Data Formats**: JSON ⇄ CSV ⇄ YAML
+Three modes in one place:
+
+| Mode | Input | Output | Options |
+| --- | --- | --- | --- |
+| **Images → PDF** | Any supported image, including HEIC | One PDF, one page per image | Page size (fit image, A4, Letter), margin, quality |
+| **PDF → Images** | One or more PDFs | One image per page, zipped per PDF | PNG, JPG, or WEBP at 72, 150, or 300 DPI |
+| **Merge PDFs** | Two or more PDFs | One combined PDF | |
+
+- Reorder files with the arrows, or sort them A–Z with natural ordering (`page-2` before `page-10`)
+- A4 and Letter pages rotate to landscape automatically for wide images
+
+### 🧾 Data Formats
+
+A two-pane editor that converts as you type.
+
+| From / To | JSON | CSV | YAML |
+| --- | :---: | :---: | :---: |
+| **JSON** | ✓ | ✓ | ✓ |
+| **CSV** | ✓ | ✓ | ✓ |
+| **YAML** | ✓ | ✓ | ✓ |
+
+- Drop or upload a `.json`, `.csv`, `.tsv`, `.yaml`, or `.yml` file and the input format is detected
+- Nested objects become dot-separated CSV columns (`contact.email`) and turn back into objects on the way in, so JSON → CSV → JSON round-trips cleanly
+- Comma, semicolon (handy for Excel in many locales), or tab delimiters
+- 2- or 4-space indentation, one-click swap, copy, and download
+- Parse errors are shown inline with the row or position that failed
 
 ## 🚀 Getting started
 
@@ -94,14 +119,16 @@ Then open http://localhost:5173.
 3. **Encode**: `canvas.convertToBlob()` produces the final JPG, PNG, or WEBP.
 4. **Bundle**: files are processed one by one to keep memory low, and [`fflate`](https://github.com/101arrowz/fflate) zips the results on demand. Duplicate names are renamed automatically (`photo.jpg`, `photo (2).jpg`).
 
+PDF pages are rendered by pdf.js in a Web Worker and exported through the same canvas encoder, while new PDFs are assembled with pdf-lib. Heavy libraries (the HEIC decoder and pdf.js) are only downloaded the first time you use them.
+
 ## 🗂️ Project structure
 
 ```
 src/
-├── components/     Sidebar, dropzone, file queue, shared option controls
+├── components/     Sidebar, dropzone, batch and combine tools, option controls
 ├── i18n/           en.json, id.json, and the locale provider (react-intl)
-├── lib/            Image pipeline, batch queue, ZIP helpers, theme hook
-├── pages/          Home, Image Converter, Compress & Resize
+├── lib/            Image, PDF, and data pipelines, batch queue, ZIP helpers
+├── pages/          Home, Image Converter, Compress & Resize, PDF Tools, Data Formats
 └── tools.ts        Tool registry used by the sidebar and home page
 ```
 
@@ -117,6 +144,8 @@ src/
 - [HeroUI v3](https://heroui.com) (formerly NextUI) on [Tailwind CSS v4](https://tailwindcss.com), themed with a deep-navy and electric-cyan palette
 - [Inter](https://rsms.me/inter/), [Barlow Condensed](https://fonts.google.com/specimen/Barlow+Condensed), and [JetBrains Mono](https://www.jetbrains.com/lp/mono/), bundled locally via Fontsource
 - [React Aria Components](https://react-spectrum.adobe.com/react-aria/) for the accessible drop zone and file picker
+- [pdf.js](https://mozilla.github.io/pdf.js/) to render PDF pages and [@cantoo/pdf-lib](https://github.com/cantoo-scribe/pdf-lib) (a maintained pdf-lib fork) to build and merge PDFs
+- [Papa Parse](https://www.papaparse.com) and [yaml](https://eemeli.org/yaml/) for data conversion
 - [React Router](https://reactrouter.com) and [react-intl](https://formatjs.github.io/docs/react-intl/)
 - [Vite](https://vite.dev), [Bun](https://bun.sh), [Biome](https://biomejs.dev)
 - [lucide-react](https://lucide.dev) icons

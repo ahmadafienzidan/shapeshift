@@ -64,3 +64,9 @@ export function renameExtension(name: string, type: OutputType): string {
 	const base = name.includes(".") ? name.slice(0, name.lastIndexOf(".")) : name;
 	return `${base}.${EXTENSIONS[type]}`;
 }
+
+export const IMAGE_KIND = {
+	accept: ACCEPTED_IMAGES,
+	matches: isImage,
+	formats: "HEIC, WEBP, AVIF, PNG, JPG, GIF, BMP",
+};

@@ -9,10 +9,12 @@ import {
 import { FormattedMessage, useIntl } from "react-intl";
 
 export function FormatPicker<T extends string>({
+	labelId = "options.format",
 	value,
 	options,
 	onChange,
 }: {
+	labelId?: string;
 	value: T;
 	options: { id: T; label: string }[];
 	onChange: (value: T) => void;
@@ -20,7 +22,7 @@ export function FormatPicker<T extends string>({
 	return (
 		<div className="flex flex-col gap-2">
 			<Label>
-				<FormattedMessage id="options.format" />
+				<FormattedMessage id={labelId} />
 			</Label>
 			<ToggleButtonGroup
 				fullWidth

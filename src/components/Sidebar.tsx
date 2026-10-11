@@ -76,24 +76,10 @@ export function Sidebar() {
 				<SectionLabel>
 					<FormattedMessage id="nav.tools" />
 				</SectionLabel>
-				{TOOLS.filter((tool) => tool.available).map((tool) => (
+				{TOOLS.map((tool) => (
 					<NavItem key={tool.id} to={tool.path} icon={<tool.icon size={16} />}>
 						<FormattedMessage id={`tool.${tool.id}.name`} />
 					</NavItem>
-				))}
-				<SectionLabel>
-					<FormattedMessage id="nav.soon" />
-				</SectionLabel>
-				{TOOLS.filter((tool) => !tool.available).map((tool) => (
-					<div
-						key={tool.id}
-						className="hidden items-center gap-3 px-3 py-2 text-muted/60 text-sm lg:flex"
-					>
-						<tool.icon size={16} />
-						<span className="truncate">
-							<FormattedMessage id={`tool.${tool.id}.name`} />
-						</span>
-					</div>
 				))}
 			</nav>
 

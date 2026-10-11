@@ -11,7 +11,6 @@ export type Tool = {
 	path: string;
 	icon: LucideIcon;
 	tile: string;
-	available: boolean;
 };
 
 export const CONVERT_TOOL: Tool = {
@@ -19,7 +18,6 @@ export const CONVERT_TOOL: Tool = {
 	path: "/convert",
 	icon: RefreshCcw,
 	tile: "bg-electric text-ink",
-	available: true,
 };
 
 export const COMPRESS_TOOL: Tool = {
@@ -27,24 +25,20 @@ export const COMPRESS_TOOL: Tool = {
 	path: "/compress",
 	icon: Minimize2,
 	tile: "bg-iris text-white",
-	available: true,
 };
 
-export const TOOLS: Tool[] = [
-	CONVERT_TOOL,
-	COMPRESS_TOOL,
-	{
-		id: "pdf",
-		path: "/pdf",
-		icon: FileText,
-		tile: "bg-default text-muted",
-		available: false,
-	},
-	{
-		id: "data",
-		path: "/data",
-		icon: Braces,
-		tile: "bg-default text-muted",
-		available: false,
-	},
-];
+export const PDF_TOOL: Tool = {
+	id: "pdf",
+	path: "/pdf",
+	icon: FileText,
+	tile: "bg-coral text-ink",
+};
+
+export const DATA_TOOL: Tool = {
+	id: "data",
+	path: "/data",
+	icon: Braces,
+	tile: "bg-sun text-ink",
+};
+
+export const TOOLS: Tool[] = [CONVERT_TOOL, COMPRESS_TOOL, PDF_TOOL, DATA_TOOL];

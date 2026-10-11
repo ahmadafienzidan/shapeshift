@@ -1,16 +1,18 @@
 import { useCallback, useRef, useState } from "react";
 
-export type BatchResult = { blob: Blob; name: string; url: string };
+export type BatchOutput = { blob: Blob; name: string };
+
+export type BatchResult = BatchOutput & { url: string };
 
 export type BatchItem = {
 	id: string;
 	file: File;
 	status: "queued" | "processing" | "done" | "error";
-	result?: BatchResult;
+	results: BatchResult[];
 	error?: string;
 };
 
-export type Processor = (file: File) => Promise<{ blob: Blob; name: string }>;
+export type Processor = (file: File) => Promise<BatchOutput[]>;
 
 export function useBatch() {
 	const [items, setItems] = useState<BatchItem[]>([]);
@@ -24,10 +26,11 @@ export function useBatch() {
 
 	const add = useCallback(
 		(files: File[], process: Processor) => {
-			const added = files.map((file) => ({
+			const added: BatchItem[] = files.map((file) => ({
 				id: crypto.randomUUID(),
 				file,
-				status: "queued" as const,
+				status: "queued",
+				results: [],
 			}));
 			setItems((current) => [...current, ...added]);
 
@@ -35,9 +38,12 @@ export function useBatch() {
 				queue.current = queue.current.then(async () => {
 					update(item.id, { status: "processing" });
 					try {
-						const { blob, name } = await process(item.file);
-						const url = URL.createObjectURL(blob);
-						update(item.id, { status: "done", result: { blob, name, url } });
+						const outputs = await process(item.file);
+						const results = outputs.map((output) => ({
+							...output,
+							url: URL.createObjectURL(output.blob),
+						}));
+						update(item.id, { status: "done", results });
 					} catch (error) {
 						update(item.id, { status: "error", error: String(error) });
 					}
@@ -50,7 +56,7 @@ export function useBatch() {
 	const clear = useCallback(() => {
 		setItems((current) => {
 			for (const item of current) {
-				if (item.result) URL.revokeObjectURL(item.result.url);
+				for (const result of item.results) URL.revokeObjectURL(result.url);
 			}
 			return current.filter(
 				(item) => item.status === "processing" || item.status === "queued",

@@ -1,11 +1,29 @@
 import { buttonVariants } from "@heroui/styles";
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { FormattedMessage } from "react-intl";
 import { Link } from "react-router";
 import { Eyebrow } from "../components/Eyebrow";
-import { COMPRESS_TOOL, CONVERT_TOOL, TOOLS, type Tool } from "../tools";
+import {
+	COMPRESS_TOOL,
+	CONVERT_TOOL,
+	DATA_TOOL,
+	PDF_TOOL,
+	type Tool,
+} from "../tools";
 
-const FORMATS = ["HEIC", "HEIF", "WEBP", "AVIF", "PNG", "JPG", "GIF", "BMP"];
+const FORMATS = [
+	"HEIC",
+	"WEBP",
+	"AVIF",
+	"PNG",
+	"JPG",
+	"GIF",
+	"BMP",
+	"PDF",
+	"JSON",
+	"CSV",
+	"YAML",
+];
 
 const FEATURES = ["private", "bulk", "fast"];
 
@@ -57,9 +75,14 @@ function ToolSpotlight({ tool }: { tool: Tool }) {
 			to={tool.path}
 			className="group flex flex-1 flex-col gap-3 rounded-xl border border-border bg-surface p-6 transition-colors hover:border-electric/60"
 		>
-			<Eyebrow dot>
-				<FormattedMessage id="home.available" />
-			</Eyebrow>
+			<div className="flex items-center justify-between gap-3">
+				<Eyebrow dot>
+					<FormattedMessage id="home.available" />
+				</Eyebrow>
+				<div className={`grid size-9 place-items-center rounded ${tool.tile}`}>
+					<tool.icon size={16} />
+				</div>
+			</div>
 			<h3 className="headline text-3xl">
 				<FormattedMessage id={`tool.${tool.id}.name`} />
 			</h3>
@@ -118,15 +141,21 @@ export function HomePage() {
 				</div>
 			</section>
 
-			<section className="grid gap-4 lg:grid-cols-5">
-				<div className="lg:col-span-3">
-					<TileArt />
-				</div>
-				<div className="flex flex-col gap-4 lg:col-span-2">
-					<ToolSpotlight tool={CONVERT_TOOL} />
-					<ToolSpotlight tool={COMPRESS_TOOL} />
-				</div>
-			</section>
+			<div className="flex flex-col gap-4">
+				<section className="grid gap-4 lg:grid-cols-5">
+					<div className="lg:col-span-3">
+						<TileArt />
+					</div>
+					<div className="flex flex-col gap-4 lg:col-span-2">
+						<ToolSpotlight tool={CONVERT_TOOL} />
+						<ToolSpotlight tool={COMPRESS_TOOL} />
+					</div>
+				</section>
+				<section className="grid gap-4 md:grid-cols-2">
+					<ToolSpotlight tool={PDF_TOOL} />
+					<ToolSpotlight tool={DATA_TOOL} />
+				</section>
+			</div>
 
 			<section className="flex flex-col items-center gap-6">
 				<p className="eyebrow text-muted">
@@ -144,7 +173,7 @@ export function HomePage() {
 				</div>
 			</section>
 
-			<section className="flex flex-col gap-10 border-separator border-t pt-16">
+			<section className="flex flex-col gap-10 border-separator border-t pt-16 pb-8">
 				<div className="flex flex-col gap-4">
 					<Eyebrow>
 						<FormattedMessage id="home.whyEyebrow" />
@@ -165,35 +194,6 @@ export function HomePage() {
 							<p className="text-muted text-sm">
 								<FormattedMessage id={`home.feature.${feature}.body`} />
 							</p>
-						</div>
-					))}
-				</div>
-			</section>
-
-			<section className="flex flex-col gap-6 pb-8">
-				<Eyebrow>
-					<FormattedMessage id="nav.soon" />
-				</Eyebrow>
-				<div className="grid gap-4 sm:grid-cols-2">
-					{TOOLS.filter((tool) => !tool.available).map((tool) => (
-						<div
-							key={tool.id}
-							className="flex items-center gap-4 rounded-xl border border-border border-dashed p-5"
-						>
-							<div
-								className={`grid size-10 shrink-0 place-items-center rounded ${tool.tile}`}
-							>
-								<tool.icon size={18} />
-							</div>
-							<div className="flex flex-col">
-								<p className="headline text-xl">
-									<FormattedMessage id={`tool.${tool.id}.name`} />
-								</p>
-								<p className="text-muted text-sm">
-									<FormattedMessage id={`tool.${tool.id}.description`} />
-								</p>
-							</div>
-							<ArrowRight size={16} className="ml-auto text-muted/50" />
 						</div>
 					))}
 				</div>

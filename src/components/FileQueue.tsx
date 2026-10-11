@@ -1,6 +1,6 @@
 import { Button, Chip, ProgressBar } from "@heroui/react";
 import { buttonVariants } from "@heroui/styles";
-import { Archive, Download, ImageOff, Trash2 } from "lucide-react";
+import { Archive, Download, FileCheck, FileX, Trash2 } from "lucide-react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { createZip, downloadBlob, formatBytes } from "../lib/files";
 import type { BatchItem } from "../lib/useBatch";
@@ -30,29 +30,56 @@ function SizeChange({ before, after }: { before: number; after: number }) {
 	);
 }
 
+function totalSize(item: BatchItem): number {
+	return item.results.reduce((sum, result) => sum + result.blob.size, 0);
+}
+
+function stripExtension(name: string): string {
+	return name.includes(".") ? name.slice(0, name.lastIndexOf(".")) : name;
+}
+
 function QueueRow({ item }: { item: BatchItem }) {
 	const intl = useIntl();
+	const [first] = item.results;
+	const preview = first?.blob.type.startsWith("image/") ? first : undefined;
+	const downloadLabel = intl.formatMessage({ id: "queue.download" });
+
+	const downloadAll = async () => {
+		downloadBlob(
+			await createZip(item.results),
+			`${stripExtension(item.file.name)}.zip`,
+		);
+	};
+
 	return (
 		<li className="flex items-center gap-4 px-5 py-3 transition-colors hover:bg-surface-secondary">
 			<div className="grid size-12 shrink-0 place-items-center overflow-hidden rounded bg-default">
-				{item.result ? (
-					<img
-						src={item.result.url}
-						alt=""
-						className="size-full object-cover"
-					/>
+				{preview ? (
+					<img src={preview.url} alt="" className="size-full object-cover" />
 				) : item.status === "error" ? (
-					<ImageOff size={20} className="text-danger" />
+					<FileX size={20} className="text-danger" />
+				) : item.status === "done" ? (
+					<FileCheck size={20} className="text-muted" />
 				) : (
 					<div className="size-full animate-pulse bg-default-hover" />
 				)}
 			</div>
 			<div className="flex min-w-0 flex-1 flex-col gap-1">
 				<p className="truncate font-medium text-sm">
-					{item.result?.name ?? item.file.name}
+					{item.results.length === 1 && first ? first.name : item.file.name}
 				</p>
-				{item.result ? (
-					<SizeChange before={item.file.size} after={item.result.blob.size} />
+				{item.status === "done" ? (
+					<span className="flex flex-wrap gap-x-2">
+						<SizeChange before={item.file.size} after={totalSize(item)} />
+						{item.results.length > 1 && (
+							<span className="font-mono text-accent-soft-foreground text-xs">
+								<FormattedMessage
+									id="queue.outputs"
+									values={{ count: item.results.length }}
+								/>
+							</span>
+						)}
+					</span>
 				) : item.error ? (
 					<p className="truncate text-danger text-xs">{item.error}</p>
 				) : (
@@ -69,11 +96,11 @@ function QueueRow({ item }: { item: BatchItem }) {
 			>
 				<FormattedMessage id={`queue.status.${item.status}`} />
 			</Chip>
-			{item.result && (
+			{item.results.length === 1 && first && (
 				<a
-					href={item.result.url}
-					download={item.result.name}
-					aria-label={intl.formatMessage({ id: "queue.download" })}
+					href={first.url}
+					download={first.name}
+					aria-label={downloadLabel}
 					className={buttonVariants({
 						variant: "outline",
 						size: "sm",
@@ -82,6 +109,17 @@ function QueueRow({ item }: { item: BatchItem }) {
 				>
 					<Download size={16} />
 				</a>
+			)}
+			{item.results.length > 1 && (
+				<Button
+					isIconOnly
+					variant="outline"
+					size="sm"
+					aria-label={downloadLabel}
+					onPress={downloadAll}
+				>
+					<Download size={16} />
+				</Button>
 			)}
 		</li>
 	);
@@ -97,22 +135,17 @@ export function FileQueue({
 	zipName: string;
 }) {
 	const intl = useIntl();
-	const finished = items.filter((item) => item.result);
+	const finished = items.filter((item) => item.status === "done");
 	const settled = items.filter(
 		(item) => item.status === "done" || item.status === "error",
 	);
 	const before = finished.reduce((sum, item) => sum + item.file.size, 0);
-	const after = finished.reduce(
-		(sum, item) => sum + (item.result?.blob.size ?? 0),
-		0,
-	);
+	const after = finished.reduce((sum, item) => sum + totalSize(item), 0);
 
 	if (items.length === 0) return null;
 
 	const downloadZip = async () => {
-		const zip = await createZip(
-			finished.flatMap((item) => (item.result ? [item.result] : [])),
-		);
+		const zip = await createZip(finished.flatMap((item) => item.results));
 		downloadBlob(zip, zipName);
 	};
 
