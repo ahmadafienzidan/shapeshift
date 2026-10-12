@@ -74,6 +74,13 @@ Every file shows its before and after size, and the queue shows the total space 
 - Reorder or sort A–Z before merging, with a preview of the result and its pixel size
 - Very large results are scaled down to fit browser canvas limits instead of failing
 
+### 💧 Watermark
+
+- Text (with color) or your own logo, sized relative to each photo so small and large images look consistent
+- Nine positions, or **tile** a diagonal pattern across the whole image like stock photos
+- Adjustable opacity; keep the original format or export JPG, PNG, or WEBP
+- Works on whole batches and folders, downloaded as one ZIP
+
 ### ✨ Icon Generator
 
 Drop in one logo (SVG gives the sharpest result) and get a complete icon pack as a ZIP:
@@ -125,11 +132,14 @@ Three modes in one place:
 | **PDF → Images** | One or more PDFs | One image per page, zipped per PDF | PNG, JPG, or WEBP at 72, 150, or 300 DPI |
 | **Merge PDFs** | Two or more PDFs | One combined PDF | |
 | **Organize pages** | One PDF | A reordered, rotated, or trimmed PDF | Drag to reorder (mouse or keyboard), rotate, delete, or extract the selected pages |
+| **Sign** | One PDF | A signed PDF | Draw with mouse or finger, type your name in a handwriting font, or upload a photo of your signature (paper background removed). Drag, resize, or nudge with arrow keys; place on one page or all |
+| **Password** | One or more PDFs | Protected or unlocked PDFs | Add an AES-256 password and choose whether printing, copying, and editing are allowed; or remove a password you know |
 | **Watermark & numbers** | One or more PDFs | Stamped PDFs | Diagonal text watermark with adjustable opacity; page numbers centered or right in formats like `3 / 10` or `Hal. 3 dari 10` |
 
 - Reorder files with the arrows, or sort them A–Z with natural ordering (`page-2` before `page-10`)
 - A4 and Letter pages rotate to landscape automatically for wide images
-- Watermarks and page numbers respect each page's rotation, so scanned pages stored sideways still get numbers at the bottom, upright
+- Watermarks, page numbers, and signatures respect each page's rotation, so scanned pages stored sideways still get them upright where you placed them
+- Unlocking removes every trace of the old encryption, not just the password prompt
 
 ### 🧾 Data Formats
 

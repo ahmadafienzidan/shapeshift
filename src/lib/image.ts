@@ -103,3 +103,17 @@ export const IMAGE_KIND = {
 	matches: isImage,
 	formats: "HEIC, WEBP, AVIF, PNG, JPG, GIF, BMP, SVG",
 };
+
+const ENCODABLE: OutputType[] = ["image/jpeg", "image/png", "image/webp"];
+
+// "original" keeps the file's own format when the browser can write it, and
+// otherwise falls back to PNG for SVG (to keep transparency) or JPG.
+export function resolveFormat(
+	file: File,
+	format: OutputType | "original",
+): OutputType {
+	if (format !== "original") return format;
+	const same = ENCODABLE.find((type) => type === file.type);
+	if (same) return same;
+	return isSvg(file) ? "image/png" : "image/jpeg";
+}

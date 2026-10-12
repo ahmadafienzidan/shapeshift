@@ -3,6 +3,7 @@ import {
 	Braces,
 	Combine,
 	Crop,
+	Droplet,
 	FileJson,
 	FileText,
 	Fingerprint,
@@ -108,6 +109,14 @@ export const MERGE_TOOL: Tool = {
 	group: "images",
 };
 
+export const WATERMARK_TOOL: Tool = {
+	id: "watermark",
+	path: "/watermark",
+	icon: Droplet,
+	tile: "bg-iris text-white",
+	group: "images",
+};
+
 export const CROP_TOOL: Tool = {
 	id: "crop",
 	path: "/crop",
@@ -161,6 +170,7 @@ export const TOOLS: Tool[] = [
 	COMPRESS_TOOL,
 	CROP_TOOL,
 	MERGE_TOOL,
+	WATERMARK_TOOL,
 	ICONS_TOOL,
 	METADATA_TOOL,
 	COLOR_TOOL,

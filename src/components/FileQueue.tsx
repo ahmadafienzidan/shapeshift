@@ -40,6 +40,12 @@ function stripExtension(name: string): string {
 
 function QueueRow({ item }: { item: BatchItem }) {
 	const intl = useIntl();
+	// Tools throw message ids (e.g. "pdf.error.password") for errors the user
+	// can act on; anything else is shown as the browser reported it.
+	const translateError = (error: string) => {
+		const id = error.replace(/^Error: /, "");
+		return id in intl.messages ? intl.formatMessage({ id }) : error;
+	};
 	const [first] = item.results;
 	const preview = first?.blob.type.startsWith("image/") ? first : undefined;
 	const downloadLabel = intl.formatMessage({ id: "queue.download" });
@@ -81,7 +87,9 @@ function QueueRow({ item }: { item: BatchItem }) {
 						)}
 					</span>
 				) : item.error ? (
-					<p className="truncate text-danger text-xs">{item.error}</p>
+					<p className="truncate text-danger text-xs">
+						{translateError(item.error)}
+					</p>
 				) : (
 					<span className="font-mono text-muted text-xs">
 						{formatBytes(item.file.size)}

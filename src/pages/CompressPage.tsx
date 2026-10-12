@@ -11,22 +11,13 @@ import {
 	decodeImage,
 	encodeImage,
 	IMAGE_KIND,
-	isSvg,
 	type OutputType,
 	renameExtension,
+	resolveFormat,
 } from "../lib/image";
 import { COMPRESS_TOOL } from "../tools";
 
 type CompressFormat = OutputType | "original";
-
-const ENCODABLE: OutputType[] = ["image/jpeg", "image/png", "image/webp"];
-
-function resolveFormat(file: File, format: CompressFormat): OutputType {
-	if (format !== "original") return format;
-	const same = ENCODABLE.find((type) => type === file.type);
-	if (same) return same;
-	return isSvg(file) ? "image/png" : "image/jpeg";
-}
 
 export function CompressPage() {
 	const intl = useIntl();

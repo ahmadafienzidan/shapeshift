@@ -1,10 +1,12 @@
-import { Input, Label, TextField } from "@heroui/react";
+import { Input, Label, TextField, ToggleButton } from "@heroui/react";
 import {
 	FileImage,
 	Files,
 	Images,
 	LayoutGrid,
+	LockKeyhole,
 	type LucideIcon,
+	Signature,
 	Stamp,
 } from "lucide-react";
 import { useState } from "react";
@@ -18,6 +20,7 @@ import {
 	RangeSlider,
 } from "../components/Options";
 import { PdfOrganizer } from "../components/PdfOrganizer";
+import { PdfSigner } from "../components/PdfSigner";
 import { ToolPage } from "../components/ToolPage";
 import { IMAGE_KIND, type OutputType } from "../lib/image";
 import {
@@ -26,12 +29,22 @@ import {
 	type NumberPosition,
 	type PageSize,
 	PDF_KIND,
+	type Permissions,
 	pdfToImages,
+	protectPdf,
 	stampPdf,
+	unlockPdf,
 } from "../lib/pdf";
 import { PDF_TOOL } from "../tools";
 
-type Mode = "images-to-pdf" | "pdf-to-images" | "merge" | "organize" | "stamp";
+type Mode =
+	| "images-to-pdf"
+	| "pdf-to-images"
+	| "merge"
+	| "organize"
+	| "stamp"
+	| "sign"
+	| "protect";
 
 const MODES = [
 	{ id: "images-to-pdf", icon: Images, labelId: "pdf.mode.images-to-pdf" },
@@ -39,6 +52,8 @@ const MODES = [
 	{ id: "merge", icon: Files, labelId: "pdf.mode.merge" },
 	{ id: "organize", icon: LayoutGrid, labelId: "pdf.mode.organize" },
 	{ id: "stamp", icon: Stamp, labelId: "pdf.mode.stamp" },
+	{ id: "sign", icon: Signature, labelId: "pdf.mode.sign" },
+	{ id: "protect", icon: LockKeyhole, labelId: "pdf.mode.protect" },
 ] satisfies { id: Mode; icon: LucideIcon; labelId: string }[];
 
 const NUMBER_FORMATS = [
@@ -66,6 +81,13 @@ export function PdfPage() {
 	const [opacity, setOpacity] = useState(20);
 	const [numbers, setNumbers] = useState<NumberPosition>("bottom-center");
 	const [numberFormat, setNumberFormat] = useState<string>("{n} / {total}");
+	const [protectAction, setProtectAction] = useState<"lock" | "unlock">("lock");
+	const [password, setPassword] = useState("");
+	const [permissions, setPermissions] = useState<Permissions>({
+		printing: true,
+		copying: false,
+		modifying: false,
+	});
 
 	const toolbar = (
 		<ModeTabs
@@ -170,6 +192,101 @@ export function PdfPage() {
 							quality: quality / 100,
 						})
 					}
+				/>
+			</ToolPage>
+		);
+	}
+
+	if (mode === "sign") {
+		return (
+			<ToolPage tool={PDF_TOOL} toolbar={toolbar}>
+				<PdfSigner />
+			</ToolPage>
+		);
+	}
+
+	if (mode === "protect") {
+		return (
+			<ToolPage
+				tool={PDF_TOOL}
+				toolbar={toolbar}
+				optionsHint="options.appliesToNew"
+				options={
+					<>
+						<FormatPicker
+							labelId="protect.action"
+							value={protectAction}
+							onChange={setProtectAction}
+							options={[
+								{ id: "lock", label: t("protect.lock") },
+								{ id: "unlock", label: t("protect.unlock") },
+							]}
+						/>
+						<TextField value={password} onChange={setPassword} type="password">
+							<Label>
+								<FormattedMessage
+									id={
+										protectAction === "lock"
+											? "protect.newPassword"
+											: "protect.currentPassword"
+									}
+								/>
+							</Label>
+							<Input autoComplete="off" />
+						</TextField>
+						{protectAction === "lock" ? (
+							<div className="flex flex-col gap-2">
+								<p className="font-medium text-sm">
+									<FormattedMessage id="protect.allow" />
+								</p>
+								{(["printing", "copying", "modifying"] as const).map((key) => (
+									<ToggleButton
+										key={key}
+										isSelected={permissions[key]}
+										onChange={(value) =>
+											setPermissions((current) => ({
+												...current,
+												[key]: value,
+											}))
+										}
+									>
+										<FormattedMessage id={`protect.allow.${key}`} />
+									</ToggleButton>
+								))}
+								<p className="text-muted text-xs">
+									<FormattedMessage id="protect.lockHint" />
+								</p>
+							</div>
+						) : (
+							<p className="text-muted text-xs">
+								<FormattedMessage id="protect.unlockHint" />
+							</p>
+						)}
+					</>
+				}
+			>
+				<BatchTool
+					key={mode}
+					kind={PDF_KIND}
+					zipName={`shapeshift-${protectAction}ed.zip`}
+					process={async (file) => {
+						if (protectAction === "lock" && password === "") {
+							throw new Error("protect.error.noPassword");
+						}
+						const blob =
+							protectAction === "lock"
+								? await protectPdf(file, password, permissions)
+								: await unlockPdf(file, password);
+						return [
+							{
+								blob,
+								name: file.name.replace(
+									/\.pdf$/i,
+									protectAction === "lock" ? "-protected.pdf" : "-unlocked.pdf",
+								),
+							},
+						];
+					}}
 				/>
 			</ToolPage>
 		);

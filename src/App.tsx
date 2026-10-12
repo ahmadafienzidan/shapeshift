@@ -37,6 +37,11 @@ const ChecksumPage = lazy(() =>
 		default: module.ChecksumPage,
 	})),
 );
+const WatermarkPage = lazy(() =>
+	import("./pages/WatermarkPage").then((module) => ({
+		default: module.WatermarkPage,
+	})),
+);
 const MergePage = lazy(() =>
 	import("./pages/MergePage").then((module) => ({ default: module.MergePage })),
 );
@@ -85,6 +90,7 @@ export function App() {
 							<Route path="/color" element={<ColorPage />} />
 							<Route path="/crop" element={<CropPage />} />
 							<Route path="/merge" element={<MergePage />} />
+							<Route path="/watermark" element={<WatermarkPage />} />
 							<Route path="/text" element={<TextPage />} />
 							<Route path="/json" element={<JsonPage />} />
 							<Route path="/diff" element={<DiffPage />} />

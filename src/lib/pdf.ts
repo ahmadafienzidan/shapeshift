@@ -1,9 +1,14 @@
 import {
 	degrees,
 	PageSizes,
+	PDFArray,
+	PDFDict,
 	PDFDocument,
 	type PDFFont,
+	type PDFObject,
 	type PDFPage,
+	PDFRef,
+	PDFStream,
 	rgb,
 	StandardFonts,
 } from "@cantoo/pdf-lib";
@@ -223,33 +228,187 @@ function drawUpright(
 	color: ReturnType<typeof rgb>,
 	opacity: number,
 ) {
-	const rotation = ((page.getRotation().angle % 360) + 360) % 360;
-	const { width, height } = page.getSize();
-	const sideways = rotation === 90 || rotation === 270;
-	const visibleWidth = sideways ? height : width;
-	const visibleHeight = sideways ? width : height;
+	const { visibleWidth, visibleHeight, toPage } = visibleSpace(page);
 	const { x, y, angle } = place(
 		visibleWidth,
 		visibleHeight,
 		font.widthOfTextAtSize(text, size),
 	);
-	const [pageX, pageY] =
-		rotation === 90
-			? [width - y, x]
-			: rotation === 180
-				? [width - x, height - y]
-				: rotation === 270
-					? [y, height - x]
-					: [x, y];
+	const point = toPage(x, y);
 	page.drawText(text, {
-		x: pageX,
-		y: pageY,
+		x: point.x,
+		y: point.y,
 		size,
 		font,
 		color,
 		opacity,
-		rotate: degrees(angle + rotation),
+		rotate: degrees(angle + point.rotation),
 	});
+}
+
+// Coordinates "as the reader sees the page" (origin bottom-left of the
+// displayed page) mapped onto the page's own, possibly rotated, space.
+function visibleSpace(page: PDFPage) {
+	const rotation = ((page.getRotation().angle % 360) + 360) % 360;
+	const { width, height } = page.getSize();
+	const sideways = rotation === 90 || rotation === 270;
+	return {
+		visibleWidth: sideways ? height : width,
+		visibleHeight: sideways ? width : height,
+		toPage: (x: number, y: number) => {
+			const [pageX, pageY] =
+				rotation === 90
+					? [width - y, x]
+					: rotation === 180
+						? [width - x, height - y]
+						: rotation === 270
+							? [y, height - x]
+							: [x, y];
+			return { x: pageX, y: pageY, rotation };
+		},
+	};
+}
+
+// Placement of an image as fractions of the displayed page, measured from
+// its top-left corner (the way the editor shows it).
+export type Placement = {
+	page: number;
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+};
+
+export async function signPdf(
+	file: File,
+	signature: Blob,
+	placements: Placement[],
+): Promise<Blob> {
+	const pdf = await PDFDocument.load(await file.arrayBuffer());
+	const image = await pdf.embedPng(await signature.arrayBuffer());
+	const pages = pdf.getPages();
+	for (const placement of placements) {
+		const page = pages[placement.page];
+		if (!page) continue;
+		const { visibleWidth, visibleHeight, toPage } = visibleSpace(page);
+		const width = placement.width * visibleWidth;
+		// Derived from the image itself so pages of other sizes never stretch it.
+		const height = width / (image.width / image.height);
+		const bottom = visibleHeight - (placement.y * visibleHeight + height);
+		const point = toPage(placement.x * visibleWidth, bottom);
+		page.drawImage(image, {
+			x: point.x,
+			y: point.y,
+			width,
+			height,
+			rotate: degrees(point.rotation),
+		});
+	}
+	return toPdfBlob(await pdf.save());
+}
+
+export type Permissions = {
+	printing: boolean;
+	copying: boolean;
+	modifying: boolean;
+};
+
+export async function protectPdf(
+	file: File,
+	password: string,
+	permissions: Permissions,
+): Promise<Blob> {
+	const pdf = await PDFDocument.load(await file.arrayBuffer());
+	pdf.encrypt({
+		userPassword: password,
+		// Restrictions are only enforced when the owner password differs from
+		// the one people open the file with, so a random one is generated.
+		ownerPassword: crypto.randomUUID(),
+		permissions: {
+			printing: permissions.printing ? "highResolution" : false,
+			copying: permissions.copying,
+			modifying: permissions.modifying,
+			annotating: permissions.modifying,
+			fillingForms: true,
+			contentAccessibility: true,
+			documentAssembly: permissions.modifying,
+		},
+	});
+	return toPdfBlob(await pdf.save());
+}
+
+// Decrypting keeps the encrypted file's old cross-reference streams and
+// encryption dictionary around as unreferenced objects, which would still
+// carry an /Encrypt entry. Only objects reachable from the document are kept.
+function dropUnreachableObjects(pdf: PDFDocument) {
+	const { context } = pdf;
+	const reachable = new Set<string>();
+	const walk = (object: PDFObject | undefined): void => {
+		if (object instanceof PDFRef) {
+			if (reachable.has(object.toString())) return;
+			reachable.add(object.toString());
+			walk(context.lookup(object));
+		} else if (object instanceof PDFDict) {
+			for (const [, value] of object.entries()) walk(value);
+		} else if (object instanceof PDFArray) {
+			for (let index = 0; index < object.size(); index++)
+				walk(object.get(index));
+		} else if (object instanceof PDFStream) {
+			walk(object.dict);
+		}
+	};
+	walk(context.trailerInfo.Root);
+	walk(context.trailerInfo.Info);
+	for (const [ref] of context.enumerateIndirectObjects()) {
+		if (!reachable.has(ref.toString())) context.delete(ref);
+	}
+}
+
+export async function unlockPdf(file: File, password: string): Promise<Blob> {
+	const bytes = await file.arrayBuffer();
+	const pdf = await PDFDocument.load(bytes, { password }).catch((error) => {
+		throw new Error(
+			/password/i.test(String(error)) ? "pdf.error.password" : String(error),
+		);
+	});
+	dropUnreachableObjects(pdf);
+	return toPdfBlob(await pdf.save());
+}
+
+export async function openPdf(file: File) {
+	const pdfjs = await loadPdfJs();
+	const task = pdfjs.getDocument({
+		data: new Uint8Array(await file.arrayBuffer()),
+	});
+	const pdf = await task.promise;
+	return {
+		pageCount: pdf.numPages,
+		async render(index: number, width: number) {
+			const page = await pdf.getPage(index + 1);
+			const base = page.getViewport({ scale: 1 });
+			const viewport = page.getViewport({ scale: width / base.width });
+			const canvas = document.createElement("canvas");
+			canvas.width = Math.ceil(viewport.width);
+			canvas.height = Math.ceil(viewport.height);
+			await page.render({ canvas, viewport, intent: "print" }).promise;
+			page.cleanup();
+			const blob = await new Promise<Blob>((resolve, reject) =>
+				canvas.toBlob(
+					(result) =>
+						result
+							? resolve(result)
+							: reject(new Error("Canvas export failed")),
+					"image/jpeg",
+					0.9,
+				),
+			);
+			return {
+				url: URL.createObjectURL(blob),
+				aspect: viewport.width / viewport.height,
+			};
+		},
+		destroy: () => task.destroy(),
+	};
 }
 
 export async function stampPdf(
