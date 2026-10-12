@@ -329,5 +329,22 @@
 	"text.line.reverse": "Balik urutan",
 	"text.line.unique": "Hapus duplikat",
 	"text.line.removeEmpty": "Hapus baris kosong",
-	"text.line.cleanSpaces": "Rapikan spasi"
+	"text.line.cleanSpaces": "Rapikan spasi",
+	"json.output": "JSON yang dirapikan",
+	"json.wrap": "Bungkus baris panjang",
+	"json.expandView": "Perbesar ke layar penuh",
+	"json.collapseView": "Keluar dari layar penuh",
+	"tool.merge.name": "Gabung Gambar",
+	"tool.merge.description": "Susun beberapa gambar ke bawah atau ke samping jadi satu gambar, dengan jarak dan latar opsional.",
+	"merge.direction": "Arah",
+	"merge.vertical": "Vertikal",
+	"merge.horizontal": "Horizontal",
+	"merge.size": "Ukuran",
+	"merge.size.sameWidth": "Lebar sama",
+	"merge.size.sameHeight": "Tinggi sama",
+	"merge.size.original": "Asli",
+	"merge.gap": "Jarak",
+	"merge.background": "Latar",
+	"merge.background.none": "Transparan",
+	"merge.action": "Gabungkan gambar"
 }

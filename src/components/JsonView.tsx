@@ -14,7 +14,13 @@ const TOKEN_CLASS: Record<TokenType, string> = {
 
 const MAX_LINES = 4000;
 
-export function JsonCode({ json }: { json: string }) {
+export function JsonCode({
+	json,
+	wrap = true,
+}: {
+	json: string;
+	wrap?: boolean;
+}) {
 	const lines = json.split("\n");
 	const shown = lines.slice(0, MAX_LINES);
 	const gutter = String(shown.length).length;
@@ -23,28 +29,46 @@ export function JsonCode({ json }: { json: string }) {
 		<div className="overflow-auto font-mono text-[0.8125rem] leading-6">
 			<table className="w-full border-collapse">
 				<tbody>
-					{shown.map((line, index) => (
-						// biome-ignore lint/suspicious/noArrayIndexKey: lines have no identity beyond their position
-						<tr key={index} className="hover:bg-surface-secondary">
-							<td
-								className="sticky left-0 select-none border-separator border-r bg-surface px-3 text-right align-top text-muted/60"
-								style={{ width: `${gutter + 2}ch` }}
-							>
-								{index + 1}
-							</td>
-							<td className="whitespace-pre-wrap break-all px-4">
-								{tokenize(line).map((token, tokenIndex) => (
-									<span
-										// biome-ignore lint/suspicious/noArrayIndexKey: tokens are rendered in order and never reordered
-										key={tokenIndex}
-										className={TOKEN_CLASS[token.type]}
-									>
-										{token.text}
-									</span>
-								))}
-							</td>
-						</tr>
-					))}
+					{shown.map((line, index) => {
+						const content = line.trimStart();
+						const leading = line.slice(0, line.length - content.length);
+						// Tabs render 2 columns wide (see tab-size below).
+						const indent = leading.replaceAll("\t", "  ").length;
+						return (
+							// biome-ignore lint/suspicious/noArrayIndexKey: lines have no identity beyond their position
+							<tr key={index} className="hover:bg-surface-secondary">
+								<td
+									className="sticky left-0 select-none border-separator border-r bg-surface px-3 text-right align-top text-muted/60"
+									style={{ width: `${gutter + 2}ch` }}
+								>
+									{index + 1}
+								</td>
+								<td
+									className={
+										wrap
+											? "whitespace-pre-wrap pr-4 [overflow-wrap:anywhere] [tab-size:2]"
+											: "whitespace-pre pr-4 [tab-size:2]"
+									}
+									// A hanging indent: wrapped continuation lines line up two
+									// columns past the line's own indentation, not at the margin.
+									style={{
+										paddingLeft: `calc(1rem + ${indent + 2}ch)`,
+										textIndent: "-2ch",
+									}}
+								>
+									{tokenize(content).map((token, tokenIndex) => (
+										<span
+											// biome-ignore lint/suspicious/noArrayIndexKey: tokens are rendered in order and never reordered
+											key={tokenIndex}
+											className={TOKEN_CLASS[token.type]}
+										>
+											{token.text}
+										</span>
+									))}
+								</td>
+							</tr>
+						);
+					})}
 				</tbody>
 			</table>
 			{lines.length > MAX_LINES && (

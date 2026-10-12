@@ -3,7 +3,7 @@ import { Eraser, Undo2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CopyButton } from "../components/CopyButton";
-import { EDITOR_CLASS, EditorPanel } from "../components/EditorPanel";
+import { EditorPanel } from "../components/EditorPanel";
 import { ToolPage } from "../components/ToolPage";
 import {
 	type CaseId,
@@ -132,7 +132,7 @@ export function TextPage() {
 						onChange={(event) => setText(event.target.value)}
 						placeholder={t("text.placeholder")}
 						aria-label={t("text.input")}
-						className={`${EDITOR_CLASS} font-sans text-base`}
+						className="min-h-[26rem] w-full flex-1 resize-y bg-transparent p-4 text-base leading-relaxed outline-none placeholder:text-muted/60"
 					/>
 				</EditorPanel>
 

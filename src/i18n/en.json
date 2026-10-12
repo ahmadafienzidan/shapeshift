@@ -329,5 +329,22 @@
 	"text.line.reverse": "Reverse",
 	"text.line.unique": "Remove duplicates",
 	"text.line.removeEmpty": "Remove empty",
-	"text.line.cleanSpaces": "Trim spaces"
+	"text.line.cleanSpaces": "Trim spaces",
+	"json.output": "Formatted JSON",
+	"json.wrap": "Wrap long lines",
+	"json.expandView": "Expand to full screen",
+	"json.collapseView": "Exit full screen",
+	"tool.merge.name": "Merge Images",
+	"tool.merge.description": "Stack images vertically or side by side into one picture, with optional spacing and background.",
+	"merge.direction": "Direction",
+	"merge.vertical": "Vertical",
+	"merge.horizontal": "Horizontal",
+	"merge.size": "Size",
+	"merge.size.sameWidth": "Same width",
+	"merge.size.sameHeight": "Same height",
+	"merge.size.original": "Original",
+	"merge.gap": "Spacing",
+	"merge.background": "Background",
+	"merge.background.none": "Transparent",
+	"merge.action": "Merge images"
 }

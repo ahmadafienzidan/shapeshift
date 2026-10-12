@@ -1,4 +1,4 @@
-import { Button } from "@heroui/react";
+import { Button, ToggleButton, ToggleButtonGroup } from "@heroui/react";
 import {
 	Braces,
 	ChevronsDownUp,
@@ -7,16 +7,18 @@ import {
 	Download,
 	Eraser,
 	ListTree,
+	Maximize2,
+	Minimize2,
 	Sparkles,
 	Upload,
+	WrapText,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { DropZone, FileTrigger } from "react-aria-components";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CopyButton } from "../components/CopyButton";
 import { EDITOR_CLASS, EditorPanel } from "../components/EditorPanel";
 import { JsonCode, JsonTree } from "../components/JsonView";
-import { FormatPicker } from "../components/Options";
 import { ToolPage } from "../components/ToolPage";
 import { collectDropItems, downloadBlob, formatBytes } from "../lib/files";
 import { jsonStats, parseJson, sortKeys } from "../lib/json";
@@ -33,6 +35,37 @@ const INDENTS: Record<Indent, string | number | undefined> = {
 	minify: undefined,
 };
 
+function Segment<T extends string>({
+	label,
+	value,
+	onChange,
+	options,
+}: {
+	label: ReactNode;
+	value: T;
+	onChange: (value: T) => void;
+	options: { id: T; label: string }[];
+}) {
+	return (
+		<div className="flex items-center gap-2">
+			<span className="eyebrow text-[0.6875rem] text-muted">{label}</span>
+			<ToggleButtonGroup
+				size="sm"
+				selectionMode="single"
+				disallowEmptySelection
+				selectedKeys={new Set([value])}
+				onSelectionChange={(keys) => onChange([...keys][0] as T)}
+			>
+				{options.map((option) => (
+					<ToggleButton key={option.id} id={option.id}>
+						{option.label}
+					</ToggleButton>
+				))}
+			</ToggleButtonGroup>
+		</div>
+	);
+}
+
 export function JsonPage() {
 	const intl = useIntl();
 	const t = (id: string) => intl.formatMessage({ id });
@@ -40,7 +73,22 @@ export function JsonPage() {
 	const [indent, setIndent] = useState<Indent>("2");
 	const [sort, setSort] = useState<"original" | "sorted">("original");
 	const [view, setView] = useState<"code" | "tree">("code");
+	const [wrap, setWrap] = useState(true);
+	const [expanded, setExpanded] = useState(false);
 	const [treeVersion, setTreeVersion] = useState({ id: 0, openDepth: 2 });
+
+	useEffect(() => {
+		if (!expanded) return;
+		const close = (event: KeyboardEvent) => {
+			if (event.key === "Escape") setExpanded(false);
+		};
+		document.addEventListener("keydown", close);
+		document.body.style.overflow = "hidden";
+		return () => {
+			document.removeEventListener("keydown", close);
+			document.body.style.overflow = "";
+		};
+	}, [expanded]);
 
 	const parsed = useMemo(
 		() => (input.trim() === "" ? undefined : parseJson(input)),
@@ -71,10 +119,10 @@ export function JsonPage() {
 	return (
 		<ToolPage
 			tool={JSON_TOOL}
-			options={
-				<>
-					<FormatPicker
-						labelId="json.indent"
+			toolbar={
+				<div className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-xl border border-border bg-surface px-4 py-3">
+					<Segment
+						label={<FormattedMessage id="json.indent" />}
 						value={indent}
 						onChange={setIndent}
 						options={[
@@ -84,8 +132,8 @@ export function JsonPage() {
 							{ id: "minify", label: t("json.minify") },
 						]}
 					/>
-					<FormatPicker
-						labelId="json.keyOrder"
+					<Segment
+						label={<FormattedMessage id="json.keyOrder" />}
 						value={sort}
 						onChange={setSort}
 						options={[
@@ -94,7 +142,7 @@ export function JsonPage() {
 						]}
 					/>
 					{stats && (
-						<dl className="grid grid-cols-2 gap-px overflow-hidden rounded border border-border bg-border text-center">
+						<dl className="flex flex-wrap gap-x-5 gap-y-1 font-mono text-xs lg:ml-auto">
 							{(
 								[
 									["json.stat.size", formatBytes(new Blob([output]).size)],
@@ -103,88 +151,98 @@ export function JsonPage() {
 									["json.stat.depth", intl.formatNumber(stats.depth)],
 								] as const
 							).map(([id, stat]) => (
-								<div key={id} className="flex flex-col gap-0.5 bg-surface p-2">
-									<dd className="font-mono font-semibold text-sm">{stat}</dd>
-									<dt className="eyebrow text-[0.625rem] text-muted">
+								<div key={id} className="flex items-baseline gap-1.5">
+									<dt className="text-muted">
 										<FormattedMessage id={id} />
 									</dt>
+									<dd className="font-semibold">{stat}</dd>
 								</div>
 							))}
 						</dl>
 					)}
-				</>
+				</div>
 			}
 		>
-			<div className="grid gap-4 2xl:grid-cols-2">
-				<DropZone
-					onDrop={async (event) => {
-						const [file] = await collectDropItems(event.items);
-						if (file) await load(file);
-					}}
-					className={({ isDropTarget }) =>
-						`flex rounded-xl ${isDropTarget ? "outline-2 outline-electric outline-offset-2" : ""}`
+			<DropZone
+				onDrop={async (event) => {
+					const [file] = await collectDropItems(event.items);
+					if (file) await load(file);
+				}}
+				className={({ isDropTarget }) =>
+					`flex rounded-xl ${isDropTarget ? "outline-2 outline-electric outline-offset-2" : ""}`
+				}
+			>
+				<EditorPanel
+					label={
+						<span className="flex items-center gap-2">
+							<Braces size={14} />
+							<FormattedMessage id="json.input" />
+							{parsed && (
+								<span
+									className={`size-2 rounded-full ${parsed.ok ? "bg-success" : "bg-danger"}`}
+									title={t(parsed.ok ? "json.valid" : "json.invalid")}
+								/>
+							)}
+						</span>
+					}
+					actions={
+						<>
+							<FileTrigger
+								acceptedFileTypes={[".json", "application/json", ".txt"]}
+								onSelect={(list) => {
+									const file = list?.[0];
+									if (file) load(file);
+								}}
+							>
+								<Button variant="ghost" size="sm">
+									<Upload size={14} />
+									<FormattedMessage id="data.upload" />
+								</Button>
+							</FileTrigger>
+							<Button
+								variant="ghost"
+								size="sm"
+								onPress={() => setInput(SAMPLE)}
+							>
+								<Sparkles size={14} />
+								<FormattedMessage id="data.sample" />
+							</Button>
+							<Button
+								isIconOnly
+								variant="ghost"
+								size="sm"
+								aria-label={t("data.clear")}
+								isDisabled={input === ""}
+								onPress={() => setInput("")}
+							>
+								<Eraser size={14} />
+							</Button>
+						</>
 					}
 				>
-					<EditorPanel
-						label={
-							<span className="flex items-center gap-2">
-								<Braces size={14} />
-								<FormattedMessage id="json.input" />
-								{parsed && (
-									<span
-										className={`size-2 rounded-full ${parsed.ok ? "bg-success" : "bg-danger"}`}
-										title={t(parsed.ok ? "json.valid" : "json.invalid")}
-									/>
-								)}
-							</span>
-						}
-						actions={
-							<>
-								<FileTrigger
-									acceptedFileTypes={[".json", "application/json", ".txt"]}
-									onSelect={(list) => {
-										const file = list?.[0];
-										if (file) load(file);
-									}}
-								>
-									<Button variant="ghost" size="sm">
-										<Upload size={14} />
-										<FormattedMessage id="data.upload" />
-									</Button>
-								</FileTrigger>
-								<Button
-									variant="ghost"
-									size="sm"
-									onPress={() => setInput(SAMPLE)}
-								>
-									<Sparkles size={14} />
-									<FormattedMessage id="data.sample" />
-								</Button>
-								<Button
-									isIconOnly
-									variant="ghost"
-									size="sm"
-									aria-label={t("data.clear")}
-									isDisabled={input === ""}
-									onPress={() => setInput("")}
-								>
-									<Eraser size={14} />
-								</Button>
-							</>
-						}
-					>
-						<textarea
-							value={input}
-							onChange={(event) => setInput(event.target.value)}
-							placeholder={t("json.placeholder")}
-							spellCheck={false}
-							aria-label={t("json.input")}
-							className={EDITOR_CLASS}
-						/>
-					</EditorPanel>
-				</DropZone>
+					<textarea
+						value={input}
+						onChange={(event) => setInput(event.target.value)}
+						placeholder={t("json.placeholder")}
+						spellCheck={false}
+						aria-label={t("json.input")}
+						className={`${EDITOR_CLASS} min-h-40`}
+					/>
+				</EditorPanel>
+			</DropZone>
 
+			{/* Expanding swaps classes on this wrapper instead of re-rendering the
+			    panel elsewhere, so the tree keeps its open and closed nodes. */}
+			<section
+				aria-label={t("json.output")}
+				className={
+					expanded
+						? "fixed inset-0 z-50 flex flex-col bg-background/95 p-3 backdrop-blur sm:p-6"
+						: "flex flex-col"
+				}
+			>
 				<EditorPanel
+					className={expanded ? "min-h-0 flex-1" : ""}
 					label={
 						<span className="flex items-center gap-1">
 							<Button
@@ -207,7 +265,18 @@ export function JsonPage() {
 					}
 					actions={
 						<>
-							{view === "tree" && (
+							{view === "code" ? (
+								<Button
+									isIconOnly
+									size="sm"
+									variant={wrap ? "tertiary" : "ghost"}
+									aria-label={t("json.wrap")}
+									aria-pressed={wrap}
+									onPress={() => setWrap(!wrap)}
+								>
+									<WrapText size={14} />
+								</Button>
+							) : (
 								<>
 									<Button
 										isIconOnly
@@ -254,10 +323,25 @@ export function JsonPage() {
 								<Download size={14} />
 								<FormattedMessage id="queue.download" />
 							</Button>
+							<Button
+								isIconOnly
+								variant="ghost"
+								size="sm"
+								aria-label={t(
+									expanded ? "json.collapseView" : "json.expandView",
+								)}
+								onPress={() => setExpanded(!expanded)}
+							>
+								{expanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+							</Button>
 						</>
 					}
 				>
-					<div className="min-h-[26rem] flex-1">
+					<div
+						className={
+							expanded ? "min-h-0 flex-1 overflow-auto" : "min-h-[30rem] flex-1"
+						}
+					>
 						{parsed && !parsed.ok && (
 							<div className="m-4 flex flex-col gap-3 rounded border border-danger/40 bg-danger-soft p-4 text-danger-soft-foreground">
 								<p className="font-semibold text-sm">
@@ -304,7 +388,7 @@ export function JsonPage() {
 						)}
 						{output &&
 							(view === "code" ? (
-								<JsonCode json={output} />
+								<JsonCode json={output} wrap={wrap} />
 							) : (
 								<JsonTree
 									key={treeVersion.id}
@@ -319,7 +403,7 @@ export function JsonPage() {
 						)}
 					</div>
 				</EditorPanel>
-			</div>
+			</section>
 		</ToolPage>
 	);
 }

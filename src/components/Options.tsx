@@ -50,6 +50,7 @@ export function RangeSlider({
 	max,
 	isDisabled,
 	hint,
+	unit = "%",
 }: {
 	labelId: string;
 	value: number;
@@ -58,6 +59,7 @@ export function RangeSlider({
 	max: number;
 	isDisabled?: boolean;
 	hint?: ReactNode;
+	unit?: string;
 }) {
 	return (
 		<div className="flex flex-col gap-2">
@@ -72,7 +74,11 @@ export function RangeSlider({
 					<Label>
 						<FormattedMessage id={labelId} />
 					</Label>
-					<Slider.Output>{({ state }) => `${state.values[0]}%`}</Slider.Output>
+					<Slider.Output>
+						{({ state }) =>
+							`${state.values[0]}${unit === "%" ? "" : " "}${unit}`
+						}
+					</Slider.Output>
 				</div>
 				<Slider.Track>
 					<Slider.Fill />

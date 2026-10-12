@@ -191,7 +191,7 @@ export function DataPage() {
 							placeholder={t("data.placeholder")}
 							spellCheck={false}
 							aria-label={t("data.inputLabel")}
-							className={EDITOR_CLASS}
+							className={`${EDITOR_CLASS} min-h-[26rem]`}
 						/>
 					</EditorPanel>
 				</DropZone>
@@ -235,7 +235,7 @@ export function DataPage() {
 							spellCheck={false}
 							aria-label={t("data.outputLabel")}
 							placeholder={t("data.outputPlaceholder")}
-							className={EDITOR_CLASS}
+							className={`${EDITOR_CLASS} min-h-[26rem]`}
 						/>
 					)}
 				</EditorPanel>

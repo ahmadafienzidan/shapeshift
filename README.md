@@ -66,6 +66,14 @@ Every file shows its before and after size, and the queue shows the total space 
 - Drag and zoom (pinch on phones) to frame the shot; the exact output size in pixels is shown live
 - Exports at full resolution as JPG, PNG, or WEBP
 
+### 🧩 Merge Images
+
+- Stack images **vertically** (screenshots, long-scroll stories) or **side by side** (before/after, comparisons)
+- Match every image to the same width (vertical) or height (horizontal), or keep original sizes centered
+- Spacing between images, transparent or solid background, and JPG, PNG, or WEBP output
+- Reorder or sort A–Z before merging, with a preview of the result and its pixel size
+- Very large results are scaled down to fit browser canvas limits instead of failing
+
 ### ✨ Icon Generator
 
 Drop in one logo (SVG gives the sharpest result) and get a complete icon pack as a ZIP:
@@ -166,7 +174,9 @@ A two-pane editor that converts as you type.
 #### JSON Formatter
 
 - Pretty-print with 2 or 4 spaces or tabs, or minify; sort keys A–Z
-- Syntax-colored code view with line numbers, plus a collapsible **tree view** with item counts
+- Full-width, syntax-colored code view with line numbers and a hanging indent, so long keys and values wrap neatly under themselves
+- Wrap or scroll long lines, and expand the result to **full screen** (Esc to close)
+- A collapsible **tree view** with item counts
 - Errors point to the exact line and column with a caret under the problem, and trailing commas are called out by name
 - Size, key, object, and depth stats; drop in a `.json` file, copy, or download
 

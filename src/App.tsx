@@ -37,6 +37,9 @@ const ChecksumPage = lazy(() =>
 		default: module.ChecksumPage,
 	})),
 );
+const MergePage = lazy(() =>
+	import("./pages/MergePage").then((module) => ({ default: module.MergePage })),
+);
 const CropPage = lazy(() =>
 	import("./pages/CropPage").then((module) => ({ default: module.CropPage })),
 );
@@ -81,6 +84,7 @@ export function App() {
 							<Route path="/checksum" element={<ChecksumPage />} />
 							<Route path="/color" element={<ColorPage />} />
 							<Route path="/crop" element={<CropPage />} />
+							<Route path="/merge" element={<MergePage />} />
 							<Route path="/text" element={<TextPage />} />
 							<Route path="/json" element={<JsonPage />} />
 							<Route path="/diff" element={<DiffPage />} />

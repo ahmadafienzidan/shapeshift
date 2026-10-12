@@ -1,6 +1,7 @@
 import {
 	Binary,
 	Braces,
+	Combine,
 	Crop,
 	FileJson,
 	FileText,
@@ -99,6 +100,14 @@ export const CHECKSUM_TOOL: Tool = {
 	group: "data",
 };
 
+export const MERGE_TOOL: Tool = {
+	id: "merge",
+	path: "/merge",
+	icon: Combine,
+	tile: "bg-sun text-ink",
+	group: "images",
+};
+
 export const CROP_TOOL: Tool = {
 	id: "crop",
 	path: "/crop",
@@ -151,6 +160,7 @@ export const TOOLS: Tool[] = [
 	CONVERT_TOOL,
 	COMPRESS_TOOL,
 	CROP_TOOL,
+	MERGE_TOOL,
 	ICONS_TOOL,
 	METADATA_TOOL,
 	COLOR_TOOL,

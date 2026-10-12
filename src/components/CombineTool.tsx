@@ -17,7 +17,7 @@ import { Thumbnail } from "./Thumbnail";
 
 type Entry = { id: string; file: File };
 
-type Output = { url: string; name: string; size: number };
+type Output = { url: string; name: string; size: number; isImage: boolean };
 
 function move<T>(list: T[], from: number, to: number): T[] {
 	const next = [...list];
@@ -42,10 +42,12 @@ export function CombineTool({
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState<string>();
 	const [output, setOutput] = useState<Output>();
+	const [dimensions, setDimensions] = useState<string>();
 
 	const reset = () => {
 		if (output) URL.revokeObjectURL(output.url);
 		setOutput(undefined);
+		setDimensions(undefined);
 		setError(undefined);
 	};
 
@@ -71,6 +73,7 @@ export function CombineTool({
 				url: URL.createObjectURL(blob),
 				name: outputName,
 				size: blob.size,
+				isImage: blob.type.startsWith("image/"),
 			});
 		} catch (caught) {
 			setError(String(caught));
@@ -176,6 +179,21 @@ export function CombineTool({
 						))}
 					</ol>
 
+					{output?.isImage && (
+						<div className="grid place-items-center border-separator border-t p-5 [background-image:conic-gradient(var(--default)_25%,transparent_0_50%,var(--default)_0_75%,transparent_0)] [background-size:16px_16px]">
+							<img
+								src={output.url}
+								alt={output.name}
+								onLoad={(event) =>
+									setDimensions(
+										`${event.currentTarget.naturalWidth} × ${event.currentTarget.naturalHeight} px`,
+									)
+								}
+								className="max-h-[32rem] max-w-full object-contain shadow-lg"
+							/>
+						</div>
+					)}
+
 					<div className="flex flex-wrap items-center justify-between gap-4 border-separator border-t bg-surface-secondary p-5">
 						{output ? (
 							<div className="flex min-w-0 items-center gap-3">
@@ -184,6 +202,7 @@ export function CombineTool({
 									<p className="truncate font-medium text-sm">{output.name}</p>
 									<span className="font-mono text-muted text-xs">
 										{formatBytes(output.size)}
+										{dimensions && ` · ${dimensions}`}
 									</span>
 								</div>
 							</div>

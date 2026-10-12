@@ -72,7 +72,7 @@ function TextMode({
 					spellCheck={false}
 					aria-label={t("data.inputLabel")}
 					placeholder={t(`base64.placeholder.${direction}`)}
-					className={EDITOR_CLASS}
+					className={`${EDITOR_CLASS} min-h-[26rem]`}
 				/>
 			</EditorPanel>
 			<EditorPanel
@@ -90,7 +90,7 @@ function TextMode({
 						spellCheck={false}
 						aria-label={t("data.outputLabel")}
 						placeholder={t("data.outputPlaceholder")}
-						className={EDITOR_CLASS}
+						className={`${EDITOR_CLASS} min-h-[26rem]`}
 					/>
 				)}
 			</EditorPanel>
@@ -239,7 +239,7 @@ function DecodeFileMode() {
 					spellCheck={false}
 					aria-label={t("data.inputLabel")}
 					placeholder={t("base64.placeholder.file")}
-					className={EDITOR_CLASS}
+					className={`${EDITOR_CLASS} min-h-[26rem]`}
 				/>
 			</EditorPanel>
 			<EditorPanel label={t("base64.result")} actions={null}>
