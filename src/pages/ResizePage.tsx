@@ -1,11 +1,23 @@
-import { Input, Label, TextField } from "@heroui/react";
-import { useState } from "react";
+import { Button, Input, Label, Spinner, TextField } from "@heroui/react";
+import { Download, RotateCcw, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { BatchTool } from "../components/BatchTool";
+import { Dropzone } from "../components/Dropzone";
 import { ColorInput, FormatPicker, QualitySlider } from "../components/Options";
 import { ToolPage } from "../components/ToolPage";
-import { EXTENSIONS, IMAGE_KIND, type OutputType } from "../lib/image";
-import { type Fit, resizeImage } from "../lib/resize";
+import { createZip, downloadBlob } from "../lib/files";
+import {
+	decodeImage,
+	EXTENSIONS,
+	IMAGE_KIND,
+	type OutputType,
+} from "../lib/image";
+import {
+	drawResized,
+	type Fit,
+	type ResizeOptions,
+	resizeImage,
+} from "../lib/resize";
 import { RESIZE_TOOL } from "../tools";
 
 type Preset = { id: string; group: string; width: number; height: number };
@@ -90,6 +102,76 @@ function PresetPicker({
 	);
 }
 
+type Entry = { id: string; file: File; bitmap: ImageBitmap };
+
+const PREVIEW_SIZE = 480;
+
+async function previewBitmap(file: File): Promise<ImageBitmap> {
+	const full = await decodeImage(file);
+	const scale = Math.min(
+		1,
+		(PREVIEW_SIZE * 2) / Math.max(full.width, full.height),
+	);
+	const bitmap = await createImageBitmap(full, {
+		resizeWidth: Math.round(full.width * scale),
+		resizeHeight: Math.round(full.height * scale),
+		resizeQuality: "high",
+	});
+	full.close();
+	return bitmap;
+}
+
+function ResizePreview({
+	entry,
+	width,
+	height,
+	options,
+	onRemove,
+}: {
+	entry: Entry;
+	width: number;
+	height: number;
+	options: ResizeOptions;
+	onRemove: () => void;
+}) {
+	const intl = useIntl();
+	const canvas = useRef<HTMLCanvasElement>(null);
+	const { fit, focus, background } = options;
+
+	useEffect(() => {
+		const element = canvas.current;
+		const context = element?.getContext("2d");
+		if (!element || !context) return;
+		const scale = PREVIEW_SIZE / Math.max(width, height);
+		element.width = Math.max(1, Math.round(width * scale));
+		element.height = Math.max(1, Math.round(height * scale));
+		drawResized(context, entry.bitmap, { fit, focus, background });
+	}, [entry.bitmap, width, height, fit, focus, background]);
+
+	return (
+		<li className="group flex min-w-0 flex-col gap-2">
+			<div className="relative grid aspect-square place-items-center rounded border border-border bg-surface-secondary p-2">
+				<canvas
+					ref={canvas}
+					className="max-h-full max-w-full shadow-md"
+					style={{ aspectRatio: `${width} / ${height}` }}
+				/>
+				<Button
+					isIconOnly
+					size="sm"
+					variant="tertiary"
+					aria-label={intl.formatMessage({ id: "combine.remove" })}
+					onPress={onRemove}
+					className="absolute top-1.5 right-1.5 opacity-0 transition-opacity focus-visible:opacity-100 group-hover:opacity-100"
+				>
+					<X size={14} />
+				</Button>
+			</div>
+			<p className="truncate font-mono text-muted text-xs">{entry.file.name}</p>
+		</li>
+	);
+}
+
 function DimensionField({
 	labelId,
 	value,
@@ -133,11 +215,73 @@ export function ResizePage() {
 		height >= 1 &&
 		width <= 8192 &&
 		height <= 8192;
+	const options: ResizeOptions = { fit, focus: Number(focus), background };
+
+	const [entries, setEntries] = useState<Entry[]>([]);
+	const [busy, setBusy] = useState(false);
+	const [progress, setProgress] = useState(0);
+	const [error, setError] = useState<string>();
+
+	const add = async (files: File[]) => {
+		setError(undefined);
+		try {
+			const added = await Promise.all(
+				files.map(async (file) => ({
+					id: crypto.randomUUID(),
+					file,
+					bitmap: await previewBitmap(file),
+				})),
+			);
+			setEntries((current) => [...current, ...added]);
+		} catch (caught) {
+			setError(String(caught));
+		}
+	};
+
+	const remove = (removed: Entry[]) => {
+		for (const entry of removed) entry.bitmap.close();
+		setEntries((current) =>
+			current.filter((entry) => !removed.includes(entry)),
+		);
+	};
+
+	const run = async () => {
+		if (!valid) return;
+		setBusy(true);
+		setError(undefined);
+		setProgress(0);
+		try {
+			const outputs = [];
+			for (const entry of entries) {
+				const base = entry.file.name.includes(".")
+					? entry.file.name.slice(0, entry.file.name.lastIndexOf("."))
+					: entry.file.name;
+				outputs.push({
+					blob: await resizeImage(
+						entry.file,
+						width,
+						height,
+						options,
+						format,
+						quality / 100,
+					),
+					name: `${base}-${width}x${height}.${EXTENSIONS[format]}`,
+				});
+				setProgress(outputs.length);
+			}
+			const [only] = outputs;
+			if (outputs.length === 1 && only) downloadBlob(only.blob, only.name);
+			else downloadBlob(await createZip(outputs), "shapeshift-resized.zip");
+		} catch (caught) {
+			setError(String(caught));
+		} finally {
+			setBusy(false);
+		}
+	};
 
 	return (
 		<ToolPage
 			tool={RESIZE_TOOL}
-			optionsHint="options.appliesToNew"
 			options={
 				<>
 					<PresetPicker value={presetId} onChange={setPresetId} />
@@ -204,32 +348,87 @@ export function ResizePage() {
 				</>
 			}
 		>
+			<Dropzone kind={IMAGE_KIND} onFiles={add} />
 			{!valid && (
 				<p className="rounded-xl border border-warning/40 bg-warning-soft p-3 text-center text-sm text-warning-soft-foreground">
 					<FormattedMessage id="resize.invalidSize" />
 				</p>
 			)}
-			<BatchTool
-				kind={IMAGE_KIND}
-				zipName="shapeshift-resized.zip"
-				process={async (file) => {
-					if (!valid) throw new Error("resize.invalidSize");
-					const base = file.name.includes(".")
-						? file.name.slice(0, file.name.lastIndexOf("."))
-						: file.name;
-					return [
-						{
-							blob: await resizeImage(
-								file,
-								{ width, height, fit, focus: Number(focus), background },
-								format,
-								quality / 100,
-							),
-							name: `${base}-${width}x${height}.${EXTENSIONS[format]}`,
-						},
-					];
-				}}
-			/>
+			{entries.length > 0 && (
+				<section className="overflow-hidden rounded-xl border border-border bg-surface">
+					<div className="flex flex-wrap items-center justify-between gap-3 border-separator border-b p-5">
+						<div className="flex flex-col gap-1">
+							<p className="eyebrow text-muted">
+								<FormattedMessage id="resize.previewTitle" />
+							</p>
+							<p className="font-mono text-sm">
+								{valid && `${width} × ${height} px · `}
+								<FormattedMessage
+									id="combine.count"
+									values={{ count: entries.length }}
+								/>
+							</p>
+						</div>
+						<Button
+							variant="ghost"
+							size="sm"
+							onPress={() => remove(entries)}
+							isDisabled={busy}
+						>
+							<RotateCcw size={16} />
+							<FormattedMessage id="combine.clear" />
+						</Button>
+					</div>
+					{valid && (
+						<ul className="grid grid-cols-2 gap-4 p-5 sm:grid-cols-3 xl:grid-cols-4">
+							{entries.map((entry) => (
+								<ResizePreview
+									key={entry.id}
+									entry={entry}
+									width={width}
+									height={height}
+									options={options}
+									onRemove={() => remove([entry])}
+								/>
+							))}
+						</ul>
+					)}
+					<div className="flex flex-wrap items-center justify-between gap-4 border-separator border-t bg-surface-secondary p-5">
+						{error ? (
+							<p className="min-w-0 flex-1 truncate text-danger text-sm">
+								{error}
+							</p>
+						) : (
+							<p className="text-muted text-sm">
+								<FormattedMessage id="resize.previewHint" />
+							</p>
+						)}
+						<Button
+							variant="primary"
+							className="font-semibold"
+							isDisabled={busy || !valid}
+							onPress={run}
+						>
+							{busy ? (
+								<Spinner size="sm" color="current" />
+							) : (
+								<Download size={16} />
+							)}
+							{busy ? (
+								<FormattedMessage
+									id="resize.progress"
+									values={{ done: progress, total: entries.length }}
+								/>
+							) : (
+								<FormattedMessage
+									id="resize.action"
+									values={{ count: entries.length }}
+								/>
+							)}
+						</Button>
+					</div>
+				</section>
+			)}
 		</ToolPage>
 	);
 }

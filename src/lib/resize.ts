@@ -3,8 +3,6 @@ import { decodeImage, encodeImage, type OutputType } from "./image";
 export type Fit = "cover" | "blur" | "color";
 
 export type ResizeOptions = {
-	width: number;
-	height: number;
 	fit: Fit;
 	focus: number;
 	background: string;
@@ -12,8 +10,10 @@ export type ResizeOptions = {
 
 type Source = ImageBitmap | OffscreenCanvas;
 
+type Context = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+
 function drawScaled(
-	context: OffscreenCanvasRenderingContext2D,
+	context: Context,
 	source: Source,
 	width: number,
 	height: number,
@@ -60,18 +60,16 @@ function blurredCover(source: Source, width: number, height: number) {
 	return current;
 }
 
-export async function resizeImage(
-	file: File,
+// Draws `source` into the whole of `context`'s canvas, so the same code
+// renders the small live previews and the full-size output.
+export function drawResized(
+	context: Context,
+	source: ImageBitmap,
 	options: ResizeOptions,
-	type: OutputType,
-	quality: number,
-): Promise<Blob> {
-	const { width, height } = options;
-	const source = await decodeImage(file);
-	const canvas = new OffscreenCanvas(width, height);
-	const context = canvas.getContext("2d");
-	if (!context) throw new Error("Canvas 2D context is unavailable");
+) {
+	const { width, height } = context.canvas;
 	context.imageSmoothingQuality = "high";
+	context.clearRect(0, 0, width, height);
 
 	if (options.fit === "cover") {
 		drawScaled(
@@ -82,24 +80,38 @@ export async function resizeImage(
 			coverScale(source, width, height),
 			options.focus,
 		);
-	} else {
-		if (options.fit === "blur") {
-			context.drawImage(blurredCover(source, width, height), 0, 0);
-			context.fillStyle = "rgb(0 0 0 / 0.15)";
-		} else {
-			context.fillStyle = options.background;
-		}
-		context.fillRect(0, 0, width, height);
-		drawScaled(
-			context,
-			source,
-			width,
-			height,
-			Math.min(width / source.width, height / source.height),
-			0.5,
-		);
+		return;
 	}
+	if (options.fit === "blur") {
+		context.drawImage(blurredCover(source, width, height), 0, 0);
+		context.fillStyle = "rgb(0 0 0 / 0.15)";
+	} else {
+		context.fillStyle = options.background;
+	}
+	context.fillRect(0, 0, width, height);
+	drawScaled(
+		context,
+		source,
+		width,
+		height,
+		Math.min(width / source.width, height / source.height),
+		0.5,
+	);
+}
 
+export async function resizeImage(
+	file: File,
+	width: number,
+	height: number,
+	options: ResizeOptions,
+	type: OutputType,
+	quality: number,
+): Promise<Blob> {
+	const source = await decodeImage(file);
+	const canvas = new OffscreenCanvas(width, height);
+	const context = canvas.getContext("2d");
+	if (!context) throw new Error("Canvas 2D context is unavailable");
+	drawResized(context, source, options);
 	source.close();
 	return encodeImage(await createImageBitmap(canvas), type, quality);
 }

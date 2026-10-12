@@ -473,5 +473,9 @@
 	"markdown.action.numbers": "Numbered list",
 	"markdown.action.tasks": "Task list",
 	"markdown.action.table": "Table",
-	"markdown.action.rule": "Divider"
+	"markdown.action.rule": "Divider",
+	"resize.previewTitle": "Preview",
+	"resize.previewHint": "Change the size or fit and the previews update right away.",
+	"resize.action": "{count, plural, one {Resize & download} other {Resize & download # images}}",
+	"resize.progress": "Resizing {done} of {total}…"
 }
