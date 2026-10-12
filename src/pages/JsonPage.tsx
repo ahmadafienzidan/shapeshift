@@ -169,7 +169,7 @@ export function JsonPage() {
 					if (file) await load(file);
 				}}
 				className={({ isDropTarget }) =>
-					`flex rounded-xl ${isDropTarget ? "outline-2 outline-electric outline-offset-2" : ""}`
+					`flex flex-col rounded-xl ${isDropTarget ? "outline-2 outline-electric outline-offset-2" : ""}`
 				}
 			>
 				<EditorPanel

@@ -65,10 +65,12 @@ export function CombineTool({
 	};
 
 	const run = async () => {
-		reset();
+		setError(undefined);
 		setBusy(true);
 		try {
 			const blob = await combine(entries.map((entry) => entry.file));
+			if (output) URL.revokeObjectURL(output.url);
+			setDimensions(undefined);
 			setOutput({
 				url: URL.createObjectURL(blob),
 				name: outputName,
@@ -213,21 +215,9 @@ export function CombineTool({
 						) : (
 							<span />
 						)}
-						{output ? (
-							<a
-								href={output.url}
-								download={output.name}
-								className={buttonVariants({
-									variant: "primary",
-									className: "font-semibold",
-								})}
-							>
-								<Download size={16} />
-								<FormattedMessage id="queue.download" />
-							</a>
-						) : (
+						<div className="flex flex-wrap gap-2">
 							<Button
-								variant="primary"
+								variant={output ? "outline" : "primary"}
 								className="font-semibold"
 								isDisabled={busy}
 								onPress={run}
@@ -235,7 +225,20 @@ export function CombineTool({
 								{busy && <Spinner size="sm" color="current" />}
 								{actionLabel}
 							</Button>
-						)}
+							{output && (
+								<a
+									href={output.url}
+									download={output.name}
+									className={buttonVariants({
+										variant: "primary",
+										className: "font-semibold",
+									})}
+								>
+									<Download size={16} />
+									<FormattedMessage id="queue.download" />
+								</a>
+							)}
+						</div>
 					</div>
 				</section>
 			)}
