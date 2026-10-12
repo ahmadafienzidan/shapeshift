@@ -65,6 +65,16 @@ const DevToolsPage = lazy(() =>
 		default: module.DevToolsPage,
 	})),
 );
+const ResizePage = lazy(() =>
+	import("./pages/ResizePage").then((module) => ({
+		default: module.ResizePage,
+	})),
+);
+const MarkdownPage = lazy(() =>
+	import("./pages/MarkdownPage").then((module) => ({
+		default: module.MarkdownPage,
+	})),
+);
 const DataPage = lazy(() =>
 	import("./pages/DataPage").then((module) => ({ default: module.DataPage })),
 );
@@ -80,6 +90,8 @@ export function App() {
 							<Route path="/" element={<HomePage />} />
 							<Route path="/convert" element={<ConvertPage />} />
 							<Route path="/compress" element={<CompressPage />} />
+							<Route path="/resize" element={<ResizePage />} />
+							<Route path="/markdown" element={<MarkdownPage />} />
 							<Route path="/pdf" element={<PdfPage />} />
 							<Route path="/icons" element={<IconsPage />} />
 							<Route path="/qr" element={<QrPage />} />

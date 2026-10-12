@@ -1,4 +1,4 @@
-import { Button, ToggleButton, ToggleButtonGroup } from "@heroui/react";
+import { Button } from "@heroui/react";
 import {
 	Braces,
 	ChevronsDownUp,
@@ -13,12 +13,13 @@ import {
 	Upload,
 	WrapText,
 } from "lucide-react";
-import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DropZone, FileTrigger } from "react-aria-components";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CopyButton } from "../components/CopyButton";
 import { EDITOR_CLASS, EditorPanel } from "../components/EditorPanel";
 import { JsonCode, JsonTree } from "../components/JsonView";
+import { Segment } from "../components/Segment";
 import { ToolPage } from "../components/ToolPage";
 import { collectDropItems, downloadBlob, formatBytes } from "../lib/files";
 import { jsonStats, parseJson, sortKeys } from "../lib/json";
@@ -34,37 +35,6 @@ const INDENTS: Record<Indent, string | number | undefined> = {
 	tab: "\t",
 	minify: undefined,
 };
-
-function Segment<T extends string>({
-	label,
-	value,
-	onChange,
-	options,
-}: {
-	label: ReactNode;
-	value: T;
-	onChange: (value: T) => void;
-	options: { id: T; label: string }[];
-}) {
-	return (
-		<div className="flex items-center gap-2">
-			<span className="eyebrow text-[0.6875rem] text-muted">{label}</span>
-			<ToggleButtonGroup
-				size="sm"
-				selectionMode="single"
-				disallowEmptySelection
-				selectedKeys={new Set([value])}
-				onSelectionChange={(keys) => onChange([...keys][0] as T)}
-			>
-				{options.map((option) => (
-					<ToggleButton key={option.id} id={option.id}>
-						{option.label}
-					</ToggleButton>
-				))}
-			</ToggleButtonGroup>
-		</div>
-	);
-}
 
 export function JsonPage() {
 	const intl = useIntl();

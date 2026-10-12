@@ -46,7 +46,7 @@ Turn photos from any device into formats that open everywhere.
 - Transparent areas are filled with white when exporting to JPG, so they don't turn black
 - Perfect for iPhone photos (HEIC) that Windows and many websites can't open
 
-### 🗜️ Compress & Resize
+### 🗜️ Compress
 
 Shrink images for email, chat, or the web.
 
@@ -58,6 +58,24 @@ Shrink images for email, chat, or the web.
 | **Strip metadata** | Always on: EXIF data such as GPS location and camera info is removed |
 
 Every file shows its before and after size, and the queue shows the total space saved.
+
+### 📐 Resize Image
+
+| Preset | Size |
+| --- | --- |
+| **Instagram post** | 1080 × 1080 (1:1) |
+| **Instagram portrait** | 1080 × 1350 (4:5) |
+| **Instagram landscape** | 1080 × 566 |
+| **Story · Reels** | 1080 × 1920 (9:16) |
+| **YouTube thumbnail** | 1280 × 720 |
+| **X post** | 1600 × 900 |
+| **Link preview** | 1200 × 630 |
+| **Custom** | Any size up to 8192 px |
+
+- **Crop to fill** covers the whole frame, keeping the top, center, or bottom of the photo
+- **Blur fill** keeps the whole photo and fills the empty space with a soft, blurred copy of it, the classic Instagram look
+- **Color fill** keeps the whole photo on a solid background
+- Works on whole batches, named like `holiday-1080x1350.jpg`
 
 ### ✂️ Crop & Rotate
 
@@ -140,6 +158,15 @@ Three modes in one place:
 - A4 and Letter pages rotate to landscape automatically for wide images
 - Watermarks, page numbers, and signatures respect each page's rotation, so scanned pages stored sideways still get them upright where you placed them
 - Unlocking removes every trace of the old encryption, not just the password prompt
+
+### 📝 Markdown Editor
+
+- Write and preview side by side, or switch to a full-width editor or preview; the preview follows your scroll
+- Formatting toolbar for headings, bold, italic, links, images, quotes, code, lists, task lists, tables, and dividers, plus **Ctrl + B / I / K**
+- Lists and quotes continue when you press Enter, and toolbar edits can be undone with **Ctrl + Z**
+- GitHub-flavored Markdown with tables, task lists, and syntax-highlighted code
+- Open or drop a `.md` file; export to `.md`, a standalone styled **HTML** page, or print to **PDF**
+- Your draft is saved in this browser as you type, and the preview is sanitized so a downloaded `.md` file cannot run scripts
 
 ### 🧾 Data Formats
 
@@ -272,6 +299,7 @@ src/
 - [Papa Parse](https://www.papaparse.com) and [yaml](https://eemeli.org/yaml/) for data conversion
 - [qrcode](https://github.com/soldair/node-qrcode) to generate and [jsQR](https://github.com/cozmo/jsQR) to read QR codes
 - [ExifReader](https://github.com/mattiasw/ExifReader) to read photo metadata and [hash-wasm](https://github.com/Daninet/hash-wasm) for streaming checksums
+- [marked](https://marked.js.org), [highlight.js](https://highlightjs.org), and [DOMPurify](https://github.com/cure53/DOMPurify) for the Markdown editor
 - [jsdiff](https://github.com/kpdecker/jsdiff) for text comparison and [react-easy-crop](https://github.com/ValentinH/react-easy-crop) for the crop tool
 - [vite-plugin-pwa](https://vite-pwa-org.netlify.app) for offline support, with app icons generated from `public/logo.svg`
 - [React Router](https://reactrouter.com) and [react-intl](https://formatjs.github.io/docs/react-intl/)

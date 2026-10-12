@@ -10,7 +10,9 @@ import {
 	GitCompare,
 	type LucideIcon,
 	Minimize2,
+	NotebookPen,
 	Palette,
+	Proportions,
 	QrCode,
 	RefreshCcw,
 	ScanEye,
@@ -45,6 +47,14 @@ export const COMPRESS_TOOL: Tool = {
 	group: "images",
 };
 
+export const RESIZE_TOOL: Tool = {
+	id: "resize",
+	path: "/resize",
+	icon: Proportions,
+	tile: "bg-coral text-ink",
+	group: "images",
+};
+
 export const ICONS_TOOL: Tool = {
 	id: "icons",
 	path: "/icons",
@@ -66,6 +76,14 @@ export const PDF_TOOL: Tool = {
 	path: "/pdf",
 	icon: FileText,
 	tile: "bg-coral text-ink",
+	group: "documents",
+};
+
+export const MARKDOWN_TOOL: Tool = {
+	id: "markdown",
+	path: "/markdown",
+	icon: NotebookPen,
+	tile: "bg-sun text-ink",
 	group: "documents",
 };
 
@@ -168,6 +186,7 @@ export const DEVTOOLS_TOOL: Tool = {
 export const TOOLS: Tool[] = [
 	CONVERT_TOOL,
 	COMPRESS_TOOL,
+	RESIZE_TOOL,
 	CROP_TOOL,
 	MERGE_TOOL,
 	WATERMARK_TOOL,
@@ -175,6 +194,7 @@ export const TOOLS: Tool[] = [
 	METADATA_TOOL,
 	COLOR_TOOL,
 	PDF_TOOL,
+	MARKDOWN_TOOL,
 	QR_TOOL,
 	DATA_TOOL,
 	TEXT_TOOL,
