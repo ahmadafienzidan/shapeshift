@@ -1,6 +1,6 @@
 import { Chip, Input, Label, TextField } from "@heroui/react";
 import { ImageIcon, type LucideIcon, Palette } from "lucide-react";
-import { useState } from "react";
+import { useDeferredValue, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CopyButton } from "../components/CopyButton";
 import { Dropzone } from "../components/Dropzone";
@@ -94,6 +94,7 @@ function Converter() {
 	// Keeps showing the last valid colour while the user is mid-way through
 	// typing a new one.
 	const [rgb, setRgb] = useState<Rgb>({ r: 61, g: 220, b: 255, a: 1 });
+	const deferred = useDeferredValue(rgb);
 	const valid = parseColor(input) !== undefined;
 
 	const update = (value: string) => {
@@ -103,11 +104,11 @@ function Converter() {
 	};
 
 	const formats = [
-		["HEX", toHex(rgb)],
-		["RGB", toRgbString(rgb)],
-		["HSL", toHsl(rgb)],
-		["OKLCH", toOklchString(rgb)],
-		["CMYK", toCmyk(rgb)],
+		["HEX", toHex(deferred)],
+		["RGB", toRgbString(deferred)],
+		["HSL", toHsl(deferred)],
+		["OKLCH", toOklchString(deferred)],
+		["CMYK", toCmyk(deferred)],
 	];
 
 	return (
@@ -165,8 +166,8 @@ function Converter() {
 					<FormattedMessage id="color.contrast" />
 				</p>
 				<div className="grid gap-4 sm:grid-cols-2">
-					<ContrastCard rgb={rgb} background={WHITE} />
-					<ContrastCard rgb={rgb} background={BLACK} />
+					<ContrastCard rgb={deferred} background={WHITE} />
+					<ContrastCard rgb={deferred} background={BLACK} />
 				</div>
 			</section>
 
@@ -175,7 +176,7 @@ function Converter() {
 					<FormattedMessage id="color.shades" />
 				</p>
 				<div className="flex gap-1.5 overflow-x-auto">
-					{shades(rgb).map((shade) => (
+					{shades(deferred).map((shade) => (
 						<Swatch key={shade.name} rgb={shade.rgb} label={shade.name} />
 					))}
 				</div>

@@ -6,7 +6,7 @@ import {
 	ToggleButton,
 	ToggleButtonGroup,
 } from "@heroui/react";
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 export function FormatPicker<T extends string>({
@@ -121,17 +121,28 @@ export function ColorInput({
 	value: string;
 	onChange: (value: string) => void;
 }) {
+	const [draft, setDraft] = useState(value);
+	const timer = useRef<number>(undefined);
+
+	useEffect(() => () => window.clearTimeout(timer.current), []);
+
+	const change = (next: string) => {
+		setDraft(next);
+		window.clearTimeout(timer.current);
+		timer.current = window.setTimeout(() => onChange(next), 150);
+	};
+
 	return (
 		<label className="flex items-center justify-between gap-3">
 			<span className="font-medium text-sm">
 				<FormattedMessage id={labelId} />
 			</span>
 			<span className="flex items-center gap-2 rounded border border-border bg-field px-2 py-1">
-				<span className="font-mono text-muted text-xs uppercase">{value}</span>
+				<span className="font-mono text-muted text-xs uppercase">{draft}</span>
 				<input
 					type="color"
-					value={value}
-					onChange={(event) => onChange(event.target.value)}
+					value={draft}
+					onChange={(event) => change(event.target.value)}
 					className="size-6 cursor-pointer rounded border-0 bg-transparent p-0"
 				/>
 			</span>
