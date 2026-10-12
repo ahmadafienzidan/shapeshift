@@ -74,7 +74,7 @@ export function App() {
 		<BrowserRouter basename={import.meta.env.BASE_URL}>
 			<div className="min-h-dvh bg-background text-foreground lg:flex">
 				<Sidebar />
-				<main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-8 lg:py-12">
+				<main className="mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 py-8 sm:px-8 lg:py-12">
 					<Suspense>
 						<Routes>
 							<Route path="/" element={<HomePage />} />

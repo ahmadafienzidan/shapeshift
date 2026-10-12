@@ -92,7 +92,11 @@ export function ChecksumPage() {
 							aria-label={t("checksum.algorithms")}
 						>
 							{ALGORITHMS.map((algorithm) => (
-								<ToggleButton key={algorithm.id} id={algorithm.id}>
+								<ToggleButton
+									key={algorithm.id}
+									id={algorithm.id}
+									className="min-w-0 px-1 text-xs"
+								>
 									{algorithm.label}
 								</ToggleButton>
 							))}

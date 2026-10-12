@@ -179,12 +179,15 @@ export function HomePage() {
 						<FormattedMessage id="home.badge" />
 					</Eyebrow>
 				</div>
-				<h1 className="headline max-w-4xl text-5xl sm:text-7xl lg:text-8xl">
+				<h1 className="headline max-w-4xl text-balance text-5xl sm:text-7xl lg:text-8xl">
 					<span className="block animate-rise" style={rise(100)}>
-						<FormattedMessage
-							id="home.title1"
-							values={{ thing: <RotatingWord /> }}
-						/>
+						<FormattedMessage id="home.title1" />
+						<span className="block whitespace-nowrap">
+							<FormattedMessage
+								id="home.titleWord"
+								values={{ thing: <RotatingWord /> }}
+							/>
+						</span>
 					</span>
 					<span
 						className="block animate-rise text-accent-soft-foreground"

@@ -15,11 +15,19 @@ export function ModeTabs<T extends string>({
 }) {
 	const intl = useIntl();
 	return (
-		<Tabs selectedKey={value} onSelectionChange={(key) => onChange(key as T)}>
-			<Tabs.ListContainer>
-				<Tabs.List aria-label={label}>
+		<Tabs
+			selectedKey={value}
+			onSelectionChange={(key) => onChange(key as T)}
+			className="min-w-0"
+		>
+			<Tabs.ListContainer className="overflow-x-auto [scrollbar-width:none]">
+				<Tabs.List aria-label={label} className="w-max min-w-full">
 					{modes.map((mode) => (
-						<Tabs.Tab key={mode.id} id={mode.id} className="gap-2">
+						<Tabs.Tab
+							key={mode.id}
+							id={mode.id}
+							className="gap-2 whitespace-nowrap"
+						>
 							<mode.icon size={16} />
 							{intl.formatMessage({ id: mode.labelId })}
 							<Tabs.Indicator />
