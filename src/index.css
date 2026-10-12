@@ -101,10 +101,13 @@ body {
 	background-size: 32px 32px;
 }
 
+.toggle-button {
+	font-weight: 600;
+}
+
 .toggle-button[data-selected="true"] {
 	background-color: var(--accent);
 	color: var(--accent-foreground);
-	font-weight: 600;
 }
 
 @keyframes rise {
