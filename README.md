@@ -99,6 +99,14 @@ Every file shows its before and after size, and the queue shows the total space 
 - Adjustable opacity; keep the original format or export JPG, PNG, or WEBP
 - Works on whole batches and folders, downloaded as one ZIP
 
+### 🔍 Image to Text
+
+- Pull text out of screenshots, photos, and scanned pages with [Tesseract](https://github.com/tesseract-ocr/tesseract), running on your device
+- English, Indonesian, or both; switching the language re-reads every image
+- Paste a screenshot straight from the clipboard with **Ctrl+V**, or drop a whole batch
+- Edit the result in place, then copy it or download it as `.txt` (one file per image, or all at once)
+- The engine and language data (a few MB) are downloaded the first time you use it, then cached for offline use
+
 ### ✨ Icon Generator
 
 Drop in one logo (SVG gives the sharpest result) and get a complete icon pack as a ZIP:
@@ -272,7 +280,7 @@ Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/dep
 3. **Encode**: `canvas.convertToBlob()` produces the final JPG, PNG, or WEBP.
 4. **Bundle**: files are processed one by one to keep memory low, and [`fflate`](https://github.com/101arrowz/fflate) zips the results on demand. Duplicate names are renamed automatically (`photo.jpg`, `photo (2).jpg`).
 
-PDF pages are rendered by pdf.js in a Web Worker and exported through the same canvas encoder, while new PDFs are assembled with pdf-lib. Heavy libraries (the HEIC decoder and pdf.js) are only downloaded the first time you use them.
+PDF pages are rendered by pdf.js in a Web Worker and exported through the same canvas encoder, while new PDFs are assembled with pdf-lib. Heavy libraries (the HEIC decoder, pdf.js, and the OCR engine) are only downloaded the first time you use them.
 
 ## 🗂️ Project structure
 
@@ -302,6 +310,7 @@ src/
 - [qrcode](https://github.com/soldair/node-qrcode) to generate and [jsQR](https://github.com/cozmo/jsQR) to read QR codes
 - [ExifReader](https://github.com/mattiasw/ExifReader) to read photo metadata and [hash-wasm](https://github.com/Daninet/hash-wasm) for streaming checksums
 - [marked](https://marked.js.org), [highlight.js](https://highlightjs.org), and [DOMPurify](https://github.com/cure53/DOMPurify) for the Markdown editor
+- [Tesseract.js](https://tesseract.projectnaptha.com) for text recognition, with its engine and language data served from this site
 - [jsdiff](https://github.com/kpdecker/jsdiff) for text comparison and [react-easy-crop](https://github.com/ValentinH/react-easy-crop) for the crop tool
 - [vite-plugin-pwa](https://vite-pwa-org.netlify.app) for offline support, with app icons generated from `public/logo.svg`
 - [React Router](https://reactrouter.com) and [react-intl](https://formatjs.github.io/docs/react-intl/)

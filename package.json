@@ -1,6 +1,6 @@
 {
 	"name": "shapeshift",
-	"version": "0.11.0",
+	"version": "0.12.0",
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.15",
 		"@tailwindcss/vite": "^4.3.3",
@@ -17,7 +17,7 @@
 		"vite-plugin-pwa": "^2.0.0",
 		"vitest": "^5.0.4"
 	},
-	"description": "Private, offline-capable toolkit for images, photo metadata, icons, PDFs, QR codes, and data formats",
+	"description": "Private, offline-capable toolkit for images, text recognition, photo metadata, icons, PDFs, QR codes, and data formats",
 	"private": true,
 	"scripts": {
 		"dev": "vite",
@@ -39,6 +39,8 @@
 		"@internationalized/date": "^3.12.4",
 		"@react-aria/ssr": "^3.10.1",
 		"@react-aria/utils": "^3.34.1",
+		"@tesseract.js-data/eng": "^1.0.0",
+		"@tesseract.js-data/ind": "^1.0.0",
 		"diff": "^9.0.0",
 		"dompurify": "^3.4.17",
 		"exifreader": "^4.48.1",
@@ -61,6 +63,8 @@
 		"react-intl": "^12.1.4",
 		"react-router": "^8.4.0",
 		"signature_pad": "^5.1.4",
+		"tesseract.js": "^7.0.0",
+		"tesseract.js-core": "^7.0.0",
 		"yaml": "^2.9.1"
 	}
 }

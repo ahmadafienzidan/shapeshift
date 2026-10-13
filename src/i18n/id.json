@@ -491,5 +491,19 @@
 	"compress.method.images": "Pertahankan teks",
 	"compress.method.flatten": "Ratakan halaman",
 	"compress.method.images.hint": "Mengecilkan gambar di dalam PDF; teks tetap tajam dan bisa dipilih.",
-	"compress.method.flatten.hint": "Mengubah setiap halaman jadi gambar. Paling efektif untuk hasil scan, tapi teks tidak bisa dipilih atau dicari lagi."
+	"compress.method.flatten.hint": "Mengubah setiap halaman jadi gambar. Paling efektif untuk hasil scan, tapi teks tidak bisa dipilih atau dicari lagi.",
+	"tool.ocr.name": "Gambar ke Teks",
+	"tool.ocr.description": "Ambil teks dari screenshot, foto, dan hasil scan. Pengenalan teks berjalan di perangkatmu, jadi gambarnya tidak pernah keluar.",
+	"ocr.language": "Bahasa",
+	"ocr.language.both": "Keduanya",
+	"ocr.language.eng": "Inggris",
+	"ocr.language.ind": "Indonesia",
+	"ocr.language.hint": "Memilih bahasa teksnya bikin hasil lebih akurat. Pemakaian pertama mengunduh mesin dan data bahasa (beberapa MB); setelah itu bisa offline.",
+	"ocr.paste": "Tips: tempel screenshot dengan Ctrl+V.",
+	"ocr.results": "Teks",
+	"ocr.loading": "Memuat mesin teks…",
+	"ocr.reading": "Membaca teks… {percent}",
+	"ocr.confidence": "Keyakinan {value}%",
+	"ocr.empty": "Tidak ada teks di gambar ini.",
+	"ocr.downloadAll": "Unduh semua"
 }

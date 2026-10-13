@@ -16,6 +16,7 @@ import {
 	QrCode,
 	RefreshCcw,
 	ScanEye,
+	ScanText,
 	Sparkle,
 	Type,
 	Wrench,
@@ -52,6 +53,14 @@ export const RESIZE_TOOL: Tool = {
 	path: "/resize",
 	icon: Proportions,
 	tile: "bg-coral text-ink",
+	group: "images",
+};
+
+export const OCR_TOOL: Tool = {
+	id: "ocr",
+	path: "/ocr",
+	icon: ScanText,
+	tile: "bg-electric text-ink",
 	group: "images",
 };
 
@@ -190,6 +199,7 @@ export const TOOLS: Tool[] = [
 	CROP_TOOL,
 	MERGE_TOOL,
 	WATERMARK_TOOL,
+	OCR_TOOL,
 	ICONS_TOOL,
 	METADATA_TOOL,
 	COLOR_TOOL,

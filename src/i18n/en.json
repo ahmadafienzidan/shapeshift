@@ -491,5 +491,19 @@
 	"compress.method.images": "Keep text",
 	"compress.method.flatten": "Flatten pages",
 	"compress.method.images.hint": "Shrinks the images inside the PDF; text stays sharp and selectable.",
-	"compress.method.flatten.hint": "Turns every page into an image. Best for scans, but text can no longer be selected or searched."
+	"compress.method.flatten.hint": "Turns every page into an image. Best for scans, but text can no longer be selected or searched.",
+	"tool.ocr.name": "Image to Text",
+	"tool.ocr.description": "Pull text out of screenshots, photos, and scanned pages. Recognition runs on your device, so the images never leave it.",
+	"ocr.language": "Language",
+	"ocr.language.both": "Both",
+	"ocr.language.eng": "English",
+	"ocr.language.ind": "Indonesian",
+	"ocr.language.hint": "Picking the text's language improves accuracy. The first run downloads the engine and language data (a few MB); after that it works offline.",
+	"ocr.paste": "Tip: paste a screenshot with Ctrl+V.",
+	"ocr.results": "Text",
+	"ocr.loading": "Loading the text engine…",
+	"ocr.reading": "Reading text… {percent}",
+	"ocr.confidence": "{value}% confidence",
+	"ocr.empty": "No text found in this image.",
+	"ocr.downloadAll": "Download all"
 }
