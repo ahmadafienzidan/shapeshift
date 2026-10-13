@@ -478,5 +478,18 @@
 	"preview.title": "Preview",
 	"preview.hint": "Ubah opsi, preview langsung ikut berubah.",
 	"preview.progress": "Memproses {done} dari {total}…",
-	"watermark.action": "{count, plural, one {Watermark & unduh} other {Watermark & unduh # gambar}}"
+	"watermark.action": "{count, plural, one {Watermark & unduh} other {Watermark & unduh # gambar}}",
+	"pdf.mode.compress": "Kompres",
+	"compress.level": "Tingkat kompresi",
+	"compress.level.light": "Ringan",
+	"compress.level.recommended": "Disarankan",
+	"compress.level.strong": "Kuat",
+	"compress.level.light.hint": "Gambar maksimal 2400 px dengan kualitas tinggi. Paling pas untuk dicetak.",
+	"compress.level.recommended.hint": "Gambar maksimal 1600 px. Tetap tajam di layar dengan ukuran jauh lebih kecil.",
+	"compress.level.strong.hint": "Gambar maksimal 1000 px dengan kualitas lebih rendah. File paling kecil untuk email dan upload.",
+	"compress.method": "Metode",
+	"compress.method.images": "Pertahankan teks",
+	"compress.method.flatten": "Ratakan halaman",
+	"compress.method.images.hint": "Mengecilkan gambar di dalam PDF; teks tetap tajam dan bisa dipilih.",
+	"compress.method.flatten.hint": "Mengubah setiap halaman jadi gambar. Paling efektif untuk hasil scan, tapi teks tidak bisa dipilih atau dicari lagi."
 }

@@ -6,6 +6,7 @@ import {
 	LayoutGrid,
 	LockKeyhole,
 	type LucideIcon,
+	Minimize2,
 	Signature,
 	Stamp,
 } from "lucide-react";
@@ -35,12 +36,18 @@ import {
 	stampPdf,
 	unlockPdf,
 } from "../lib/pdf";
+import {
+	type CompressLevel,
+	type CompressMethod,
+	compressPdf,
+} from "../lib/pdfCompress";
 import { PDF_TOOL } from "../tools";
 
 type Mode =
 	| "images-to-pdf"
 	| "pdf-to-images"
 	| "merge"
+	| "compress"
 	| "organize"
 	| "stamp"
 	| "sign"
@@ -50,6 +57,7 @@ const MODES = [
 	{ id: "images-to-pdf", icon: Images, labelId: "pdf.mode.images-to-pdf" },
 	{ id: "pdf-to-images", icon: FileImage, labelId: "pdf.mode.pdf-to-images" },
 	{ id: "merge", icon: Files, labelId: "pdf.mode.merge" },
+	{ id: "compress", icon: Minimize2, labelId: "pdf.mode.compress" },
 	{ id: "organize", icon: LayoutGrid, labelId: "pdf.mode.organize" },
 	{ id: "stamp", icon: Stamp, labelId: "pdf.mode.stamp" },
 	{ id: "sign", icon: Signature, labelId: "pdf.mode.sign" },
@@ -81,6 +89,10 @@ export function PdfPage() {
 	const [opacity, setOpacity] = useState(20);
 	const [numbers, setNumbers] = useState<NumberPosition>("bottom-center");
 	const [numberFormat, setNumberFormat] = useState<string>("{n} / {total}");
+	const [compressLevel, setCompressLevel] =
+		useState<CompressLevel>("recommended");
+	const [compressMethod, setCompressMethod] =
+		useState<CompressMethod>("images");
 	const [protectAction, setProtectAction] = useState<"lock" | "unlock">("lock");
 	const [password, setPassword] = useState("");
 	const [permissions, setPermissions] = useState<Permissions>({
@@ -201,6 +213,57 @@ export function PdfPage() {
 		return (
 			<ToolPage tool={PDF_TOOL} toolbar={toolbar}>
 				<PdfSigner />
+			</ToolPage>
+		);
+	}
+
+	if (mode === "compress") {
+		return (
+			<ToolPage
+				tool={PDF_TOOL}
+				toolbar={toolbar}
+				optionsHint="options.appliesToNew"
+				options={
+					<>
+						<FormatPicker
+							labelId="compress.level"
+							value={compressLevel}
+							onChange={setCompressLevel}
+							options={[
+								{ id: "light", label: t("compress.level.light") },
+								{ id: "recommended", label: t("compress.level.recommended") },
+								{ id: "strong", label: t("compress.level.strong") },
+							]}
+						/>
+						<p className="text-muted text-xs">
+							<FormattedMessage id={`compress.level.${compressLevel}.hint`} />
+						</p>
+						<FormatPicker
+							labelId="compress.method"
+							value={compressMethod}
+							onChange={setCompressMethod}
+							options={[
+								{ id: "images", label: t("compress.method.images") },
+								{ id: "flatten", label: t("compress.method.flatten") },
+							]}
+						/>
+						<p className="text-muted text-xs">
+							<FormattedMessage id={`compress.method.${compressMethod}.hint`} />
+						</p>
+					</>
+				}
+			>
+				<BatchTool
+					key={mode}
+					kind={PDF_KIND}
+					zipName="shapeshift-compressed.zip"
+					process={async (file) => [
+						{
+							blob: await compressPdf(file, compressLevel, compressMethod),
+							name: file.name.replace(/\.pdf$/i, "-compressed.pdf"),
+						},
+					]}
+				/>
 			</ToolPage>
 		);
 	}

@@ -149,6 +149,7 @@ Three modes in one place:
 | **Images → PDF** | Any supported image, including HEIC | One PDF, one page per image | Page size (fit image, A4, Letter), margin, quality |
 | **PDF → Images** | One or more PDFs | One image per page, zipped per PDF | PNG, JPG, or WEBP at 72, 150, or 300 DPI |
 | **Merge PDFs** | Two or more PDFs | One combined PDF | |
+| **Compress** | One or more PDFs | Smaller PDFs | Light, recommended, or strong. *Keep text* shrinks and re-encodes the images inside while text stays selectable; *Flatten pages* turns each page into an image, best for scans. The original is kept if it is already smaller |
 | **Organize pages** | One PDF | A reordered, rotated, or trimmed PDF | Drag to reorder (mouse or keyboard), rotate, delete, or extract the selected pages |
 | **Sign** | One PDF | A signed PDF | Draw with mouse or finger, type your name in a handwriting font, or upload a photo of your signature (paper background removed). Drag, resize, or nudge with arrow keys; place on one page or all |
 | **Password** | One or more PDFs | Protected or unlocked PDFs | Add an AES-256 password and choose whether printing, copying, and editing are allowed; or remove a password you know |

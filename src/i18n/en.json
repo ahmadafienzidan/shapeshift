@@ -478,5 +478,18 @@
 	"preview.title": "Preview",
 	"preview.hint": "Change the options and the previews update right away.",
 	"preview.progress": "Processing {done} of {total}…",
-	"watermark.action": "{count, plural, one {Watermark & download} other {Watermark & download # images}}"
+	"watermark.action": "{count, plural, one {Watermark & download} other {Watermark & download # images}}",
+	"pdf.mode.compress": "Compress",
+	"compress.level": "Compression",
+	"compress.level.light": "Light",
+	"compress.level.recommended": "Recommended",
+	"compress.level.strong": "Strong",
+	"compress.level.light.hint": "Images up to 2400 px at high quality. Best for printing.",
+	"compress.level.recommended.hint": "Images up to 1600 px. Looks sharp on screen at a much smaller size.",
+	"compress.level.strong.hint": "Images up to 1000 px at lower quality. Smallest file for email and uploads.",
+	"compress.method": "Method",
+	"compress.method.images": "Keep text",
+	"compress.method.flatten": "Flatten pages",
+	"compress.method.images.hint": "Shrinks the images inside the PDF; text stays sharp and selectable.",
+	"compress.method.flatten.hint": "Turns every page into an image. Best for scans, but text can no longer be selected or searched."
 }
