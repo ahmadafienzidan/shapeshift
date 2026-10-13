@@ -3,13 +3,13 @@ import { Grid3x3, ImagePlus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FileTrigger } from "react-aria-components";
 import { FormattedMessage, useIntl } from "react-intl";
-import { BatchTool } from "../components/BatchTool";
 import {
 	ColorInput,
 	FormatPicker,
 	QualitySlider,
 	RangeSlider,
 } from "../components/Options";
+import { PreviewBatch } from "../components/PreviewBatch";
 import { ToolPage } from "../components/ToolPage";
 import {
 	ACCEPTED_IMAGES,
@@ -19,7 +19,13 @@ import {
 	renameExtension,
 	resolveFormat,
 } from "../lib/image";
-import { POSITIONS, type Position, watermarkImage } from "../lib/watermark";
+import {
+	drawWatermark,
+	POSITIONS,
+	type Position,
+	type WatermarkOptions,
+	watermarkImage,
+} from "../lib/watermark";
 import { WATERMARK_TOOL } from "../tools";
 
 function PositionPicker({
@@ -101,11 +107,18 @@ export function WatermarkPage() {
 	}, [logoFile]);
 
 	const ready = kind === "text" ? text.trim() !== "" : logo !== undefined;
+	const options: WatermarkOptions = {
+		text,
+		logo: kind === "logo" ? logo : undefined,
+		color,
+		size: size / 100,
+		opacity: opacity / 100,
+		position,
+	};
 
 	return (
 		<ToolPage
 			tool={WATERMARK_TOOL}
-			optionsHint="options.appliesToNew"
 			options={
 				<>
 					<FormatPicker
@@ -191,33 +204,33 @@ export function WatermarkPage() {
 					/>
 				</p>
 			)}
-			<BatchTool
+			<PreviewBatch
 				kind={IMAGE_KIND}
+				ready
+				actionId="watermark.action"
 				zipName="shapeshift-watermarked.zip"
+				frame={(bitmap) => bitmap}
+				draw={(context, bitmap) => {
+					if (ready) drawWatermark(context, bitmap, options);
+					else
+						context.drawImage(
+							bitmap,
+							0,
+							0,
+							context.canvas.width,
+							context.canvas.height,
+						);
+				}}
 				process={async (file) => {
 					if (!ready)
 						throw new Error(
 							kind === "text" ? "watermark.needText" : "watermark.needLogo",
 						);
 					const type = resolveFormat(file, format);
-					return [
-						{
-							blob: await watermarkImage(
-								file,
-								{
-									text,
-									logo: kind === "logo" ? logo : undefined,
-									color,
-									size: size / 100,
-									opacity: opacity / 100,
-									position,
-								},
-								type,
-								quality / 100,
-							),
-							name: renameExtension(file.name, type),
-						},
-					];
+					return {
+						blob: await watermarkImage(file, options, type, quality / 100),
+						name: renameExtension(file.name, type),
+					};
 				}}
 			/>
 		</ToolPage>

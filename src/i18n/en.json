@@ -474,8 +474,9 @@
 	"markdown.action.tasks": "Task list",
 	"markdown.action.table": "Table",
 	"markdown.action.rule": "Divider",
-	"resize.previewTitle": "Preview",
-	"resize.previewHint": "Change the size or fit and the previews update right away.",
 	"resize.action": "{count, plural, one {Resize & download} other {Resize & download # images}}",
-	"resize.progress": "Resizing {done} of {total}…"
+	"preview.title": "Preview",
+	"preview.hint": "Change the options and the previews update right away.",
+	"preview.progress": "Processing {done} of {total}…",
+	"watermark.action": "{count, plural, one {Watermark & download} other {Watermark & download # images}}"
 }

@@ -82,31 +82,32 @@ function logoStamp(logo: ImageBitmap, width: number): OffscreenCanvas {
 	return canvas;
 }
 
-export async function watermarkImage(
-	file: File,
+// Draws `source` and the stamp over the whole of `context`'s canvas. Sizes are
+// relative to the canvas, so small previews match the full-size output.
+export function drawWatermark(
+	context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+	source: ImageBitmap,
 	options: WatermarkOptions,
-	type: OutputType,
-	quality: number,
-): Promise<Blob> {
-	const source = await decodeImage(file);
-	const canvas = new OffscreenCanvas(source.width, source.height);
-	const context = canvas.getContext("2d");
-	if (!context) throw new Error("Canvas 2D context is unavailable");
-	context.drawImage(source, 0, 0);
+) {
+	const { width, height } = context.canvas;
+	context.save();
+	context.clearRect(0, 0, width, height);
+	context.imageSmoothingQuality = "high";
+	context.drawImage(source, 0, 0, width, height);
 
-	const stampWidth = source.width * options.size;
+	const stampWidth = width * options.size;
 	const stamp = options.logo
 		? logoStamp(options.logo, stampWidth)
 		: textStamp(options.text, options.color, stampWidth);
-	const margin = Math.min(source.width, source.height) * 0.03;
+	const margin = Math.min(width, height) * 0.03;
 
 	context.globalAlpha = options.opacity;
 	if (options.position === "tile") {
 		// Rotated rows, offset like bricks, covering the image corner to corner.
 		const stepX = stamp.width * 1.6;
 		const stepY = stamp.height * 3;
-		const diagonal = Math.hypot(source.width, source.height);
-		context.translate(source.width / 2, source.height / 2);
+		const diagonal = Math.hypot(width, height);
+		context.translate(width / 2, height / 2);
 		context.rotate(-Math.PI / 6);
 		for (let y = -diagonal / 2, row = 0; y < diagonal / 2; y += stepY, row++) {
 			const offset = row % 2 === 0 ? 0 : stepX / 2;
@@ -118,12 +119,24 @@ export async function watermarkImage(
 		const [anchorX, anchorY] = ANCHORS[options.position];
 		context.drawImage(
 			stamp,
-			margin + anchorX * (source.width - stamp.width - margin * 2),
-			margin + anchorY * (source.height - stamp.height - margin * 2),
+			margin + anchorX * (width - stamp.width - margin * 2),
+			margin + anchorY * (height - stamp.height - margin * 2),
 		);
 	}
+	context.restore();
+}
 
-	const result = await createImageBitmap(canvas);
+export async function watermarkImage(
+	file: File,
+	options: WatermarkOptions,
+	type: OutputType,
+	quality: number,
+): Promise<Blob> {
+	const source = await decodeImage(file);
+	const canvas = new OffscreenCanvas(source.width, source.height);
+	const context = canvas.getContext("2d");
+	if (!context) throw new Error("Canvas 2D context is unavailable");
+	drawWatermark(context, source, options);
 	source.close();
-	return encodeImage(result, type, quality);
+	return encodeImage(await createImageBitmap(canvas), type, quality);
 }

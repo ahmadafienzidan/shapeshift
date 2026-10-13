@@ -474,8 +474,9 @@
 	"markdown.action.tasks": "Daftar tugas",
 	"markdown.action.table": "Tabel",
 	"markdown.action.rule": "Garis pemisah",
-	"resize.previewTitle": "Preview",
-	"resize.previewHint": "Ganti ukuran atau penyesuaian, preview langsung ikut berubah.",
 	"resize.action": "{count, plural, one {Resize & unduh} other {Resize & unduh # gambar}}",
-	"resize.progress": "Memproses {done} dari {total}…"
+	"preview.title": "Preview",
+	"preview.hint": "Ubah opsi, preview langsung ikut berubah.",
+	"preview.progress": "Memproses {done} dari {total}…",
+	"watermark.action": "{count, plural, one {Watermark & unduh} other {Watermark & unduh # gambar}}"
 }
