@@ -24,6 +24,7 @@ jobs:
           bun-version: 1.3.11
       - run: bun install --frozen-lockfile
       - run: bun run lint
+      - run: bun run test
       - run: bun run build
       # GitHub Pages has no SPA fallback; serving index.html as the 404 page
       # lets deep links like /shapeshift/pdf load the app.

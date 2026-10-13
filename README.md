@@ -252,6 +252,7 @@ Then open http://localhost:5173/shapeshift/ (the app lives under `/shapeshift/` 
 | `bun run preview` | Serve the production build locally |
 | `bun run typecheck` | Run the TypeScript compiler |
 | `bun run lint` | Lint and format-check with Biome |
+| `bun run test` | Run the unit tests with Vitest |
 
 ### Deployment
 
