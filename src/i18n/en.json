@@ -505,5 +505,13 @@
 	"ocr.reading": "Reading text… {percent}",
 	"ocr.confidence": "{value}% confidence",
 	"ocr.empty": "No text found in this image.",
-	"ocr.downloadAll": "Download all"
+	"ocr.downloadAll": "Download all",
+	"search.label": "Search tools",
+	"search.placeholder": "Search tools, e.g. compress pdf",
+	"search.empty": "No tools match “{query}”.",
+	"tool.open.name": "Open Files",
+	"tool.open.description": "Files shared with Shapeshift or opened with it land here. Pick what to do with them; they stay on your device.",
+	"open.files": "{count, plural, one {# file} other {# files}}",
+	"open.images": "Use the images with",
+	"open.pdfs": "Use the PDFs with"
 }

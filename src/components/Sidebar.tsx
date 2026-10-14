@@ -1,11 +1,12 @@
-import { Button, ToggleButton, ToggleButtonGroup } from "@heroui/react";
-import { House, Moon, Sun } from "lucide-react";
-import { Fragment, type ReactNode } from "react";
+import { Button, Kbd, ToggleButton, ToggleButtonGroup } from "@heroui/react";
+import { House, Moon, Search, Sun } from "lucide-react";
+import { Fragment, type ReactNode, useEffect, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { NavLink } from "react-router";
 import { type Locale, useLocale } from "../i18n/locale";
 import { useTheme } from "../lib/useTheme";
 import { TOOL_GROUPS, TOOLS } from "../tools";
+import { CommandPalette } from "./CommandPalette";
 import { Logo } from "./Logo";
 
 function NavItem({
@@ -35,6 +36,8 @@ function NavItem({
 	);
 }
 
+const MAC = /Mac|iPhone|iPad/.test(navigator.userAgent);
+
 function SectionLabel({ children }: { children: ReactNode }) {
 	return (
 		<p className="eyebrow mt-6 mb-2 hidden px-3 text-[0.6875rem] text-muted lg:block">
@@ -47,6 +50,18 @@ export function Sidebar() {
 	const intl = useIntl();
 	const { locale, setLocale } = useLocale();
 	const { theme, toggle } = useTheme();
+	const [searching, setSearching] = useState(false);
+
+	useEffect(() => {
+		const onKeyDown = (event: KeyboardEvent) => {
+			if ((MAC ? event.metaKey : event.ctrlKey) && event.key === "k") {
+				event.preventDefault();
+				setSearching((open) => !open);
+			}
+		};
+		window.addEventListener("keydown", onKeyDown);
+		return () => window.removeEventListener("keydown", onKeyDown);
+	}, []);
 
 	return (
 		<aside className="z-10 flex flex-col gap-4 border-separator border-b bg-(--sidebar) p-4 lg:sticky lg:top-0 lg:h-dvh lg:w-64 lg:shrink-0 lg:border-r lg:border-b-0 lg:px-4 lg:py-6">
@@ -55,16 +70,44 @@ export function Sidebar() {
 					<Logo />
 					<span className="headline text-2xl">Shapeshift</span>
 				</NavLink>
-				<Button
-					isIconOnly
-					variant="ghost"
-					size="sm"
-					aria-label={intl.formatMessage({ id: "nav.theme" })}
-					onPress={toggle}
-				>
-					{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-				</Button>
+				<div className="flex gap-1">
+					<Button
+						isIconOnly
+						variant="ghost"
+						size="sm"
+						aria-label={intl.formatMessage({ id: "search.label" })}
+						onPress={() => setSearching(true)}
+						className="lg:hidden"
+					>
+						<Search size={16} />
+					</Button>
+					<Button
+						isIconOnly
+						variant="ghost"
+						size="sm"
+						aria-label={intl.formatMessage({ id: "nav.theme" })}
+						onPress={toggle}
+					>
+						{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+					</Button>
+				</div>
 			</div>
+
+			<Button
+				variant="outline"
+				onPress={() => setSearching(true)}
+				className="group hidden justify-start gap-2 font-normal text-muted transition-colors hover:border-electric/60 hover:text-foreground lg:flex"
+			>
+				<Search
+					size={16}
+					className="transition-transform duration-200 group-hover:scale-110"
+				/>
+				<span className="flex-1 text-left">
+					<FormattedMessage id="search.label" />
+				</span>
+				<Kbd className="text-xs">{MAC ? "⌘K" : "Ctrl K"}</Kbd>
+			</Button>
+			<CommandPalette isOpen={searching} onOpenChange={setSearching} />
 
 			<nav className="flex gap-1 overflow-x-auto [scrollbar-width:none] lg:flex-col lg:gap-0.5">
 				<SectionLabel>

@@ -1,17 +1,7 @@
 import { Input, Label, TextField, ToggleButton } from "@heroui/react";
-import {
-	FileImage,
-	Files,
-	Images,
-	LayoutGrid,
-	LockKeyhole,
-	type LucideIcon,
-	Minimize2,
-	Signature,
-	Stamp,
-} from "lucide-react";
 import { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useSearchParams } from "react-router";
 import { BatchTool } from "../components/BatchTool";
 import { CombineTool } from "../components/CombineTool";
 import { ModeTabs } from "../components/ModeTabs";
@@ -41,28 +31,7 @@ import {
 	type CompressMethod,
 	compressPdf,
 } from "../lib/pdfCompress";
-import { PDF_TOOL } from "../tools";
-
-type Mode =
-	| "images-to-pdf"
-	| "pdf-to-images"
-	| "merge"
-	| "compress"
-	| "organize"
-	| "stamp"
-	| "sign"
-	| "protect";
-
-const MODES = [
-	{ id: "images-to-pdf", icon: Images, labelId: "pdf.mode.images-to-pdf" },
-	{ id: "pdf-to-images", icon: FileImage, labelId: "pdf.mode.pdf-to-images" },
-	{ id: "merge", icon: Files, labelId: "pdf.mode.merge" },
-	{ id: "compress", icon: Minimize2, labelId: "pdf.mode.compress" },
-	{ id: "organize", icon: LayoutGrid, labelId: "pdf.mode.organize" },
-	{ id: "stamp", icon: Stamp, labelId: "pdf.mode.stamp" },
-	{ id: "sign", icon: Signature, labelId: "pdf.mode.sign" },
-	{ id: "protect", icon: LockKeyhole, labelId: "pdf.mode.protect" },
-] satisfies { id: Mode; icon: LucideIcon; labelId: string }[];
+import { PDF_MODES, PDF_TOOL, type PdfMode } from "../tools";
 
 const NUMBER_FORMATS = [
 	"{n}",
@@ -79,7 +48,13 @@ export function PdfPage() {
 	const intl = useIntl();
 	const t = (id: string) => intl.formatMessage({ id });
 
-	const [mode, setMode] = useState<Mode>("images-to-pdf");
+	// The mode lives in the URL so search and opened files can link to one.
+	const [params, setParams] = useSearchParams();
+	const mode: PdfMode =
+		PDF_MODES.find((entry) => entry.id === params.get("mode"))?.id ??
+		"images-to-pdf";
+	const setMode = (next: PdfMode) =>
+		setParams({ mode: next }, { replace: true });
 	const [pageSize, setPageSize] = useState<PageSize>("fit");
 	const [margin, setMargin] = useState<Margin>("none");
 	const [quality, setQuality] = useState(90);
@@ -106,7 +81,7 @@ export function PdfPage() {
 			label={t("tool.pdf.name")}
 			value={mode}
 			onChange={setMode}
-			modes={MODES}
+			modes={PDF_MODES}
 		/>
 	);
 

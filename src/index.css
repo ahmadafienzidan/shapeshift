@@ -28,6 +28,9 @@
 @import "@heroui/styles/components/input.css" layer(components);
 @import "@heroui/styles/components/textfield.css" layer(components);
 @import "@heroui/styles/components/popover.css" layer(components);
+@import "@heroui/styles/components/modal.css" layer(components);
+@import "@heroui/styles/components/search-field.css" layer(components);
+@import "@heroui/styles/components/kbd.css" layer(components);
 @import "@heroui/styles/components/select.css" layer(components);
 @import "@heroui/styles/themes/default" layer(theme);
 @import "@heroui/styles/utilities";
@@ -281,6 +284,13 @@ body {
 	}
 }
 
+@keyframes pop {
+	from {
+		opacity: 0;
+		transform: translateY(6px) scale(0.98);
+	}
+}
+
 @keyframes word-in {
 	from {
 		opacity: 0;
@@ -330,6 +340,11 @@ body {
 	animation-delay: var(--delay, 0ms);
 }
 
+@utility animate-pop {
+	animation: pop 0.22s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	animation-delay: var(--delay, 0ms);
+}
+
 @utility animate-word {
 	animation: word-in 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
@@ -374,6 +389,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
 	.animate-rise,
+	.animate-pop,
 	.animate-word,
 	.animate-morph,
 	.animate-drift,

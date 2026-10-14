@@ -78,6 +78,9 @@ const MarkdownPage = lazy(() =>
 const OcrPage = lazy(() =>
 	import("./pages/OcrPage").then((module) => ({ default: module.OcrPage })),
 );
+const OpenPage = lazy(() =>
+	import("./pages/OpenPage").then((module) => ({ default: module.OpenPage })),
+);
 const DataPage = lazy(() =>
 	import("./pages/DataPage").then((module) => ({ default: module.DataPage })),
 );
@@ -111,6 +114,7 @@ export function App() {
 							<Route path="/json" element={<JsonPage />} />
 							<Route path="/diff" element={<DiffPage />} />
 							<Route path="/devtools" element={<DevToolsPage />} />
+							<Route path="/open" element={<OpenPage />} />
 						</Routes>
 					</Suspense>
 				</main>

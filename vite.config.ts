@@ -8,6 +8,21 @@ const BASE = "/shapeshift/";
 
 const OCR_LANGUAGES = ["eng", "ind"];
 
+const OPENABLE_FILES = {
+	"image/png": [".png"],
+	"image/jpeg": [".jpg", ".jpeg"],
+	"image/webp": [".webp"],
+	"image/avif": [".avif"],
+	"image/gif": [".gif"],
+	"image/bmp": [".bmp"],
+	"image/svg+xml": [".svg"],
+	"image/heic": [".heic"],
+	"image/heif": [".heif"],
+	"application/pdf": [".pdf"],
+};
+
+const OPENABLE_TYPES = Object.keys(OPENABLE_FILES);
+
 const ocrModel = (code: string) =>
 	readFileSync(
 		`node_modules/@tesseract.js-data/${code}/4.0.0_best_int/${code}.traineddata.gz`,
@@ -56,8 +71,21 @@ export default defineConfig({
 				theme_color: "#001e2b",
 				background_color: "#001e2b",
 				display: "standalone",
+				// Both open the Open page, which asks which tool to use.
+				share_target: {
+					action: `${BASE}share`,
+					method: "POST",
+					enctype: "multipart/form-data",
+					params: {
+						files: [
+							{ name: "files", accept: [...OPENABLE_TYPES, ".heic", ".heif"] },
+						],
+					},
+				},
+				file_handlers: [{ action: `${BASE}open`, accept: OPENABLE_FILES }],
 			},
 			workbox: {
+				importScripts: ["share-target.js"],
 				globPatterns: ["**/*.{js,mjs,css,html,svg,png,ico,woff2}"],
 				// The HEIC decoder (~3 MB) and pdf.js worker must be precached too,
 				// or those tools would break offline.

@@ -1,9 +1,10 @@
 import { Button } from "@heroui/react";
 import { FilePlus, FolderOpen, Upload } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import { DropZone, FileTrigger } from "react-aria-components";
 import { FormattedMessage } from "react-intl";
 import { collectDropItems } from "../lib/files";
+import { takeIncoming } from "../lib/incoming";
 
 export type FileKind = {
 	accept: string[];
@@ -25,6 +26,12 @@ export function Dropzone({
 		setSkipped(files.length - matching.length);
 		if (matching.length > 0) onFiles(matching);
 	};
+
+	const takeOpened = useEffectEvent(() => {
+		const files = takeIncoming(kind.matches);
+		if (files.length > 0) onFiles(files);
+	});
+	useEffect(() => takeOpened(), []);
 
 	return (
 		<div className="flex flex-col gap-2">

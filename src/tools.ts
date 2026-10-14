@@ -4,10 +4,16 @@ import {
 	Combine,
 	Crop,
 	Droplet,
+	FileImage,
 	FileJson,
+	Files,
 	FileText,
 	Fingerprint,
+	FolderOpen,
 	GitCompare,
+	Images,
+	LayoutGrid,
+	LockKeyhole,
 	type LucideIcon,
 	Minimize2,
 	NotebookPen,
@@ -17,7 +23,9 @@ import {
 	RefreshCcw,
 	ScanEye,
 	ScanText,
+	Signature,
 	Sparkle,
+	Stamp,
 	Type,
 	Wrench,
 } from "lucide-react";
@@ -87,6 +95,29 @@ export const PDF_TOOL: Tool = {
 	tile: "bg-coral text-ink",
 	group: "documents",
 };
+
+export type PdfMode =
+	| "images-to-pdf"
+	| "pdf-to-images"
+	| "merge"
+	| "compress"
+	| "organize"
+	| "stamp"
+	| "sign"
+	| "protect";
+
+export const PDF_MODES = [
+	{ id: "images-to-pdf", icon: Images, labelId: "pdf.mode.images-to-pdf" },
+	{ id: "pdf-to-images", icon: FileImage, labelId: "pdf.mode.pdf-to-images" },
+	{ id: "merge", icon: Files, labelId: "pdf.mode.merge" },
+	{ id: "compress", icon: Minimize2, labelId: "pdf.mode.compress" },
+	{ id: "organize", icon: LayoutGrid, labelId: "pdf.mode.organize" },
+	{ id: "stamp", icon: Stamp, labelId: "pdf.mode.stamp" },
+	{ id: "sign", icon: Signature, labelId: "pdf.mode.sign" },
+	{ id: "protect", icon: LockKeyhole, labelId: "pdf.mode.protect" },
+] satisfies { id: PdfMode; icon: LucideIcon; labelId: string }[];
+
+export const pdfModePath = (mode: PdfMode) => `${PDF_TOOL.path}?mode=${mode}`;
 
 export const MARKDOWN_TOOL: Tool = {
 	id: "markdown",
@@ -190,6 +221,16 @@ export const DEVTOOLS_TOOL: Tool = {
 	icon: Wrench,
 	tile: "bg-electric text-ink",
 	group: "developer",
+};
+
+// Not listed with the tools: it is where files shared with or opened in the
+// installed app land, before a tool is picked for them.
+export const OPEN_TOOL: Tool = {
+	id: "open",
+	path: "/open",
+	icon: FolderOpen,
+	tile: "bg-electric text-ink",
+	group: "images",
 };
 
 export const TOOLS: Tool[] = [

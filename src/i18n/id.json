@@ -505,5 +505,13 @@
 	"ocr.reading": "Membaca teks… {percent}",
 	"ocr.confidence": "Keyakinan {value}%",
 	"ocr.empty": "Tidak ada teks di gambar ini.",
-	"ocr.downloadAll": "Unduh semua"
+	"ocr.downloadAll": "Unduh semua",
+	"search.label": "Cari tool",
+	"search.placeholder": "Cari tool, misalnya kompres pdf",
+	"search.empty": "Tidak ada tool yang cocok dengan “{query}”.",
+	"tool.open.name": "Buka File",
+	"tool.open.description": "File yang dibagikan ke Shapeshift atau dibuka dengannya muncul di sini. Pilih mau diapakan; file tetap di perangkatmu.",
+	"open.files": "{count} file",
+	"open.images": "Pakai gambarnya di",
+	"open.pdfs": "Pakai PDF-nya di"
 }

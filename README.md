@@ -29,6 +29,8 @@ No accounts, no file limits, no watermarks. Everything runs on your device.
 | 📦 **Built for bulk** | Drop hundreds of files or an entire folder at once, then grab everything in a single ZIP. |
 | ⚡ **No sign-up, no limits** | No accounts, no file-size caps, no watermarks, no queue. Open it and go. |
 | 📴 **Works offline** | After the first visit everything is cached, so every tool keeps working without a connection. Install it as an app from your browser. |
+| 🔎 **Find any tool fast** | Press <kbd>Ctrl</kbd>+<kbd>K</kbd> (<kbd>⌘</kbd>+<kbd>K</kbd> on Mac) and type in English or Indonesian, e.g. "kompres pdf". |
+| 📲 **Share straight to it** | Once installed, Shapeshift shows up in your phone's share sheet and in "Open with" on desktop. Shared images and PDFs open on a page that asks which tool to use. |
 | 🌗 **Dark & light mode** | Deep navy by night, warm cream by day. Follows your system theme, with a one-click toggle. |
 | 🌐 **English & Bahasa Indonesia** | Switch languages from the sidebar; your choice is remembered. |
 
