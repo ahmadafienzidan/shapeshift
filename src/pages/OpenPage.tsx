@@ -1,5 +1,5 @@
 import { Button } from "@heroui/react";
-import { ChevronRight, Eraser, type LucideIcon } from "lucide-react";
+import { ChevronRight, Eraser } from "lucide-react";
 import { type CSSProperties, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Link, useSearchParams } from "react-router";
@@ -9,14 +9,8 @@ import { ToolPage } from "../components/ToolPage";
 import { IMAGE_KIND, isImage } from "../lib/image";
 import { handOff, takeSharedFiles } from "../lib/incoming";
 import { PDF_KIND } from "../lib/pdf";
-import {
-	OPEN_TOOL,
-	PDF_MODES,
-	PDF_TOOL,
-	pdfModePath,
-	QR_TOOL,
-	TOOLS,
-} from "../tools";
+import { TARGET_GROUPS, type Target } from "../targets";
+import { OPEN_TOOL } from "../tools";
 
 // File Handling API (installed app on desktop Chromium), not in lib.dom yet.
 declare global {
@@ -32,46 +26,11 @@ declare global {
 const stagger = (index: number) =>
 	({ "--delay": `${Math.min(index, 10) * 30}ms` }) as CSSProperties;
 
-type Target = {
-	id: string;
-	path: string;
-	icon: LucideIcon;
-	tile: string;
-	nameId: string;
-	contextId?: string;
-};
-
 const OPENABLE: FileKind = {
 	accept: [...IMAGE_KIND.accept, ...PDF_KIND.accept],
 	matches: (file) => isImage(file) || PDF_KIND.matches(file),
 	formats: `${IMAGE_KIND.formats}, PDF`,
 };
-
-const pdfTarget = (mode: (typeof PDF_MODES)[number]): Target => ({
-	id: `pdf-${mode.id}`,
-	path: pdfModePath(mode.id),
-	icon: mode.icon,
-	tile: PDF_TOOL.tile,
-	nameId: mode.labelId,
-	contextId: "tool.pdf.name",
-});
-
-const IMAGE_TARGETS: Target[] = [
-	...[...TOOLS.filter((tool) => tool.group === "images"), QR_TOOL].map(
-		(tool) => ({
-			id: tool.id,
-			path: tool.path,
-			icon: tool.icon,
-			tile: tool.tile,
-			nameId: `tool.${tool.id}.name`,
-		}),
-	),
-	...PDF_MODES.filter((mode) => mode.id === "images-to-pdf").map(pdfTarget),
-];
-
-const PDF_TARGETS = PDF_MODES.filter((mode) => mode.id !== "images-to-pdf").map(
-	pdfTarget,
-);
 
 function Targets({
 	titleId,
@@ -134,8 +93,6 @@ export function OpenPage() {
 		);
 	}, [shared]);
 
-	const hasImages = files.some(isImage);
-	const hasPdfs = files.some(PDF_KIND.matches);
 	const pick = () => handOff(files);
 
 	return (
@@ -171,15 +128,15 @@ export function OpenPage() {
 							))}
 						</ul>
 					</section>
-					{hasImages && (
-						<Targets
-							titleId="open.images"
-							targets={IMAGE_TARGETS}
-							onPick={pick}
-						/>
-					)}
-					{hasPdfs && (
-						<Targets titleId="open.pdfs" targets={PDF_TARGETS} onPick={pick} />
+					{TARGET_GROUPS.filter((group) => files.some(group.matches)).map(
+						(group) => (
+							<Targets
+								key={group.titleId}
+								titleId={group.titleId}
+								targets={group.targets}
+								onPick={pick}
+							/>
+						),
 					)}
 				</>
 			)}

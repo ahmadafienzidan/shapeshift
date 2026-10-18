@@ -513,5 +513,6 @@
 	"tool.open.description": "Files shared with Shapeshift or opened with it land here. Pick what to do with them; they stay on your device.",
 	"open.files": "{count, plural, one {# file} other {# files}}",
 	"open.images": "Use the images with",
-	"open.pdfs": "Use the PDFs with"
+	"open.pdfs": "Use the PDFs with",
+	"continue.label": "Continue with"
 }

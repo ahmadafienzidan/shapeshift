@@ -12,12 +12,13 @@ import {
 import { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { formatBytes } from "../lib/files";
+import { ContinueWith } from "./ContinueWith";
 import { Dropzone, type FileKind } from "./Dropzone";
 import { Thumbnail } from "./Thumbnail";
 
 type Entry = { id: string; file: File };
 
-type Output = { url: string; name: string; size: number; isImage: boolean };
+type Output = { url: string; file: File };
 
 function move<T>(list: T[], from: number, to: number): T[] {
 	const next = [...list];
@@ -73,9 +74,7 @@ export function CombineTool({
 			setDimensions(undefined);
 			setOutput({
 				url: URL.createObjectURL(blob),
-				name: outputName,
-				size: blob.size,
-				isImage: blob.type.startsWith("image/"),
+				file: new File([blob], outputName, { type: blob.type }),
 			});
 		} catch (caught) {
 			setError(String(caught));
@@ -181,11 +180,11 @@ export function CombineTool({
 						))}
 					</ol>
 
-					{output?.isImage && (
+					{output?.file.type.startsWith("image/") && (
 						<div className="grid place-items-center border-separator border-t p-5 [background-image:conic-gradient(var(--default)_25%,transparent_0_50%,var(--default)_0_75%,transparent_0)] [background-size:16px_16px]">
 							<img
 								src={output.url}
-								alt={output.name}
+								alt={output.file.name}
 								onLoad={(event) =>
 									setDimensions(
 										`${event.currentTarget.naturalWidth} × ${event.currentTarget.naturalHeight} px`,
@@ -201,9 +200,11 @@ export function CombineTool({
 							<div className="flex min-w-0 items-center gap-3">
 								<FileCheck size={20} className="shrink-0 text-success" />
 								<div className="flex min-w-0 flex-col">
-									<p className="truncate font-medium text-sm">{output.name}</p>
+									<p className="truncate font-medium text-sm">
+										{output.file.name}
+									</p>
 									<span className="font-mono text-muted text-xs">
-										{formatBytes(output.size)}
+										{formatBytes(output.file.size)}
 										{dimensions && ` · ${dimensions}`}
 									</span>
 								</div>
@@ -225,10 +226,11 @@ export function CombineTool({
 								{busy && <Spinner size="sm" color="current" />}
 								{actionLabel}
 							</Button>
+							{output && <ContinueWith files={[output.file]} />}
 							{output && (
 								<a
 									href={output.url}
-									download={output.name}
+									download={output.file.name}
 									className={buttonVariants({
 										variant: "primary",
 										className: "font-semibold",

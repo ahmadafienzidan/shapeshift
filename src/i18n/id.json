@@ -513,5 +513,6 @@
 	"tool.open.description": "File yang dibagikan ke Shapeshift atau dibuka dengannya muncul di sini. Pilih mau diapakan; file tetap di perangkatmu.",
 	"open.files": "{count} file",
 	"open.images": "Pakai gambarnya di",
-	"open.pdfs": "Pakai PDF-nya di"
+	"open.pdfs": "Pakai PDF-nya di",
+	"continue.label": "Lanjut ke"
 }

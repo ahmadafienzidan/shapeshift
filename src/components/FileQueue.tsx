@@ -4,6 +4,7 @@ import { Archive, Download, FileCheck, FileX, Trash2 } from "lucide-react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { createZip, downloadBlob, formatBytes } from "../lib/files";
 import type { BatchItem } from "../lib/useBatch";
+import { ContinueWith } from "./ContinueWith";
 
 const STATUS_COLOR = {
 	queued: "default",
@@ -152,8 +153,10 @@ export function FileQueue({
 
 	if (items.length === 0) return null;
 
+	const results = finished.flatMap((item) => item.results);
+
 	const downloadZip = async () => {
-		const zip = await createZip(finished.flatMap((item) => item.results));
+		const zip = await createZip(results);
 		downloadBlob(zip, zipName);
 	};
 
@@ -188,7 +191,7 @@ export function FileQueue({
 						)}
 					</p>
 				</div>
-				<div className="flex gap-2">
+				<div className="flex flex-wrap gap-2">
 					<Button
 						variant="ghost"
 						size="sm"
@@ -198,6 +201,14 @@ export function FileQueue({
 						<Trash2 size={16} />
 						<FormattedMessage id="queue.clear" />
 					</Button>
+					<ContinueWith
+						files={results.map(
+							(result) =>
+								new File([result.blob], result.name, {
+									type: result.blob.type,
+								}),
+						)}
+					/>
 					<Button
 						variant="primary"
 						size="sm"

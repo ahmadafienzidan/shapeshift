@@ -1,6 +1,6 @@
 {
 	"name": "shapeshift",
-	"version": "0.13.0",
+	"version": "0.14.0",
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.15",
 		"@tailwindcss/vite": "^4.3.3",
