@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { isImage } from "./lib/image";
-import { PDF_KIND } from "./lib/pdf";
+import { PDF_KIND } from "./lib/pdfKind";
 import { PDF_MODES, PDF_TOOL, pdfModePath, QR_TOOL, TOOLS } from "./tools";
 
 // A tool (or PDF mode) that files can be handed to.

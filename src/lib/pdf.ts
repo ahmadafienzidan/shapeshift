@@ -17,13 +17,6 @@ import type { BatchOutput } from "./useBatch";
 
 export type PageSize = "fit" | "a4" | "letter";
 
-export const PDF_KIND = {
-	accept: ["application/pdf", ".pdf"],
-	matches: (file: File) =>
-		file.type === "application/pdf" || /\.pdf$/i.test(file.name),
-	formats: "PDF",
-};
-
 const PAGE_DIMENSIONS: Record<Exclude<PageSize, "fit">, [number, number]> = {
 	a4: PageSizes.A4,
 	letter: PageSizes.Letter,

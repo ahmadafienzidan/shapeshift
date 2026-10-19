@@ -17,7 +17,8 @@ import {
 } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { downloadBlob } from "../lib/files";
-import { openPdf, PDF_KIND, type Placement, signPdf } from "../lib/pdf";
+import { openPdf, type Placement, signPdf } from "../lib/pdf";
+import { PDF_KIND } from "../lib/pdfKind";
 import type { Signature } from "../lib/signature";
 import { Dropzone } from "./Dropzone";
 import { SignatureMaker } from "./SignatureMaker";

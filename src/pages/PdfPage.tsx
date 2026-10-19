@@ -19,7 +19,6 @@ import {
 	mergePdfs,
 	type NumberPosition,
 	type PageSize,
-	PDF_KIND,
 	type Permissions,
 	pdfToImages,
 	protectPdf,
@@ -31,6 +30,7 @@ import {
 	type CompressMethod,
 	compressPdf,
 } from "../lib/pdfCompress";
+import { PDF_KIND } from "../lib/pdfKind";
 import { PDF_MODES, PDF_TOOL, type PdfMode } from "../tools";
 
 const NUMBER_FORMATS = [

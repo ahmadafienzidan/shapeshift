@@ -18,7 +18,8 @@ import {
 } from "react-aria-components";
 import { FormattedMessage, useIntl } from "react-intl";
 import { formatBytes } from "../lib/files";
-import { organizePdf, PDF_KIND, renderThumbnails } from "../lib/pdf";
+import { organizePdf, renderThumbnails } from "../lib/pdf";
+import { PDF_KIND } from "../lib/pdfKind";
 import { Dropzone } from "./Dropzone";
 
 type Page = { id: string; index: number; rotation: number; thumb?: string };

@@ -8,7 +8,7 @@ import { Thumbnail } from "../components/Thumbnail";
 import { ToolPage } from "../components/ToolPage";
 import { IMAGE_KIND, isImage } from "../lib/image";
 import { handOff, takeSharedFiles } from "../lib/incoming";
-import { PDF_KIND } from "../lib/pdf";
+import { PDF_KIND } from "../lib/pdfKind";
 import { TARGET_GROUPS, type Target } from "../targets";
 import { OPEN_TOOL } from "../tools";
 
