@@ -19,6 +19,12 @@ const target = redirectTarget(
 );
 if (target) history.replaceState(null, "", `${base}${target}${location.hash}`);
 
+// PageMeta renders these from React; static copies would shadow its updates.
+for (const tag of document.head.querySelectorAll(
+	'title, meta[name="description"]',
+))
+	tag.remove();
+
 createRoot(root).render(
 	<StrictMode>
 		<BrowserRouter basename={import.meta.env.BASE_URL}>

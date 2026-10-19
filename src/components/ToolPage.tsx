@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import { FormattedMessage } from "react-intl";
+import type { MetaPage } from "../seo/text";
 import type { Tool } from "../tools";
 import { Eyebrow } from "./Eyebrow";
+import { PageMeta } from "./PageMeta";
 
 export function ToolPage({
 	tool,
@@ -18,6 +20,7 @@ export function ToolPage({
 }) {
 	return (
 		<div className="flex flex-col gap-8">
+			<PageMeta page={tool.id as MetaPage} />
 			<header className="flex flex-col gap-3 border-separator border-b pb-8">
 				<Eyebrow dot>
 					<FormattedMessage id="tool.eyebrow" />

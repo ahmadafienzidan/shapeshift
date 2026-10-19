@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Link } from "react-router";
 import { Eyebrow } from "../components/Eyebrow";
+import { PageMeta } from "../components/PageMeta";
 import { Reveal } from "../components/Reveal";
 import { useLocalePath } from "../i18n/locale";
 import { useCycle } from "../lib/motion";
@@ -177,6 +178,7 @@ export function HomePage() {
 	const localize = useLocalePath();
 	return (
 		<div className="flex flex-col gap-24">
+			<PageMeta page="home" />
 			<section className="flex flex-col items-center gap-7 pt-6 text-center lg:pt-12">
 				<div className="animate-rise" style={rise(0)}>
 					<Eyebrow dot>
