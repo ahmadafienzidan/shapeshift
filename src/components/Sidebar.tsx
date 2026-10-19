@@ -3,7 +3,7 @@ import { House, Moon, Search, Sun } from "lucide-react";
 import { Fragment, type ReactNode, useEffect, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { NavLink } from "react-router";
-import { type Locale, useLocale } from "../i18n/locale";
+import { type Locale, useLocale, useLocalePath } from "../i18n/locale";
 import { useTheme } from "../lib/useTheme";
 import { TOOL_GROUPS, TOOLS } from "../tools";
 import { CommandPalette } from "./CommandPalette";
@@ -49,6 +49,7 @@ function SectionLabel({ children }: { children: ReactNode }) {
 export function Sidebar() {
 	const intl = useIntl();
 	const { locale, setLocale } = useLocale();
+	const localize = useLocalePath();
 	const { theme, toggle } = useTheme();
 	const [searching, setSearching] = useState(false);
 
@@ -66,7 +67,7 @@ export function Sidebar() {
 	return (
 		<aside className="z-10 flex flex-col gap-4 border-separator border-b bg-(--sidebar) p-4 lg:sticky lg:top-0 lg:h-dvh lg:w-64 lg:shrink-0 lg:border-r lg:border-b-0 lg:px-4 lg:py-6">
 			<div className="flex items-center justify-between gap-3 px-1">
-				<NavLink to="/" className="flex items-center gap-2.5">
+				<NavLink to={localize("/")} className="flex items-center gap-2.5">
 					<Logo />
 					<span className="headline text-2xl">Shapeshift</span>
 				</NavLink>
@@ -113,7 +114,7 @@ export function Sidebar() {
 				<SectionLabel>
 					<FormattedMessage id="nav.overview" />
 				</SectionLabel>
-				<NavItem to="/" icon={<House size={16} />}>
+				<NavItem to={localize("/")} icon={<House size={16} />}>
 					<FormattedMessage id="nav.home" />
 				</NavItem>
 				{TOOL_GROUPS.map((group) => (
@@ -124,7 +125,7 @@ export function Sidebar() {
 						{TOOLS.filter((tool) => tool.group === group).map((tool) => (
 							<NavItem
 								key={tool.id}
-								to={tool.path}
+								to={localize(tool.path)}
 								icon={<tool.icon size={16} />}
 							>
 								<FormattedMessage id={`tool.${tool.id}.name`} />

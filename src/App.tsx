@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 import { Sidebar } from "./components/Sidebar";
 import { HomePage } from "./pages/HomePage";
 
@@ -85,40 +85,48 @@ const DataPage = lazy(() =>
 	import("./pages/DataPage").then((module) => ({ default: module.DataPage })),
 );
 
+// Every tool page is served in English at the root and in Indonesian under /id.
+const PAGE_ROUTES = (
+	<>
+		<Route index element={<HomePage />} />
+		<Route path="convert" element={<ConvertPage />} />
+		<Route path="compress" element={<CompressPage />} />
+		<Route path="resize" element={<ResizePage />} />
+		<Route path="markdown" element={<MarkdownPage />} />
+		<Route path="pdf" element={<PdfPage />} />
+		<Route path="icons" element={<IconsPage />} />
+		<Route path="qr" element={<QrPage />} />
+		<Route path="data" element={<DataPage />} />
+		<Route path="base64" element={<Base64Page />} />
+		<Route path="metadata" element={<MetadataPage />} />
+		<Route path="checksum" element={<ChecksumPage />} />
+		<Route path="color" element={<ColorPage />} />
+		<Route path="crop" element={<CropPage />} />
+		<Route path="merge" element={<MergePage />} />
+		<Route path="watermark" element={<WatermarkPage />} />
+		<Route path="ocr" element={<OcrPage />} />
+		<Route path="text" element={<TextPage />} />
+		<Route path="json" element={<JsonPage />} />
+		<Route path="diff" element={<DiffPage />} />
+		<Route path="devtools" element={<DevToolsPage />} />
+	</>
+);
+
 export function App() {
 	return (
-		<BrowserRouter basename={import.meta.env.BASE_URL}>
-			<div className="min-h-dvh bg-background text-foreground lg:flex">
-				<Sidebar />
-				<main className="mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 py-8 sm:px-8 lg:py-12">
-					<Suspense>
-						<Routes>
-							<Route path="/" element={<HomePage />} />
-							<Route path="/convert" element={<ConvertPage />} />
-							<Route path="/compress" element={<CompressPage />} />
-							<Route path="/resize" element={<ResizePage />} />
-							<Route path="/markdown" element={<MarkdownPage />} />
-							<Route path="/pdf" element={<PdfPage />} />
-							<Route path="/icons" element={<IconsPage />} />
-							<Route path="/qr" element={<QrPage />} />
-							<Route path="/data" element={<DataPage />} />
-							<Route path="/base64" element={<Base64Page />} />
-							<Route path="/metadata" element={<MetadataPage />} />
-							<Route path="/checksum" element={<ChecksumPage />} />
-							<Route path="/color" element={<ColorPage />} />
-							<Route path="/crop" element={<CropPage />} />
-							<Route path="/merge" element={<MergePage />} />
-							<Route path="/watermark" element={<WatermarkPage />} />
-							<Route path="/ocr" element={<OcrPage />} />
-							<Route path="/text" element={<TextPage />} />
-							<Route path="/json" element={<JsonPage />} />
-							<Route path="/diff" element={<DiffPage />} />
-							<Route path="/devtools" element={<DevToolsPage />} />
-							<Route path="/open" element={<OpenPage />} />
-						</Routes>
-					</Suspense>
-				</main>
-			</div>
-		</BrowserRouter>
+		<div className="min-h-dvh bg-background text-foreground lg:flex">
+			<Sidebar />
+			<main className="mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 py-8 sm:px-8 lg:py-12">
+				<Suspense>
+					<Routes>
+						<Route path="/">
+							{PAGE_ROUTES}
+							<Route path="open" element={<OpenPage />} />
+						</Route>
+						<Route path="/id">{PAGE_ROUTES}</Route>
+					</Routes>
+				</Suspense>
+			</main>
+		</div>
 	);
 }

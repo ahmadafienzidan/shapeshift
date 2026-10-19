@@ -6,6 +6,7 @@ import { Link, useSearchParams } from "react-router";
 import { Dropzone, type FileKind } from "../components/Dropzone";
 import { Thumbnail } from "../components/Thumbnail";
 import { ToolPage } from "../components/ToolPage";
+import { useLocalePath } from "../i18n/locale";
 import { IMAGE_KIND, isImage } from "../lib/image";
 import { handOff, takeSharedFiles } from "../lib/incoming";
 import { PDF_KIND } from "../lib/pdfKind";
@@ -41,6 +42,7 @@ function Targets({
 	targets: Target[];
 	onPick: () => void;
 }) {
+	const localize = useLocalePath();
 	return (
 		<section className="flex flex-col gap-3">
 			<p className="eyebrow text-muted">
@@ -50,7 +52,7 @@ function Targets({
 				{targets.map((target, index) => (
 					<Link
 						key={target.id}
-						to={target.path}
+						to={localize(target.path)}
 						onClick={onPick}
 						style={stagger(index)}
 						className="group flex animate-pop items-center gap-3 rounded-xl border border-border bg-surface p-4 transition-[border-color,translate] duration-200 hover:-translate-y-0.5 hover:border-electric/60"

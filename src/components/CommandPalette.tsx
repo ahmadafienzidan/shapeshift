@@ -4,7 +4,7 @@ import { type CSSProperties, useMemo, useState } from "react";
 import { Autocomplete } from "react-aria-components";
 import { createIntl, FormattedMessage, useIntl } from "react-intl";
 import { useNavigate } from "react-router";
-import { useLocale } from "../i18n/locale";
+import { useLocale, useLocalePath } from "../i18n/locale";
 import { MESSAGES } from "../i18n/messages";
 import { search } from "../lib/search";
 import { PDF_MODES, PDF_TOOL, pdfModePath, TOOLS } from "../tools";
@@ -61,6 +61,7 @@ const stagger = (index: number) => `${Math.min(index, 8) * 18}ms`;
 function Search({ onClose }: { onClose: () => void }) {
 	const intl = useIntl();
 	const navigate = useNavigate();
+	const localize = useLocalePath();
 	const entries = useEntries();
 	const [query, setQuery] = useState("");
 	const results = search(entries, query);
@@ -88,7 +89,7 @@ function Search({ onClose }: { onClose: () => void }) {
 				onAction={(key) => {
 					const entry = entries.find((candidate) => candidate.id === key);
 					if (!entry) return;
-					navigate(entry.path);
+					navigate(localize(entry.path));
 					onClose();
 				}}
 				renderEmptyState={() => (

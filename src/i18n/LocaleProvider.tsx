@@ -1,21 +1,23 @@
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect } from "react";
 import { IntlProvider } from "react-intl";
+import { useLocation, useNavigate } from "react-router";
+import { localeFromPath, switchLocalePath } from "../seo/routes";
 import { type Locale, LocaleContext } from "./locale";
 import { MESSAGES } from "./messages";
 
-function initialLocale(): Locale {
-	const stored = localStorage.getItem("locale");
-	if (stored === "en" || stored === "id") return stored;
-	return navigator.language.startsWith("id") ? "id" : "en";
-}
-
+// The URL decides the language: /id/… is Indonesian, everything else English.
 export function LocaleProvider({ children }: { children: ReactNode }) {
-	const [locale, setLocaleState] = useState(initialLocale);
+	const { pathname, search } = useLocation();
+	const navigate = useNavigate();
+	const locale = localeFromPath(pathname);
+
+	useEffect(() => {
+		document.documentElement.lang = locale;
+	}, [locale]);
 
 	const setLocale = (next: Locale) => {
 		localStorage.setItem("locale", next);
-		document.documentElement.lang = next;
-		setLocaleState(next);
+		navigate(switchLocalePath(pathname, search, next));
 	};
 
 	return (

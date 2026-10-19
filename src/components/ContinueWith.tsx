@@ -2,6 +2,7 @@ import { Button, Dropdown, Header } from "@heroui/react";
 import { ArrowRight } from "lucide-react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useLocation, useNavigate } from "react-router";
+import { useLocalePath } from "../i18n/locale";
 import { handOff } from "../lib/incoming";
 import { TARGET_GROUPS } from "../targets";
 
@@ -16,11 +17,12 @@ export function ContinueWith({
 }) {
 	const intl = useIntl();
 	const navigate = useNavigate();
+	const localize = useLocalePath();
 	const { pathname, search } = useLocation();
 	const groups = TARGET_GROUPS.map((group) => ({
 		...group,
 		targets: group.targets.filter(
-			(target) => target.path !== `${pathname}${search}`,
+			(target) => localize(target.path) !== `${pathname}${search}`,
 		),
 	})).filter((group) => files.some(group.matches));
 
@@ -42,7 +44,7 @@ export function ContinueWith({
 							.find((candidate) => candidate.id === key);
 						if (!target) return;
 						handOff(files);
-						navigate(target.path);
+						navigate(localize(target.path));
 					}}
 				>
 					{groups.map((group) => (

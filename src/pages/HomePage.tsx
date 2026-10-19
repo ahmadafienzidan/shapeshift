@@ -5,6 +5,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { Link } from "react-router";
 import { Eyebrow } from "../components/Eyebrow";
 import { Reveal } from "../components/Reveal";
+import { useLocalePath } from "../i18n/locale";
 import { useCycle } from "../lib/motion";
 import {
 	COMPRESS_TOOL,
@@ -56,10 +57,11 @@ const TILES = Array.from({ length: 16 }, (_, index) => {
 });
 
 function ToolCard({ tool, delay }: { tool: Tool; delay: number }) {
+	const localize = useLocalePath();
 	return (
 		<Reveal delay={delay}>
 			<Link
-				to={tool.path}
+				to={localize(tool.path)}
 				className="group flex h-full items-start gap-4 rounded-xl border border-border bg-surface p-5 transition-all duration-300 hover:-translate-y-1 hover:border-electric/60 hover:shadow-[0_12px_40px_-12px] hover:shadow-electric/30"
 			>
 				<div
@@ -120,9 +122,10 @@ function TileArt() {
 }
 
 function ToolSpotlight({ tool }: { tool: Tool }) {
+	const localize = useLocalePath();
 	return (
 		<Link
-			to={tool.path}
+			to={localize(tool.path)}
 			className="group flex flex-1 flex-col gap-3 rounded-xl border border-border bg-surface p-6 transition-all duration-300 hover:-translate-y-1 hover:border-electric/60"
 		>
 			<div className="flex items-center justify-between gap-3">
@@ -171,6 +174,7 @@ function rise(delay: number) {
 }
 
 export function HomePage() {
+	const localize = useLocalePath();
 	return (
 		<div className="flex flex-col gap-24">
 			<section className="flex flex-col items-center gap-7 pt-6 text-center lg:pt-12">
@@ -207,7 +211,7 @@ export function HomePage() {
 					style={rise(460)}
 				>
 					<Link
-						to={CONVERT_TOOL.path}
+						to={localize(CONVERT_TOOL.path)}
 						className={buttonVariants({
 							variant: "primary",
 							size: "lg",
@@ -217,7 +221,7 @@ export function HomePage() {
 						<FormattedMessage id="home.cta" />
 					</Link>
 					<Link
-						to={COMPRESS_TOOL.path}
+						to={localize(COMPRESS_TOOL.path)}
 						className="group flex items-center gap-1 font-semibold"
 					>
 						<FormattedMessage id="home.ctaSecondary" />
