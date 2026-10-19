@@ -3,6 +3,9 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
+import { renderPage } from "./src/seo/html";
+import { PAGES, pageFile } from "./src/seo/routes";
+import { robots, sitemap } from "./src/seo/sitemap";
 
 const BASE = "/shapeshift/";
 
@@ -53,6 +56,42 @@ function tessdata(): Plugin {
 	};
 }
 
+// Writes one static page per tool and language from the built index.html, so
+// search engines see each page's title, description, and links without
+// running JavaScript.
+function prerender(): Plugin {
+	return {
+		name: "prerender",
+		apply: "build",
+		enforce: "post",
+		generateBundle(_, bundle) {
+			const index = bundle["index.html"];
+			if (index?.type !== "asset" || typeof index.source !== "string") {
+				throw new Error("prerender: built index.html not found");
+			}
+			const template = index.source;
+			for (const locale of ["en", "id"] as const) {
+				for (const page of PAGES) {
+					const fileName = pageFile(page, locale);
+					const source = renderPage(template, page, locale);
+					if (fileName === index.fileName) index.source = source;
+					else this.emitFile({ type: "asset", fileName, source });
+				}
+			}
+			this.emitFile({
+				type: "asset",
+				fileName: "sitemap.xml",
+				source: sitemap(),
+			});
+			this.emitFile({
+				type: "asset",
+				fileName: "robots.txt",
+				source: robots(),
+			});
+		},
+	};
+}
+
 export default defineConfig({
 	// GitHub Pages serves the site from https://<user>.github.io/shapeshift/.
 	base: BASE,
@@ -60,6 +99,7 @@ export default defineConfig({
 		react(),
 		tailwindcss(),
 		tessdata(),
+		prerender(),
 		VitePWA({
 			registerType: "autoUpdate",
 			pwaAssets: { config: true, overrideManifestIcons: true },
