@@ -50,7 +50,7 @@ function useEntries(): Entry[] {
 			name: here(mode.labelId),
 			names: names(mode.labelId),
 			context: here("tool.pdf.name"),
-			keywords: `pdf ${both("tool.pdf.name")}`,
+			keywords: `pdf ${mode.id} ${both("tool.pdf.name")}`,
 		})),
 	];
 }

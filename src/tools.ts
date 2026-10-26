@@ -4,6 +4,7 @@ import {
 	Combine,
 	Crop,
 	Droplet,
+	FileCode,
 	FileImage,
 	FileJson,
 	Files,
@@ -99,6 +100,7 @@ export const PDF_TOOL: Tool = {
 export type PdfMode =
 	| "images-to-pdf"
 	| "pdf-to-images"
+	| "pdf-to-md"
 	| "merge"
 	| "compress"
 	| "organize"
@@ -109,6 +111,7 @@ export type PdfMode =
 export const PDF_MODES = [
 	{ id: "images-to-pdf", icon: Images, labelId: "pdf.mode.images-to-pdf" },
 	{ id: "pdf-to-images", icon: FileImage, labelId: "pdf.mode.pdf-to-images" },
+	{ id: "pdf-to-md", icon: FileCode, labelId: "pdf.mode.pdf-to-md" },
 	{ id: "merge", icon: Files, labelId: "pdf.mode.merge" },
 	{ id: "compress", icon: Minimize2, labelId: "pdf.mode.compress" },
 	{ id: "organize", icon: LayoutGrid, labelId: "pdf.mode.organize" },

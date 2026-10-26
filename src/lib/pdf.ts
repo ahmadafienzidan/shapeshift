@@ -13,6 +13,7 @@ import {
 	StandardFonts,
 } from "@cantoo/pdf-lib";
 import { decodeImage, EXTENSIONS, encodeImage, type OutputType } from "./image";
+import { itemsToMarkdown, type PdfText } from "./pdfMarkdown";
 import type { BatchOutput } from "./useBatch";
 
 export type PageSize = "fit" | "a4" | "letter";
@@ -141,6 +142,44 @@ export async function pdfToImages(
 
 	await task.destroy();
 	return outputs;
+}
+
+export async function pdfToMarkdown(file: File): Promise<BatchOutput[]> {
+	const pdfjs = await loadPdfJs();
+	const task = pdfjs.getDocument({
+		data: new Uint8Array(await file.arrayBuffer()),
+	});
+	const pdf = await task.promise;
+	const pages: PdfText[] = [];
+
+	for (let index = 1; index <= pdf.numPages; index++) {
+		const page = await pdf.getPage(index);
+		const content = await page.getTextContent();
+		pages.push({
+			items: content.items.flatMap((item) =>
+				"str" in item
+					? [
+							{
+								str: item.str,
+								x: item.transform[4],
+								y: item.transform[5],
+								width: item.width,
+								size: Math.hypot(item.transform[2], item.transform[3]),
+							},
+						]
+					: [],
+			),
+		});
+		page.cleanup();
+	}
+
+	await task.destroy();
+	return [
+		{
+			blob: new Blob([itemsToMarkdown(pages)], { type: "text/markdown" }),
+			name: file.name.replace(/\.pdf$/i, ".md"),
+		},
+	];
 }
 
 export async function renderThumbnails(

@@ -21,6 +21,7 @@ import {
 	type PageSize,
 	type Permissions,
 	pdfToImages,
+	pdfToMarkdown,
 	protectPdf,
 	stampPdf,
 	unlockPdf,
@@ -179,6 +180,19 @@ export function PdfPage() {
 							quality: quality / 100,
 						})
 					}
+				/>
+			</ToolPage>
+		);
+	}
+
+	if (mode === "pdf-to-md") {
+		return (
+			<ToolPage tool={PDF_TOOL} toolbar={toolbar}>
+				<BatchTool
+					key={mode}
+					kind={PDF_KIND}
+					zipName="shapeshift-markdown.zip"
+					process={pdfToMarkdown}
 				/>
 			</ToolPage>
 		);
