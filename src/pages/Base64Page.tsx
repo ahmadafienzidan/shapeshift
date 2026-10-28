@@ -13,6 +13,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { CopyButton } from "../components/CopyButton";
 import { Dropzone } from "../components/Dropzone";
 import { EDITOR_CLASS, EditorPanel } from "../components/EditorPanel";
+import { KeepAlive } from "../components/KeepAlive";
 import { ModeTabs } from "../components/ModeTabs";
 import { FormatPicker } from "../components/Options";
 import { Thumbnail } from "../components/Thumbnail";
@@ -315,71 +316,75 @@ export function Base64Page() {
 		/>
 	);
 
-	if (mode === "text") {
-		return (
-			<ToolPage
-				tool={BASE64_TOOL}
-				toolbar={toolbar}
-				options={
-					<>
-						<FormatPicker
-							labelId="base64.direction"
-							value={direction}
-							onChange={setDirection}
-							options={[
-								{ id: "encode", label: t("base64.encode") },
-								{ id: "decode", label: t("base64.decode") },
-							]}
-						/>
-						{direction === "encode" && (
+	const renderMode = (mode: Mode) => {
+		if (mode === "text") {
+			return (
+				<ToolPage
+					tool={BASE64_TOOL}
+					toolbar={toolbar}
+					options={
+						<>
 							<FormatPicker
-								labelId="base64.variant"
-								value={variant}
-								onChange={setVariant}
+								labelId="base64.direction"
+								value={direction}
+								onChange={setDirection}
 								options={[
-									{ id: "standard", label: t("base64.variant.standard") },
-									{ id: "url", label: t("base64.variant.url") },
+									{ id: "encode", label: t("base64.encode") },
+									{ id: "decode", label: t("base64.decode") },
 								]}
 							/>
-						)}
-						<p className="flex items-center gap-2 text-muted text-xs">
-							<ArrowLeftRight size={14} />
-							<FormattedMessage id="base64.utf8" />
-						</p>
-					</>
-				}
-			>
-				<TextMode direction={direction} urlSafe={variant === "url"} />
-			</ToolPage>
-		);
-	}
+							{direction === "encode" && (
+								<FormatPicker
+									labelId="base64.variant"
+									value={variant}
+									onChange={setVariant}
+									options={[
+										{ id: "standard", label: t("base64.variant.standard") },
+										{ id: "url", label: t("base64.variant.url") },
+									]}
+								/>
+							)}
+							<p className="flex items-center gap-2 text-muted text-xs">
+								<ArrowLeftRight size={14} />
+								<FormattedMessage id="base64.utf8" />
+							</p>
+						</>
+					}
+				>
+					<TextMode direction={direction} urlSafe={variant === "url"} />
+				</ToolPage>
+			);
+		}
 
-	if (mode === "encode-file") {
+		if (mode === "encode-file") {
+			return (
+				<ToolPage
+					tool={BASE64_TOOL}
+					toolbar={toolbar}
+					optionsHint="options.appliesToNew"
+					options={
+						<FormatPicker
+							labelId="base64.output"
+							value={output}
+							onChange={setOutput}
+							options={[
+								{ id: "data-uri", label: "Data URI" },
+								{ id: "raw", label: t("base64.output.raw") },
+							]}
+						/>
+					}
+				>
+					<EncodeFileMode asDataUri={output === "data-uri"} />
+				</ToolPage>
+			);
+		}
+
 		return (
-			<ToolPage
-				tool={BASE64_TOOL}
-				toolbar={toolbar}
-				optionsHint="options.appliesToNew"
-				options={
-					<FormatPicker
-						labelId="base64.output"
-						value={output}
-						onChange={setOutput}
-						options={[
-							{ id: "data-uri", label: "Data URI" },
-							{ id: "raw", label: t("base64.output.raw") },
-						]}
-					/>
-				}
-			>
-				<EncodeFileMode asDataUri={output === "data-uri"} />
+			<ToolPage tool={BASE64_TOOL} toolbar={toolbar}>
+				<DecodeFileMode />
 			</ToolPage>
 		);
-	}
+	};
 
-	return (
-		<ToolPage tool={BASE64_TOOL} toolbar={toolbar}>
-			<DecodeFileMode />
-		</ToolPage>
-	);
+	return <KeepAlive active={mode} render={renderMode} />;
 }

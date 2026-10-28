@@ -6,6 +6,7 @@ import {
 	PAGE_IDS,
 	PAGES,
 	pageFile,
+	pageFromPath,
 	pageUrl,
 	SITE_URL,
 	switchLocalePath,
@@ -54,6 +55,28 @@ describe("switchLocalePath", () => {
 		expect(switchLocalePath("/id/", "", "en")).toBe("/");
 		expect(switchLocalePath("/", "", "id")).toBe("/id");
 		expect(switchLocalePath("/open", "", "id")).toBe("/open");
+	});
+});
+
+describe("pageFromPath", () => {
+	it("finds the page in either language", () => {
+		expect(pageFromPath("/")).toBe("home");
+		expect(pageFromPath("/id")).toBe("home");
+		expect(pageFromPath("/id/")).toBe("home");
+		expect(pageFromPath("/compress")).toBe("compress");
+		expect(pageFromPath("/id/compress")).toBe("compress");
+		expect(pageFromPath("/compress/")).toBe("compress");
+	});
+
+	it("serves the Open page in English only", () => {
+		expect(pageFromPath("/open")).toBe("open");
+		expect(pageFromPath("/id/open")).toBeUndefined();
+	});
+
+	it("knows no other paths", () => {
+		expect(pageFromPath("/nope")).toBeUndefined();
+		expect(pageFromPath("/compress/extra")).toBeUndefined();
+		expect(pageFromPath("/home")).toBeUndefined();
 	});
 });
 

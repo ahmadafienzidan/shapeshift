@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CopyButton } from "../components/CopyButton";
 import { Dropzone } from "../components/Dropzone";
+import { KeepAlive } from "../components/KeepAlive";
 import { ModeTabs } from "../components/ModeTabs";
 import { ColorInput, FormatPicker } from "../components/Options";
 import { Thumbnail } from "../components/Thumbnail";
@@ -268,72 +269,76 @@ export function QrPage() {
 		/>
 	);
 
-	if (mode === "scan") {
+	const renderMode = (mode: Mode) => {
+		if (mode === "scan") {
+			return (
+				<ToolPage tool={QR_TOOL} toolbar={toolbar}>
+					<Scanner />
+				</ToolPage>
+			);
+		}
+
 		return (
-			<ToolPage tool={QR_TOOL} toolbar={toolbar}>
-				<Scanner />
+			<ToolPage
+				tool={QR_TOOL}
+				toolbar={toolbar}
+				options={
+					<>
+						<FormatPicker
+							labelId="qr.type"
+							value={content}
+							onChange={setContent}
+							options={[
+								{ id: "text", label: t("qr.type.text") },
+								{ id: "wifi", label: "Wi-Fi" },
+							]}
+						/>
+						<FormatPicker
+							labelId="qr.errorCorrection"
+							value={errorCorrection}
+							onChange={setErrorCorrection}
+							options={[
+								{ id: "L", label: "L" },
+								{ id: "M", label: "M" },
+								{ id: "Q", label: "Q" },
+								{ id: "H", label: "H" },
+							]}
+						/>
+						<FormatPicker
+							labelId="qr.size"
+							value={size}
+							onChange={setSize}
+							options={[
+								{ id: "512", label: "512" },
+								{ id: "1024", label: "1024" },
+								{ id: "2048", label: "2048" },
+							]}
+						/>
+						<ColorInput
+							labelId="qr.foreground"
+							value={foreground}
+							onChange={setForeground}
+						/>
+						<ColorInput
+							labelId="qr.background"
+							value={background}
+							onChange={setBackground}
+						/>
+					</>
+				}
+			>
+				<Generator
+					content={content}
+					options={{
+						foreground,
+						background,
+						errorCorrection,
+						size: Number(size),
+					}}
+				/>
 			</ToolPage>
 		);
-	}
+	};
 
-	return (
-		<ToolPage
-			tool={QR_TOOL}
-			toolbar={toolbar}
-			options={
-				<>
-					<FormatPicker
-						labelId="qr.type"
-						value={content}
-						onChange={setContent}
-						options={[
-							{ id: "text", label: t("qr.type.text") },
-							{ id: "wifi", label: "Wi-Fi" },
-						]}
-					/>
-					<FormatPicker
-						labelId="qr.errorCorrection"
-						value={errorCorrection}
-						onChange={setErrorCorrection}
-						options={[
-							{ id: "L", label: "L" },
-							{ id: "M", label: "M" },
-							{ id: "Q", label: "Q" },
-							{ id: "H", label: "H" },
-						]}
-					/>
-					<FormatPicker
-						labelId="qr.size"
-						value={size}
-						onChange={setSize}
-						options={[
-							{ id: "512", label: "512" },
-							{ id: "1024", label: "1024" },
-							{ id: "2048", label: "2048" },
-						]}
-					/>
-					<ColorInput
-						labelId="qr.foreground"
-						value={foreground}
-						onChange={setForeground}
-					/>
-					<ColorInput
-						labelId="qr.background"
-						value={background}
-						onChange={setBackground}
-					/>
-				</>
-			}
-		>
-			<Generator
-				content={content}
-				options={{
-					foreground,
-					background,
-					errorCorrection,
-					size: Number(size),
-				}}
-			/>
-		</ToolPage>
-	);
+	return <KeepAlive active={mode} render={renderMode} />;
 }

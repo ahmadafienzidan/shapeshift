@@ -8,7 +8,7 @@ import {
 	Trash2,
 	Undo2,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
 	GridList,
 	GridListItem,
@@ -36,13 +36,6 @@ export function PdfOrganizer() {
 	const [error, setError] = useState<string>();
 	const thumbs = useRef<string[]>([]);
 	const pages = useListData<Page>({ initialItems: [] });
-
-	useEffect(
-		() => () => {
-			for (const url of thumbs.current) URL.revokeObjectURL(url);
-		},
-		[],
-	);
 
 	const reset = () => {
 		if (output) URL.revokeObjectURL(output.url);

@@ -4,6 +4,7 @@ import { useDeferredValue, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CopyButton } from "../components/CopyButton";
 import { Dropzone } from "../components/Dropzone";
+import { KeepAlive } from "../components/KeepAlive";
 import { ModeTabs } from "../components/ModeTabs";
 import { ToolPage } from "../components/ToolPage";
 import {
@@ -275,7 +276,12 @@ export function ColorPage() {
 				/>
 			}
 		>
-			{mode === "convert" ? <Converter /> : <PaletteFromImage />}
+			<KeepAlive
+				active={mode}
+				render={(mode) =>
+					mode === "convert" ? <Converter /> : <PaletteFromImage />
+				}
+			/>
 		</ToolPage>
 	);
 }

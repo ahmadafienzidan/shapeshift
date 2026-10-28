@@ -1,7 +1,9 @@
-import { lazy, Suspense } from "react";
-import { Route, Routes } from "react-router";
+import { lazy, type ReactNode, Suspense } from "react";
+import { useLocation } from "react-router";
+import { KeepAlive } from "./components/KeepAlive";
 import { Sidebar } from "./components/Sidebar";
 import { HomePage } from "./pages/HomePage";
+import { type Page, pageFromPath } from "./seo/routes";
 
 const ConvertPage = lazy(() =>
 	import("./pages/ConvertPage").then((module) => ({
@@ -85,47 +87,44 @@ const DataPage = lazy(() =>
 	import("./pages/DataPage").then((module) => ({ default: module.DataPage })),
 );
 
-// Every tool page is served in English at the root and in Indonesian under /id.
-const PAGE_ROUTES = (
-	<>
-		<Route index element={<HomePage />} />
-		<Route path="convert" element={<ConvertPage />} />
-		<Route path="compress" element={<CompressPage />} />
-		<Route path="resize" element={<ResizePage />} />
-		<Route path="markdown" element={<MarkdownPage />} />
-		<Route path="pdf" element={<PdfPage />} />
-		<Route path="icons" element={<IconsPage />} />
-		<Route path="qr" element={<QrPage />} />
-		<Route path="data" element={<DataPage />} />
-		<Route path="base64" element={<Base64Page />} />
-		<Route path="metadata" element={<MetadataPage />} />
-		<Route path="checksum" element={<ChecksumPage />} />
-		<Route path="color" element={<ColorPage />} />
-		<Route path="crop" element={<CropPage />} />
-		<Route path="merge" element={<MergePage />} />
-		<Route path="watermark" element={<WatermarkPage />} />
-		<Route path="ocr" element={<OcrPage />} />
-		<Route path="text" element={<TextPage />} />
-		<Route path="json" element={<JsonPage />} />
-		<Route path="diff" element={<DiffPage />} />
-		<Route path="devtools" element={<DevToolsPage />} />
-	</>
-);
+const PAGES: Record<Page | "open", ReactNode> = {
+	home: <HomePage />,
+	convert: <ConvertPage />,
+	compress: <CompressPage />,
+	resize: <ResizePage />,
+	crop: <CropPage />,
+	merge: <MergePage />,
+	watermark: <WatermarkPage />,
+	ocr: <OcrPage />,
+	icons: <IconsPage />,
+	metadata: <MetadataPage />,
+	color: <ColorPage />,
+	pdf: <PdfPage />,
+	markdown: <MarkdownPage />,
+	qr: <QrPage />,
+	data: <DataPage />,
+	text: <TextPage />,
+	base64: <Base64Page />,
+	checksum: <ChecksumPage />,
+	json: <JsonPage />,
+	diff: <DiffPage />,
+	devtools: <DevToolsPage />,
+	open: <OpenPage />,
+};
 
 export function App() {
+	const { pathname } = useLocation();
+
 	return (
 		<div className="min-h-dvh bg-background text-foreground lg:flex">
 			<Sidebar />
 			<main className="mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 py-8 sm:px-8 lg:py-12">
-				<Suspense>
-					<Routes>
-						<Route path="/">
-							{PAGE_ROUTES}
-							<Route path="open" element={<OpenPage />} />
-						</Route>
-						<Route path="/id">{PAGE_ROUTES}</Route>
-					</Routes>
-				</Suspense>
+				{/* Pages stay mounted once opened, so files and results survive
+				    switching tools or languages. */}
+				<KeepAlive
+					active={pageFromPath(pathname)}
+					render={(page) => <Suspense>{PAGES[page]}</Suspense>}
+				/>
 			</main>
 		</div>
 	);

@@ -12,6 +12,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { CopyButton } from "../components/CopyButton";
 import { EDITOR_CLASS, EditorPanel } from "../components/EditorPanel";
 import { JsonCode } from "../components/JsonView";
+import { KeepAlive } from "../components/KeepAlive";
 import { ModeTabs } from "../components/ModeTabs";
 import { FormatPicker } from "../components/Options";
 import { ToolPage } from "../components/ToolPage";
@@ -391,86 +392,93 @@ export function DevToolsPage() {
 		/>
 	);
 
-	if (mode === "url") {
+	const renderMode = (mode: Mode) => {
+		if (mode === "url") {
+			return (
+				<ToolPage
+					tool={DEVTOOLS_TOOL}
+					toolbar={toolbar}
+					options={
+						<>
+							<FormatPicker
+								labelId="base64.direction"
+								value={direction}
+								onChange={setDirection}
+								options={[
+									{ id: "encode", label: t("base64.encode") },
+									{ id: "decode", label: t("base64.decode") },
+								]}
+							/>
+							<FormatPicker
+								labelId="devtools.url.scope"
+								value={scope}
+								onChange={setScope}
+								options={[
+									{ id: "component", label: t("devtools.url.component") },
+									{ id: "full", label: t("devtools.url.full") },
+								]}
+							/>
+							<p className="text-muted text-xs">
+								<FormattedMessage id={`devtools.url.hint.${scope}`} />
+							</p>
+						</>
+					}
+				>
+					<UrlMode direction={direction} scope={scope} />
+				</ToolPage>
+			);
+		}
+
+		if (mode === "uuid") {
+			return (
+				<ToolPage
+					tool={DEVTOOLS_TOOL}
+					toolbar={toolbar}
+					options={
+						<>
+							<FormatPicker
+								labelId="uuid.version"
+								value={version}
+								onChange={setVersion}
+								options={[
+									{ id: "v4", label: t("uuid.v4") },
+									{ id: "v7", label: t("uuid.v7") },
+								]}
+							/>
+							<FormatPicker
+								labelId="uuid.count"
+								value={count}
+								onChange={setCount}
+								options={["1", "5", "10", "50"].map((id) => ({
+									id,
+									label: id,
+								}))}
+							/>
+							<ToggleButton isSelected={uppercase} onChange={setUppercase}>
+								<FormattedMessage id="uuid.uppercase" />
+							</ToggleButton>
+							<p className="text-muted text-xs">
+								<FormattedMessage id={`uuid.hint.${version}`} />
+							</p>
+						</>
+					}
+				>
+					<UuidMode
+						key={`${version}-${count}`}
+						version={version}
+						count={Number(count)}
+						uppercase={uppercase}
+					/>
+				</ToolPage>
+			);
+		}
+
 		return (
-			<ToolPage
-				tool={DEVTOOLS_TOOL}
-				toolbar={toolbar}
-				options={
-					<>
-						<FormatPicker
-							labelId="base64.direction"
-							value={direction}
-							onChange={setDirection}
-							options={[
-								{ id: "encode", label: t("base64.encode") },
-								{ id: "decode", label: t("base64.decode") },
-							]}
-						/>
-						<FormatPicker
-							labelId="devtools.url.scope"
-							value={scope}
-							onChange={setScope}
-							options={[
-								{ id: "component", label: t("devtools.url.component") },
-								{ id: "full", label: t("devtools.url.full") },
-							]}
-						/>
-						<p className="text-muted text-xs">
-							<FormattedMessage id={`devtools.url.hint.${scope}`} />
-						</p>
-					</>
-				}
-			>
-				<UrlMode direction={direction} scope={scope} />
+			<ToolPage tool={DEVTOOLS_TOOL} toolbar={toolbar}>
+				{mode === "jwt" ? <JwtMode /> : <TimestampMode />}
 			</ToolPage>
 		);
-	}
+	};
 
-	if (mode === "uuid") {
-		return (
-			<ToolPage
-				tool={DEVTOOLS_TOOL}
-				toolbar={toolbar}
-				options={
-					<>
-						<FormatPicker
-							labelId="uuid.version"
-							value={version}
-							onChange={setVersion}
-							options={[
-								{ id: "v4", label: t("uuid.v4") },
-								{ id: "v7", label: t("uuid.v7") },
-							]}
-						/>
-						<FormatPicker
-							labelId="uuid.count"
-							value={count}
-							onChange={setCount}
-							options={["1", "5", "10", "50"].map((id) => ({ id, label: id }))}
-						/>
-						<ToggleButton isSelected={uppercase} onChange={setUppercase}>
-							<FormattedMessage id="uuid.uppercase" />
-						</ToggleButton>
-						<p className="text-muted text-xs">
-							<FormattedMessage id={`uuid.hint.${version}`} />
-						</p>
-					</>
-				}
-			>
-				<UuidMode
-					key={`${version}-${count}`}
-					version={version}
-					count={Number(count)}
-					uppercase={uppercase}
-				/>
-			</ToolPage>
-		);
-	}
-
-	return (
-		<ToolPage tool={DEVTOOLS_TOOL} toolbar={toolbar}>
-			{mode === "jwt" ? <JwtMode /> : <TimestampMode />}
-		</ToolPage>
-	);
+	return <KeepAlive active={mode} render={renderMode} />;
 }

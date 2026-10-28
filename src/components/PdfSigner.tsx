@@ -52,8 +52,6 @@ export function PdfSigner() {
 	const surface = useRef<HTMLDivElement>(null);
 	const drag = useRef<Drag>(undefined);
 
-	useEffect(() => () => void doc?.destroy(), [doc]);
-
 	useEffect(() => {
 		if (!doc) return;
 		let url: string | undefined;
@@ -73,7 +71,11 @@ export function PdfSigner() {
 		if (!next) return;
 		setError(undefined);
 		try {
-			setDoc(await openPdf(next));
+			const opened = await openPdf(next);
+			// Not in an effect cleanup: hiding the page runs those, and the
+			// document must survive until it is replaced.
+			doc?.destroy();
+			setDoc(opened);
 			setFile(next);
 			setIndex(0);
 			setBoxes([]);
@@ -250,6 +252,7 @@ export function PdfSigner() {
 							size="sm"
 							onPress={() => {
 								setFile(undefined);
+								doc.destroy();
 								setDoc(undefined);
 								setPage(undefined);
 							}}

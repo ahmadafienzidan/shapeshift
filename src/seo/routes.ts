@@ -52,6 +52,15 @@ export function switchLocalePath(
 	return localePath(`${english}${search}`, locale);
 }
 
+export function pageFromPath(pathname: string): Page | "open" | undefined {
+	const locale = localeFromPath(pathname);
+	const segment = pathname.replace(/^\/id(?=\/|$)/, "").replace(/^\/|\/$/g, "");
+	if (segment === "") return "home";
+	if (`/${segment}` === ENGLISH_ONLY)
+		return locale === "en" ? "open" : undefined;
+	return PAGE_IDS.find((id) => id === segment);
+}
+
 export function pageFile(page: Page, locale: Locale): string {
 	const prefix = locale === "id" ? "id/" : "";
 	return `${prefix}${page === "home" ? "index" : page}.html`;
