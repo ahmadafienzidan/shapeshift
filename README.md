@@ -17,6 +17,9 @@ No accounts, no file limits, no watermarks. Everything runs on your device.
 
 **[Open Shapeshift →](https://ahmadafienzidan.github.io/shapeshift/)**
 
+<img src=".github/assets/home-dark.png" alt="Shapeshift home page in dark mode" width="49%" />
+<img src=".github/assets/pdf-light.png" alt="PDF Tools on the PDF to Markdown tab in light mode" width="49%" />
+
 </div>
 
 ---
@@ -32,7 +35,8 @@ No accounts, no file limits, no watermarks. Everything runs on your device.
 | 🔎 **Find any tool fast** | Press <kbd>Ctrl</kbd>+<kbd>K</kbd> (<kbd>⌘</kbd>+<kbd>K</kbd> on Mac) and type in English or Indonesian, e.g. "kompres pdf". |
 | 📲 **Share straight to it** | Once installed, Shapeshift shows up in your phone's share sheet and in "Open with" on desktop. Shared images and PDFs open on a page that asks which tool to use. |
 | 🌗 **Dark & light mode** | Deep navy by night, warm cream by day. Follows your system theme, with a one-click toggle. |
-| 🌐 **English & Bahasa Indonesia** | Switch languages from the sidebar; your choice is remembered. |
+| 🌐 **English & Bahasa Indonesia** | Every page has its own address in both languages (`/compress` and `/id/compress`). Switch from the sidebar; your choice is remembered. |
+| 🗂️ **Nothing lost when you switch** | Files, results, and options stay put when you jump between tools or tabs, until you clear them or reload. |
 
 ## 🧰 Tools
 
@@ -152,12 +156,13 @@ Photos carry more than pixels: camera model, the exact time, and often the GPS l
 
 ### 📄 PDF Tools
 
-Three modes in one place:
+Every PDF job in one place:
 
 | Mode | Input | Output | Options |
 | --- | --- | --- | --- |
 | **Images → PDF** | Any supported image, including HEIC | One PDF, one page per image | Page size (fit image, A4, Letter), margin, quality |
 | **PDF → Images** | One or more PDFs | One image per page, zipped per PDF | PNG, JPG, or WEBP at 72, 150, or 300 DPI |
+| **PDF → Markdown** | One or more PDFs | One `.md` file per PDF | Headings from font sizes, rejoined paragraphs and hyphenated words, bullet and numbered lists; running headers, footers, and page numbers are dropped. Works on PDFs with a text layer, so scans need Image to Text |
 | **Merge PDFs** | Two or more PDFs | One combined PDF | |
 | **Compress** | One or more PDFs | Smaller PDFs | Light, recommended, or strong. *Keep text* shrinks and re-encodes the images inside while text stays selectable; *Flatten pages* turns each page into an image, best for scans. The original is kept if it is already smaller |
 | **Organize pages** | One PDF | A reordered, rotated, or trimmed PDF | Drag to reorder (mouse or keyboard), rotate, delete, or extract the selected pages |
@@ -267,7 +272,7 @@ Then open http://localhost:5173/shapeshift/ (the app lives under `/shapeshift/` 
 
 ### Deployment
 
-Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): it lints, builds, and publishes `dist/` to GitHub Pages at https://ahmadafienzidan.github.io/shapeshift/. `index.html` is also published as `404.html`, so deep links such as `/shapeshift/pdf` load the app instead of a GitHub error page.
+Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): it lints, tests, builds, and publishes `dist/` to GitHub Pages at https://ahmadafienzidan.github.io/shapeshift/. Each page is prerendered to its own HTML file, so deep links such as `/shapeshift/pdf` are served directly; `index.html` is also published as `404.html` for any other path.
 
 ## ⚙️ How it works
 
@@ -282,7 +287,22 @@ Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/dep
 3. **Encode**: `canvas.convertToBlob()` produces the final JPG, PNG, or WEBP.
 4. **Bundle**: files are processed one by one to keep memory low, and [`fflate`](https://github.com/101arrowz/fflate) zips the results on demand. Duplicate names are renamed automatically (`photo.jpg`, `photo (2).jpg`).
 
-PDF pages are rendered by pdf.js in a Web Worker and exported through the same canvas encoder, while new PDFs are assembled with pdf-lib. Heavy libraries (the HEIC decoder, pdf.js, and the OCR engine) are only downloaded the first time you use them.
+PDF pages are rendered by pdf.js in a Web Worker and exported through the same canvas encoder, while new PDFs are assembled with pdf-lib. PDF → Markdown reads pdf.js's text layer and rebuilds the structure from the position and size of each piece of text.
+
+### Loading and state
+
+- **Code splitting:** every tool is its own chunk, and heavy libraries (the HEIC decoder, pdf.js, pdf-lib, and the OCR engine) are only downloaded the first time a tool needs them, so the image tools never load the PDF stack.
+- **Kept-alive pages:** a page or tab stays mounted once opened, hidden with React's `<Activity>`, so its files and results survive navigation without a global store. Hidden pages drop their effects, so their shortcuts and paste handlers stop listening.
+
+### Search and sharing
+
+A Vite plugin runs after the app is built and writes, for every page in both languages:
+
+- a static HTML file with its own title, description, canonical URL, `hreflang` links, and Open Graph tags, plus a plain heading, summary, and links in `#root` for crawlers until React takes over;
+- a 1200×630 share image, laid out with [satori](https://github.com/vercel/satori) and rendered to PNG with [resvg](https://github.com/yisibl/resvg-js);
+- `sitemap.xml` with language alternates, and `robots.txt`.
+
+The language lives in the URL: English at the root, Indonesian under `/id/`. On a first visit, a browser set to Indonesian is sent to the Indonesian version of the page, and a language picked in the sidebar is remembered for next time.
 
 ## 🗂️ Project structure
 
@@ -292,6 +312,8 @@ src/
 ├── i18n/           en.json, id.json, locale context, and provider (react-intl)
 ├── lib/            The logic behind each tool, independent of the UI
 ├── pages/          One page per tool, plus Home
+├── seo/            Routes, prerendered HTML, share images, sitemap (build time)
+├── test/           Shared test helpers, such as a fake canvas
 └── tools.ts        Tool registry used by the sidebar and home page
 ```
 
@@ -300,6 +322,7 @@ src/
 1. Copy `src/i18n/en.json` to e.g. `src/i18n/fr.json` and translate the values.
 2. Add its code to the `Locale` type in `src/i18n/locale.ts` and register it in `MESSAGES` in `src/i18n/messages.ts`.
 3. Add a button for it in the language switch in `src/components/Sidebar.tsx`.
+4. Give it a URL prefix: `src/seo/routes.ts` maps paths to languages (it only knows `/id` today), and the prerender plugin in `vite.config.ts` loops over the languages to build.
 
 ## 🧱 Tech stack
 
@@ -315,6 +338,7 @@ src/
 - [Tesseract.js](https://tesseract.projectnaptha.com) for text recognition, with its engine and language data served from this site
 - [jsdiff](https://github.com/kpdecker/jsdiff) for text comparison and [react-easy-crop](https://github.com/ValentinH/react-easy-crop) for the crop tool
 - [vite-plugin-pwa](https://vite-pwa-org.netlify.app) for offline support, with app icons generated from `public/logo.svg`
+- [satori](https://github.com/vercel/satori) and [resvg-js](https://github.com/yisibl/resvg-js) to draw the share images at build time
 - [React Router](https://reactrouter.com) and [react-intl](https://formatjs.github.io/docs/react-intl/)
 - [Vite](https://vite.dev), [Bun](https://bun.sh), [Biome](https://biomejs.dev)
 - [lucide-react](https://lucide.dev) icons
