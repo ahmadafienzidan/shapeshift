@@ -4,7 +4,8 @@ import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { renderPage } from "./src/seo/html";
-import { PAGES, pageFile } from "./src/seo/routes";
+import { ogImage } from "./src/seo/og";
+import { ogImageFile, PAGES, pageFile } from "./src/seo/routes";
 import { robots, sitemap } from "./src/seo/sitemap";
 
 const BASE = "/shapeshift/";
@@ -64,20 +65,28 @@ function prerender(): Plugin {
 		name: "prerender",
 		apply: "build",
 		enforce: "post",
-		generateBundle(_, bundle) {
+		async generateBundle(_, bundle) {
 			const index = bundle["index.html"];
 			if (index?.type !== "asset" || typeof index.source !== "string") {
 				throw new Error("prerender: built index.html not found");
 			}
 			const template = index.source;
-			for (const locale of ["en", "id"] as const) {
-				for (const page of PAGES) {
-					const fileName = pageFile(page, locale);
-					const source = renderPage(template, page, locale);
-					if (fileName === index.fileName) index.source = source;
-					else this.emitFile({ type: "asset", fileName, source });
-				}
+			const pages = (["en", "id"] as const).flatMap((locale) =>
+				PAGES.map((page) => ({ page, locale })),
+			);
+			for (const { page, locale } of pages) {
+				const fileName = pageFile(page, locale);
+				const source = renderPage(template, page, locale);
+				if (fileName === index.fileName) index.source = source;
+				else this.emitFile({ type: "asset", fileName, source });
 			}
+			const images = await Promise.all(
+				pages.map(async ({ page, locale }) => ({
+					fileName: ogImageFile(page, locale),
+					source: await ogImage(page, locale),
+				})),
+			);
+			for (const image of images) this.emitFile({ type: "asset", ...image });
 			this.emitFile({
 				type: "asset",
 				fileName: "sitemap.xml",
@@ -132,7 +141,8 @@ export default defineConfig({
 				maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
 				// The OCR engine and language data (~8 MB) are only fetched once
 				// someone uses Image to Text, then kept for offline use.
-				globIgnores: ["**/worker.min-*.js", "**/tesseract-core-*.js"],
+				// Share images are only fetched by link previews, never by the app.
+				globIgnores: ["**/worker.min-*.js", "**/tesseract-core-*.js", "og/**"],
 				runtimeCaching: [
 					{
 						urlPattern: /\/(worker\.min-|tesseract-core-|tessdata\/)/,

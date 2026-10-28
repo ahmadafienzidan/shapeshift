@@ -3,6 +3,8 @@ import { TOOLS } from "../tools";
 import {
 	localeFromPath,
 	localePath,
+	ogImageFile,
+	ogImageUrl,
 	PAGE_IDS,
 	PAGES,
 	pageFile,
@@ -55,6 +57,15 @@ describe("switchLocalePath", () => {
 		expect(switchLocalePath("/id/", "", "en")).toBe("/");
 		expect(switchLocalePath("/", "", "id")).toBe("/id");
 		expect(switchLocalePath("/open", "", "id")).toBe("/open");
+	});
+});
+
+describe("ogImageFile and ogImageUrl", () => {
+	it("name one share image per page and language", () => {
+		expect(ogImageFile("home", "en")).toBe("og/index.png");
+		expect(ogImageFile("home", "id")).toBe("og/id/index.png");
+		expect(ogImageFile("compress", "id")).toBe("og/id/compress.png");
+		expect(ogImageUrl("compress", "en")).toBe(`${SITE_URL}og/compress.png`);
 	});
 });
 

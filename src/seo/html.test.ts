@@ -73,12 +73,26 @@ describe("renderPage", () => {
 		expect(id).toContain(
 			'<meta property="og:site_name" content="Shapeshift" />',
 		);
-		expect(id).toContain('<meta name="twitter:card" content="summary" />');
+		expect(id).toContain(
+			'<meta name="twitter:card" content="summary_large_image" />',
+		);
 		const en = head(renderPage(TEMPLATE, "home", "en"));
 		expect(en).toContain('<meta property="og:locale" content="en_US" />');
 		expect(en).toContain(
 			'<meta property="og:title" content="Free Private File Tools, No Upload | Shapeshift" />',
 		);
+	});
+
+	it("points link previews at the page's share image", () => {
+		const html = head(renderPage(TEMPLATE, "compress", "id"));
+		const image = `${SITE_URL}og/id/compress.png`;
+		expect(html).toContain(`<meta property="og:image" content="${image}" />`);
+		expect(html).toContain('<meta property="og:image:width" content="1200" />');
+		expect(html).toContain('<meta property="og:image:height" content="630" />');
+		expect(html).toContain(
+			'<meta property="og:image:alt" content="Kompres Gambar Online Gratis Tanpa Upload | Shapeshift" />',
+		);
+		expect(html).toContain(`<meta name="twitter:image" content="${image}" />`);
 	});
 
 	it("fills #root with the page heading, summary, and links to every other page", () => {

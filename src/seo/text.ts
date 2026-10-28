@@ -18,3 +18,21 @@ export function seoTitle(locale: Locale, page: MetaPage): string {
 export function seoDescription(locale: Locale, page: MetaPage): string {
 	return text(locale, `seo.${page}.description`);
 }
+
+export function pageName(locale: Locale, page: Page): string {
+	return text(locale, page === "home" ? "nav.home" : `tool.${page}.name`);
+}
+
+// The visible headline and summary of a prerendered page and its share image.
+export function pageHeading(locale: Locale, page: Page): string {
+	return page === "home"
+		? text(locale, "seo.home.title")
+		: pageName(locale, page);
+}
+
+export function pageSummary(locale: Locale, page: Page): string {
+	return text(
+		locale,
+		page === "home" ? "home.subtitle" : `tool.${page}.description`,
+	);
+}

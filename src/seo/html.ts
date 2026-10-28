@@ -1,6 +1,19 @@
 import type { Locale } from "../i18n/locale";
-import { PAGES, type Page, pageUrl } from "./routes";
-import { seoDescription, seoTitle, text } from "./text";
+import {
+	OG_HEIGHT,
+	OG_WIDTH,
+	ogImageUrl,
+	PAGES,
+	type Page,
+	pageUrl,
+} from "./routes";
+import {
+	pageHeading,
+	pageName,
+	pageSummary,
+	seoDescription,
+	seoTitle,
+} from "./text";
 
 const OG_LOCALES: Record<Locale, string> = { en: "en_US", id: "id_ID" };
 
@@ -11,13 +24,11 @@ const escapeHtml = (value: string) =>
 		.replaceAll(">", "&gt;")
 		.replaceAll('"', "&quot;");
 
-const pageName = (page: Page, locale: Locale) =>
-	text(locale, page === "home" ? "nav.home" : `tool.${page}.name`);
-
 function headTags(page: Page, locale: Locale): string {
 	const title = escapeHtml(seoTitle(locale, page));
 	const description = escapeHtml(seoDescription(locale, page));
 	const url = pageUrl(page, locale);
+	const image = ogImageUrl(page, locale);
 	return [
 		`<title>${title}</title>`,
 		`<meta name="description" content="${description}" />`,
@@ -31,27 +42,26 @@ function headTags(page: Page, locale: Locale): string {
 		`<meta property="og:url" content="${url}" />`,
 		`<meta property="og:title" content="${title}" />`,
 		`<meta property="og:description" content="${description}" />`,
-		'<meta name="twitter:card" content="summary" />',
+		`<meta property="og:image" content="${image}" />`,
+		`<meta property="og:image:width" content="${OG_WIDTH}" />`,
+		`<meta property="og:image:height" content="${OG_HEIGHT}" />`,
+		`<meta property="og:image:alt" content="${title}" />`,
+		'<meta name="twitter:card" content="summary_large_image" />',
 		`<meta name="twitter:title" content="${title}" />`,
 		`<meta name="twitter:description" content="${description}" />`,
+		`<meta name="twitter:image" content="${image}" />`,
 	].join("\n\t\t");
 }
 
 // Plain, visible content for crawlers; React replaces it once the app loads.
 function body(page: Page, locale: Locale): string {
-	const heading =
-		page === "home" ? text(locale, "seo.home.title") : pageName(page, locale);
-	const summary = text(
-		locale,
-		page === "home" ? "home.subtitle" : `tool.${page}.description`,
-	);
 	const links = PAGES.filter((other) => other !== page)
 		.map(
 			(other) =>
-				`<li><a href="${pageUrl(other, locale)}">${escapeHtml(pageName(other, locale))}</a></li>`,
+				`<li><a href="${pageUrl(other, locale)}">${escapeHtml(pageName(locale, other))}</a></li>`,
 		)
 		.join("");
-	return `<div id="root"><main><h1>${escapeHtml(heading)}</h1><p>${escapeHtml(summary)}</p><nav><ul>${links}</ul></nav></main></div>`;
+	return `<div id="root"><main><h1>${escapeHtml(pageHeading(locale, page))}</h1><p>${escapeHtml(pageSummary(locale, page))}</p><nav><ul>${links}</ul></nav></main></div>`;
 }
 
 function replaceOnce(html: string, part: string, replacement: string): string {

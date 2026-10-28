@@ -66,6 +66,17 @@ export function pageFile(page: Page, locale: Locale): string {
 	return `${prefix}${page === "home" ? "index" : page}.html`;
 }
 
+export const OG_WIDTH = 1200;
+export const OG_HEIGHT = 630;
+
+export function ogImageFile(page: Page, locale: Locale): string {
+	return `og/${pageFile(page, locale).replace(/\.html$/, ".png")}`;
+}
+
+export function ogImageUrl(page: Page, locale: Locale): string {
+	return `${SITE_URL}${ogImageFile(page, locale)}`;
+}
+
 export function pageUrl(page: Page, locale: Locale): string {
 	const prefix = locale === "id" ? "id/" : "";
 	return `${SITE_URL}${prefix}${page === "home" ? "" : page}`;
