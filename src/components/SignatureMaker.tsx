@@ -4,7 +4,7 @@ import { Eraser, ImagePlus, PenLine, Type, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { FileTrigger } from "react-aria-components";
 import { FormattedMessage, useIntl } from "react-intl";
-import SignaturePad from "signature_pad";
+import SignaturePad, { type PointGroup } from "signature_pad";
 import { ACCEPTED_IMAGES } from "../lib/image";
 import {
 	type Signature,
@@ -38,6 +38,9 @@ function DrawPad({
 }) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const padRef = useRef<SignaturePad>(undefined);
+	// Hiding the page tears the pad down and resizing the canvas wipes it, so
+	// the strokes are carried over to the next pad.
+	const strokes = useRef<PointGroup[]>([]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -48,9 +51,11 @@ function DrawPad({
 		canvas.height = canvas.offsetHeight * ratio;
 		canvas.getContext("2d")?.scale(ratio, ratio);
 		const pad = new SignaturePad(canvas, { minWidth: 0.8, maxWidth: 2.8 });
+		pad.fromData(strokes.current);
 		padRef.current = pad;
 		onReady({ pad, canvas });
 		return () => {
+			strokes.current = pad.toData();
 			pad.off();
 			onReady(undefined);
 		};
