@@ -17,7 +17,7 @@ vi.mock("../i18n/messages", async (importOriginal) => {
 	};
 });
 
-const { renderPage } = await import("./html");
+const { renderNotFound, renderPage } = await import("./html");
 
 const TEMPLATE = `<!doctype html>
 <html lang="en">
@@ -138,5 +138,24 @@ describe("renderPage", () => {
 			expect(() =>
 				renderPage(TEMPLATE.replace(part, ""), "home", "en"),
 			).toThrow(part);
+	});
+});
+
+describe("renderNotFound", () => {
+	const html = renderNotFound(TEMPLATE);
+
+	it("tells search engines not to index it", () => {
+		expect(head(html)).toContain("<title>Page not found | Shapeshift</title>");
+		expect(head(html)).toContain('<meta name="robots" content="noindex" />');
+		expect(head(html)).not.toContain('rel="canonical"');
+	});
+
+	it("says the page is missing and links home", () => {
+		expect(root(html)).toContain("<h1>Page not found</h1>");
+		expect(root(html)).toContain(`<a href="${SITE_URL}">Back to all tools</a>`);
+	});
+
+	it("still loads the app", () => {
+		expect(html).toContain('src="/shapeshift/assets/index-abc.js"');
 	});
 });

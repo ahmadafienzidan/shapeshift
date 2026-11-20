@@ -19,9 +19,9 @@ const target = redirectTarget(
 );
 if (target) history.replaceState(null, "", `${base}${target}${location.hash}`);
 
-// PageMeta renders these from React; static copies would shadow its updates.
+// The pages render these from React; static copies would shadow its updates.
 for (const tag of document.head.querySelectorAll(
-	'title, meta[name="description"]',
+	'title, meta[name="description"], meta[name="robots"]',
 ))
 	tag.remove();
 

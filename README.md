@@ -272,7 +272,7 @@ Then open http://localhost:5173/shapeshift/ (the app lives under `/shapeshift/` 
 
 ### Deployment
 
-Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): it lints, tests, builds, and publishes `dist/` to GitHub Pages at https://ahmadafienzidan.github.io/shapeshift/. Each page is prerendered to its own HTML file, so deep links such as `/shapeshift/pdf` are served directly; `index.html` is also published as `404.html` for any other path.
+Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): it lints, tests, builds, and publishes `dist/` to GitHub Pages at https://ahmadafienzidan.github.io/shapeshift/. Each page is prerendered to its own HTML file, so deep links such as `/shapeshift/pdf` are served directly; any other address gets a prerendered, non-indexed `404.html` that still boots the app.
 
 ## ⚙️ How it works
 

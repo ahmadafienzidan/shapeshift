@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
-import { renderPage } from "./src/seo/html";
+import { renderNotFound, renderPage } from "./src/seo/html";
 import { ogImage } from "./src/seo/og";
 import { ogImageFile, PAGES, pageFile } from "./src/seo/routes";
 import { robots, sitemap } from "./src/seo/sitemap";
@@ -80,6 +80,13 @@ function prerender(): Plugin {
 				if (fileName === index.fileName) index.source = source;
 				else this.emitFile({ type: "asset", fileName, source });
 			}
+			// GitHub Pages has no SPA fallback, so this also boots the app for
+			// addresses without a file, such as /open.
+			this.emitFile({
+				type: "asset",
+				fileName: "404.html",
+				source: renderNotFound(template),
+			});
 			const images = await Promise.all(
 				pages.map(async ({ page, locale }) => ({
 					fileName: ogImageFile(page, locale),

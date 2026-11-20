@@ -13,6 +13,7 @@ import {
 	pageSummary,
 	seoDescription,
 	seoTitle,
+	text,
 } from "./text";
 
 const OG_LOCALES: Record<Locale, string> = { en: "en_US", id: "id_ID" };
@@ -82,4 +83,23 @@ export function renderPage(
 	);
 	html = replaceOnce(html, "<title>Shapeshift</title>", headTags(page, locale));
 	return replaceOnce(html, '<div id="root"></div>', body(page, locale));
+}
+
+// GitHub Pages serves this for any address without a file of its own. It
+// still boots the app, which shows the right page or its own not-found view.
+export function renderNotFound(template: string): string {
+	const title = escapeHtml(`${text("en", "notFound.title")} | Shapeshift`);
+	const html = replaceOnce(
+		template,
+		"<title>Shapeshift</title>",
+		[
+			`<title>${title}</title>`,
+			'<meta name="robots" content="noindex" />',
+		].join("\n\t\t"),
+	);
+	return replaceOnce(
+		html,
+		'<div id="root"></div>',
+		`<div id="root"><main><h1>${escapeHtml(text("en", "notFound.title"))}</h1><p>${escapeHtml(text("en", "notFound.body"))}</p><p><a href="${pageUrl("home", "en")}">${escapeHtml(text("en", "notFound.home"))}</a></p></main></div>`,
+	);
 }
