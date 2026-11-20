@@ -30,11 +30,12 @@ import {
 	Type,
 	Wrench,
 } from "lucide-react";
+import type { MetaPage } from "./seo/text";
 
 export type ToolGroup = "images" | "documents" | "data" | "developer";
 
 export type Tool = {
-	id: string;
+	id: Exclude<MetaPage, "home">;
 	path: string;
 	icon: LucideIcon;
 	tile: string;
