@@ -175,6 +175,7 @@ export function PdfPage() {
 						key={mode}
 						kind={PDF_KIND}
 						zipName="shapeshift-pdf-pages.zip"
+						sizesComparable={false}
 						process={(file) =>
 							pdfToImages(file, {
 								type: imageType,
@@ -194,6 +195,7 @@ export function PdfPage() {
 						key={mode}
 						kind={PDF_KIND}
 						zipName="shapeshift-markdown.zip"
+						sizesComparable={false}
 						process={pdfToMarkdown}
 					/>
 				</ToolPage>

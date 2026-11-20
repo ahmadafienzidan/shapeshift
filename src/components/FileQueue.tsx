@@ -138,10 +138,14 @@ export function FileQueue({
 	items,
 	onClear,
 	zipName,
+	sizesComparable = true,
 }: {
 	items: BatchItem[];
 	onClear: () => void;
 	zipName: string;
+	// False when outputs are a different kind of file than the input, such as
+	// PDF to Markdown, where a smaller result is not a saving.
+	sizesComparable?: boolean;
 }) {
 	const intl = useIntl();
 	const finished = items.filter((item) => item.status === "done");
@@ -183,7 +187,7 @@ export function FileQueue({
 								</span>
 							</>
 						)}
-						{after < before && (
+						{sizesComparable && after < before && (
 							<>
 								<span className="text-muted">{" / "}</span>
 								<span className="text-accent-soft-foreground">

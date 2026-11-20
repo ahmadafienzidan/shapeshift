@@ -7,17 +7,24 @@ export function BatchTool({
 	kind,
 	process,
 	zipName,
+	sizesComparable,
 }: {
 	kind: FileKind;
 	process: Processor;
 	zipName: string;
+	sizesComparable?: boolean;
 }) {
 	const { items, add, clear } = useBatch();
 
 	return (
 		<>
 			<Dropzone kind={kind} onFiles={(files) => add(files, process)} />
-			<FileQueue items={items} onClear={clear} zipName={zipName} />
+			<FileQueue
+				items={items}
+				onClear={clear}
+				zipName={zipName}
+				sizesComparable={sizesComparable}
+			/>
 		</>
 	);
 }
