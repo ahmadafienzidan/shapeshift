@@ -3,6 +3,7 @@ import { useLocation } from "react-router";
 import { KeepAlive } from "./components/KeepAlive";
 import { Sidebar } from "./components/Sidebar";
 import { HomePage } from "./pages/HomePage";
+import { NotFoundPage } from "./pages/NotFoundPage";
 import { type Page, pageFromPath } from "./seo/routes";
 
 const ConvertPage = lazy(() =>
@@ -114,6 +115,7 @@ const PAGES: Record<Page | "open", ReactNode> = {
 
 export function App() {
 	const { pathname } = useLocation();
+	const page = pageFromPath(pathname);
 
 	return (
 		<div className="min-h-dvh bg-background text-foreground lg:flex">
@@ -122,9 +124,10 @@ export function App() {
 				{/* Pages stay mounted once opened, so files and results survive
 				    switching tools or languages. */}
 				<KeepAlive
-					active={pageFromPath(pathname)}
+					active={page}
 					render={(page) => <Suspense>{PAGES[page]}</Suspense>}
 				/>
+				{page === undefined && <NotFoundPage />}
 			</main>
 		</div>
 	);
