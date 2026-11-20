@@ -33,6 +33,7 @@
 	"drop.skipped": "{count} file dilewati karena formatnya tidak didukung di sini.",
 	"queue.title": "File",
 	"queue.summary": "{done} dari {total} selesai",
+	"queue.failed": "{count} gagal",
 	"queue.saved": "Hemat {size} ({percent})",
 	"queue.downloadZip": "Unduh ZIP",
 	"queue.clear": "Hapus yang selesai",

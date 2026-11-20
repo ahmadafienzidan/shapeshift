@@ -33,6 +33,7 @@
 	"drop.skipped": "{count, plural, one {# file was} other {# files were}} skipped because {count, plural, one {it is} other {they are}} not supported here.",
 	"queue.title": "Files",
 	"queue.summary": "{done} of {total} done",
+	"queue.failed": "{count} failed",
 	"queue.saved": "Saved {size} ({percent})",
 	"queue.downloadZip": "Download ZIP",
 	"queue.clear": "Clear finished",

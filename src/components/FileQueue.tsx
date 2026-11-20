@@ -170,8 +170,19 @@ export function FileQueue({
 					<p className="font-mono text-sm">
 						<FormattedMessage
 							id="queue.summary"
-							values={{ done: settled.length, total: items.length }}
+							values={{ done: finished.length, total: items.length }}
 						/>
+						{settled.length > finished.length && (
+							<>
+								<span className="text-muted">{" / "}</span>
+								<span className="text-danger">
+									<FormattedMessage
+										id="queue.failed"
+										values={{ count: settled.length - finished.length }}
+									/>
+								</span>
+							</>
+						)}
 						{after < before && (
 							<>
 								<span className="text-muted">{" / "}</span>
