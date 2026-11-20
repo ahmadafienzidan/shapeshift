@@ -11,6 +11,7 @@ export function NotFoundPage() {
 	return (
 		<div className="flex flex-col items-start gap-6 py-16">
 			<title>{`${intl.formatMessage({ id: "notFound.title" })} | Shapeshift`}</title>
+			<meta name="robots" content="noindex" />
 			<Eyebrow dot>404</Eyebrow>
 			<h1 className="headline text-4xl sm:text-6xl">
 				<FormattedMessage id="notFound.title" />
